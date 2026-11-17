@@ -1,0 +1,7 @@
+node_modules/
+build/
+out/
+fonts/*.ttf
+*.mp4
+*.wav
+*.mp3

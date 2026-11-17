@@ -1,0 +1,23 @@
+{
+ "title": "Ճշմարտության գինը",
+ "aspect": "16:9",
+ "resolution": "1080p",
+ "fps": 30,
+ "style": "dusk",
+ "voiceover": "input/voiceover.wav",
+ "script": "input/script.txt",
+ "duration": 762.36,
+ "captions": false,
+ "bars": "wide",
+ "fadeIn": 0.6,
+ "fadeOut": 1.0,
+ "music": {
+  "enabled": true,
+  "gainDb": -19
+ },
+ "sfx": {
+  "enabled": true,
+  "gainDb": -7
+ },
+ "loudness": -14
+}

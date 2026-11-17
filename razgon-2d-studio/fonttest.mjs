@@ -1,0 +1,12 @@
+import { createCanvas, GlobalFonts } from '@napi-rs/canvas';
+import fs from 'fs';
+const reg = GlobalFonts.registerFromPath('/tmp/NotoSansArmenian.ttf', 'NotoArm');
+console.log('registered', reg);
+const reg2 = GlobalFonts.registerFromPath('/tmp/Nunito.ttf', 'Nunito');
+console.log('nunito', reg2);
+const c = createCanvas(1100, 260), g = c.getContext('2d');
+g.fillStyle='#0d0b12'; g.fillRect(0,0,1100,260);
+g.fillStyle='#ffe0b0'; g.font='700 54px NotoArm'; g.fillText('Ճշմարտության գինը', 30, 80);
+g.font='400 34px NotoArm'; g.fillText('Եթե մարդիկ այլևս չկարողանային քեզ խաբել', 30, 140);
+g.font='700 34px Nunito'; g.fillText('Nunito Latin 700 — What If? 123', 30, 200);
+fs.writeFileSync('/tmp/fonttest.png', c.toBuffer('image/png'));

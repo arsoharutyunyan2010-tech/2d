@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+import subprocess, sys, re
+args = sys.argv[1:]
+files = [a for a in args if not a.startswith('-')]
+src = files[-1] if files else ''
+p = subprocess.run(['ffmpeg', '-hide_banner', '-i', src], capture_output=True, text=True)
+m = re.search(r'Duration: (\d+):(\d+):(\d+\.\d+)', p.stderr)
+dur = 0.0
+if m:
+    dur = int(m.group(1)) * 3600 + int(m.group(2)) * 60 + float(m.group(3))
+if any('show_entries' in a for a in args):
+    print(f"{dur:.6f}"); sys.exit(0)
+print(p.stderr)

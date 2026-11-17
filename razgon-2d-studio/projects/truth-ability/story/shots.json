@@ -1,0 +1,3600 @@
+{
+ "title": "Ճշմարտության գինը — What If Nobody Could Ever Lie To You?",
+ "duration": 762.36,
+ "shots": [
+  {
+   "id": "s001",
+   "start": 0.0,
+   "end": 2.448,
+   "line": "Դու նստած ես ընկերներիդ հետ։",
+   "scene": "Establishing wide: three friends on the sofa at dusk, three glowing speech glyphs above them, the window sun burning behind.",
+   "set": "hangout",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "murmur",
+     "gain": -22
+    }
+   ]
+  },
+  {
+   "id": "s002",
+   "start": 2.536,
+   "end": 6.82,
+   "line": "Լեոն պատմում է, թե երեկ ամբողջ գիշեր տանն է եղել։",
+   "scene": "Medium: Leo talks on the sofa, we stay with him; above his head a glyph turns from gold to red as he speaks.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s003",
+   "start": 6.908,
+   "end": 9.968,
+   "line": "Միան ասում է, որ ոչինչ չի թաքցնում։",
+   "scene": "Mia on the sofa, arms crossed, confident smile; the glyph above her cracks.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s004",
+   "start": 10.055,
+   "end": 15.301,
+   "line": "Իսկ քո եղբայրը ժպտում է ու ասում, որ քո հեռախոսը չի վերցրել։",
+   "scene": "Over-the-shoulder: the brother on the far end of the sofa, phone hidden behind his leg; glyph red.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s005",
+   "start": 15.389,
+   "end": 18.537,
+   "line": "Բայց դու արդեն գիտես ճշմարտությունը։",
+   "scene": "Giant face: YOU leaning back, eyes open, three red glyphs reflected in the eyes.",
+   "set": "hangout",
+   "bars": "scope",
+   "in": {
+    "type": "push",
+    "dur": 0.6
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "stinger",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s006",
+   "start": 18.624,
+   "end": 20.81,
+   "line": "Լեոնը երեկույթում է եղել։",
+   "scene": "Insert: a party photo on a phone, confetti, Leo mid-laugh; taken in one frame.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s007",
+   "start": 20.897,
+   "end": 24.307,
+   "line": "Միան քեզնից գաղտնի հանդիպել է մեկի հետ։",
+   "scene": "Insert: two cups on a café table seen from above, Mia's lilac sleeve at the edge.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "glitch",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s008",
+   "start": 24.395,
+   "end": 27.368,
+   "line": "Իսկ հեռախոսդ... եղբայրդ է վերցրել։",
+   "scene": "Insert: your phone screen lighting up in a brother-sized hand, thumb hovering.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "glitch",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s009",
+   "start": 27.455,
+   "end": 33.139,
+   "line": "Դու ոչ մի ապացույց չունես։ Ոչ մի ձայնագրություն։ Ոչ մի տեսանյութ։",
+   "scene": "You alone on the sofa, empty room, the glyphs fading to dust motes.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s010",
+   "start": 33.226,
+   "end": 34.538,
+   "line": "Պարզապես գիտես։",
+   "scene": "Giant face, eyes closing slowly, gold thread drawing a line across the frame.",
+   "set": "hangout",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s011",
+   "start": 34.625,
+   "end": 38.56,
+   "line": "Որովհետև այսօրվանից ոչ ոք չի կարող քեզ խաբել։",
+   "scene": "You stand up, the window flares, the whole room goes to silhouette; title energy.",
+   "set": "hangout",
+   "in": {
+    "type": "flash",
+    "dur": 0.45
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "whoosh",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s012",
+   "start": 38.647,
+   "end": 39.683,
+   "line": "Ոչ մի մարդ։",
+   "scene": "Gallery of faces: a stranger, a waiter, a taxi driver, each glyph red.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "riser",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s013",
+   "start": 39.683,
+   "end": 40.92,
+   "line": "Ոչ մի դերասան։",
+   "scene": "A stage spotlight, an actor's empty costume, the glyph red above it.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s014",
+   "start": 41.008,
+   "end": 43.019,
+   "line": "Ոչ մի քաղաքական գործիչ։",
+   "scene": "Podium in the gala hall, a man mid-speech, half the glyph broken.",
+   "set": "gala",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "applause",
+     "gain": -20
+    }
+   ]
+  },
+  {
+   "id": "s015",
+   "start": 43.106,
+   "end": 49.926,
+   "line": "Բայց ի՞նչ կլինի, եթե ամեն մարդու խոսքի հետևում դու միշտ տեսնես իրականությունը։",
+   "scene": "Wide street at night, hundreds of tiny glyphs floating over the crowd, one hero in the middle.",
+   "set": "street",
+   "bars": "scope",
+   "in": {
+    "type": "push",
+    "dur": 0.7
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.25,
+     "name": "murmur",
+     "gain": -18
+    }
+   ]
+  },
+  {
+   "id": "s016",
+   "start": 50.014,
+   "end": 55.085,
+   "line": "Սկզբում սա հնչում է որպես աշխարհի ամենահզոր ունակությունը։",
+   "scene": "Title card over the street: «ՃՇՄԱՐՏՈՒԹՅԱՆ ԳԻՆԸ» in slam type, dust and rain.",
+   "set": "street",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "stinger",
+     "gain": -10
+    }
+   ]
+  },
+  {
+   "id": "s017",
+   "start": 55.173,
+   "end": 56.323,
+   "line": "Իսկ հետո՞։",
+   "scene": "Freeze frame: you alone in the street, rain frozen, badge «1 դյույմ ապագա» crossfading to «?»",
+   "set": "street",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s018",
+   "start": 56.323,
+   "end": 66.02,
+   "line": "Պատկերացրու՝ սովորական մարդը չի կարող ամեն անգամ վստահորեն հասկանալ՝ դիմացինը ստում է, թե ասում ճշմարտությունը։",
+   "scene": "Blueprint diagram: a head profile, arrows to eyes/voice/face, each labelled «ոչ ապացույց».",
+   "set": "void",
+   "amb": {
+    "name": "hum",
+    "gain": -28
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "blip",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s019",
+   "start": 66.02,
+   "end": 73.101,
+   "line": "Մարդկանց դեմքի արտահայտությունները, ձայնի տոնը կամ աչքերի շարժումները ստի հուսալի ապացույցներ չեն։",
+   "scene": "Three macro inserts: an eye, a mouth, a hand — each gets a red X.",
+   "set": "void",
+   "amb": {
+    "name": "hum",
+    "gain": -28
+   }
+  },
+  {
+   "id": "s020",
+   "start": 73.173,
+   "end": 76.858,
+   "line": "Դու՞։ Դու անմիջապես գիտես՝ խոսքը ճի՞շտ է, թե՞ կեղծ։",
+   "scene": "Giant face: your eyes snap open, gold ring, glyphs spinning around the head.",
+   "set": "void",
+   "bars": "scope",
+   "in": {
+    "type": "smash",
+    "dur": 0.45
+   },
+   "amb": {
+    "name": "hum",
+    "gain": -28
+   }
+  },
+  {
+   "id": "s021",
+   "start": 76.931,
+   "end": 78.231,
+   "line": "Բայց կա մեկ կանոն։",
+   "scene": "The gold thread becomes a circle with a single rule printed inside: «ՄԵԿ ԿԱՆՈՆ».",
+   "set": "void",
+   "amb": {
+    "name": "hum",
+    "gain": -28
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "ding",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s022",
+   "start": 78.304,
+   "end": 84.301,
+   "line": "Դու կարող ես բացահայտել միայն այն, ինչ մարդն ինքն է հավատում կամ փորձում է թաքցնել։",
+   "scene": "Diagram: two doors, «հավատում է» / «թաքցնում է»; a third door labelled «ապագան» is locked.",
+   "set": "void",
+   "amb": {
+    "name": "hum",
+    "gain": -28
+   }
+  },
+  {
+   "id": "s023",
+   "start": 84.373,
+   "end": 86.396,
+   "line": "Դու չես կարող իմանալ ապագան։",
+   "scene": "The locked door, calendar pages flying past, all blank.",
+   "set": "void",
+   "amb": {
+    "name": "hum",
+    "gain": -28
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "glitch",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s024",
+   "start": 86.469,
+   "end": 88.709,
+   "line": "Չես կարող կարդալ ուրիշի մտքերը։",
+   "scene": "A head in blueprint, thoughts as sealed boxes, one question mark.",
+   "set": "void",
+   "amb": {
+    "name": "hum",
+    "gain": -28
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "blip",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s025",
+   "start": 88.781,
+   "end": 92.466,
+   "line": "Եվ չես կարող ստիպել որևէ մեկին ճշմարտությունն ասել։",
+   "scene": "A mouth zipped shut in line art; the glyph stays grey/hidden.",
+   "set": "void",
+   "amb": {
+    "name": "hum",
+    "gain": -28
+   }
+  },
+  {
+   "id": "s026",
+   "start": 92.538,
+   "end": 94.778,
+   "line": "Դու պարզապես երբեք չես խաբվում։",
+   "scene": "You standing in the void, gold ring at the feet, glyphs orbiting.",
+   "set": "void",
+   "amb": {
+    "name": "hum",
+    "gain": -28
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "shimmer",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s027",
+   "start": 94.85,
+   "end": 98.824,
+   "line": "Ուրեմն ի՞նչ կլինի, եթե ոչ ոք այլևս չկարողանա քեզ խաբել։",
+   "scene": "Pull back: hundreds of head profiles in grid all turning to face you.",
+   "set": "void",
+   "bars": "scope",
+   "amb": {
+    "name": "hum",
+    "gain": -28
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "riser",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s028",
+   "start": 98.897,
+   "end": 101.353,
+   "line": "Առաջին օրը դու փորձարկում ես ուժդ։",
+   "scene": "Morning kitchen: light floods in, you at the counter, cup of tea steaming.",
+   "set": "kitchenRoom",
+   "in": {
+    "type": "push",
+    "dur": 0.6
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s029",
+   "start": 101.426,
+   "end": 103.449,
+   "line": "Մայրդ հարցնում է՝ կերե՞լ ես։",
+   "scene": "Two-shot: mom at the counter, kettle steaming, warm key light.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "tick",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s030",
+   "start": 103.521,
+   "end": 104.822,
+   "line": "Դու ասում ես՝ այո։",
+   "scene": "Close: your mouth, a gold glyph flickers then cracks red.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s031",
+   "start": 104.894,
+   "end": 106.05,
+   "line": "Նա նայում է քեզ։",
+   "scene": "Over-the-shoulder: mom's face, patient half-smile, eyes knowing.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s032",
+   "start": 106.122,
+   "end": 109.302,
+   "line": "Դու գիտես, որ նա արդեն հասկացել է՝ ստում ես։",
+   "scene": "Giant face of mom, gentle, a tiny gold glyph next to her temple.",
+   "set": "kitchenRoom",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s033",
+   "start": 109.374,
+   "end": 111.325,
+   "line": "Լավ։ Գոնե երկուսդ էլ գիտեք։",
+   "scene": "Wide: the two of you at the counter, both smiling; the glyph turns gold.",
+   "set": "kitchenRoom",
+   "in": {
+    "type": "iris",
+    "dur": 0.7
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "ding",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s034",
+   "start": 111.397,
+   "end": 113.998,
+   "line": "Հետո ընկերներիդ հետ գնում ես խանութ։",
+   "scene": "Shop wide: fluorescent strips, shelves of phones, you and Leo at the counter.",
+   "set": "shop",
+   "in": {
+    "type": "whip",
+    "dur": 0.35
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "footstep",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s035",
+   "start": 114.071,
+   "end": 116.961,
+   "line": "Վաճառողը խոստանում է, որ հեռախոսը նոր է։",
+   "scene": "Medium: the clerk holds up a phone, smiling; glyph above him cracking.",
+   "set": "shop",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.3,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s036",
+   "start": 117.033,
+   "end": 119.128,
+   "line": "Դու գիտես՝ այն օգտագործված է։",
+   "scene": "Macro insert: the phone's scratched corner, dust in the speaker grille.",
+   "set": "shop",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "glitch",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s037",
+   "start": 119.201,
+   "end": 122.56,
+   "line": "Նա ասում է, որ մարտկոցը գերազանց վիճակում է։",
+   "scene": "Two-shot: clerk, thumbs up; a battery icon floating, red bar sinking.",
+   "set": "shop",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.3,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s038",
+   "start": 122.56,
+   "end": 124.962,
+   "line": "Դու գիտես՝ այն արդեն մաշված է։",
+   "scene": "Macro: battery graph dropping, gold line flat.",
+   "set": "shop",
+   "in": {
+    "type": "push",
+    "dur": 0.5
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s039",
+   "start": 125.042,
+   "end": 126.053,
+   "line": "Նա ժպտում է։",
+   "scene": "Close-up: the clerk's smile, too wide; a red glyph inside the smile.",
+   "set": "shop",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "pop",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s040",
+   "start": 126.053,
+   "end": 127.283,
+   "line": "Դու չես ժպտում։",
+   "scene": "Close-up: your face, flat; the glyph refusing to appear.",
+   "set": "shop",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s041",
+   "start": 127.363,
+   "end": 130.085,
+   "line": "Վերջում նա վերադարձնում է գումարդ։",
+   "scene": "Insert: cash pushed across the counter, hands, a receipt.",
+   "set": "shop",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "whoosh",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s042",
+   "start": 130.165,
+   "end": 134.007,
+   "line": "Տասը րոպեում դու խնայում ես հարյուրավոր եվրոներ։",
+   "scene": "UI card: «−320 €» counting down, gold digits over the shop.",
+   "set": "shop",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.25,
+     "name": "counter",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s043",
+   "start": 134.087,
+   "end": 139.05,
+   "line": "Գումարած։ Առաջին անգամ դու չես ընկնում վաճառողի հնարքների մեջ։",
+   "scene": "You walking out of the shop, Leo behind, the clerk's red glyph shrinking.",
+   "set": "shop",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "swish",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s044",
+   "start": 139.131,
+   "end": 140.892,
+   "line": "Հաջորդը՝ ընկերություն։",
+   "scene": "Cut to the hangout: two cups, Leo on the sofa, evening window.",
+   "set": "hangout",
+   "in": {
+    "type": "push",
+    "dur": 0.55
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s045",
+   "start": 140.972,
+   "end": 144.574,
+   "line": "Լեոն ասում է, որ քո նոր տեսանյութը հիանալի է։",
+   "scene": "Medium: Leo talking, thumbs up; glyph above him red from the first word.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "pop",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s046",
+   "start": 144.654,
+   "end": 150.498,
+   "line": "Դու գիտես, որ նա այդպես չի կարծում։ Իրականում նա այն ձանձրալի է համարում։",
+   "scene": "Giant face of Leo, the smile sliding off, a bored eye drifting up.",
+   "set": "hangout",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s047",
+   "start": 150.578,
+   "end": 153.299,
+   "line": "Դու հարցնում ես՝ ի՞նչը դուր չեկավ։",
+   "scene": "Two-shot: you lean forward, Leo's cup frozen halfway.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s048",
+   "start": 153.38,
+   "end": 154.53,
+   "line": "Նա լռում է։",
+   "scene": "Silence shot: the room, the clock ticking, the glyph hanging mid-air.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "tick",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s049",
+   "start": 154.53,
+   "end": 158.503,
+   "line": "Հետո ասում է՝ վերջապես, կարող ես նորմալ կարծիք լսել։",
+   "scene": "Leo shrugs and finally talks honestly; the glyph snaps gold.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s050",
+   "start": 158.583,
+   "end": 160.744,
+   "line": "Քեզ թվում է՝ սա հաղթանակ է։",
+   "scene": "Close: your small smile; gold sparkles.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "shimmer",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s051",
+   "start": 160.824,
+   "end": 161.974,
+   "line": "Բայց մի պահ։",
+   "scene": "Freeze: the sparkles hang still, badge «1 վրկ», the camera slows.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s052",
+   "start": 161.974,
+   "end": 168.429,
+   "line": "Եթե բոլորը միշտ անկեղծ լինեն, ընկերությունն ավելի՞ ամուր կդառնա։ Թե՞ ավելի փխրուն։",
+   "scene": "Split frame: two gold lines, one thick, one cracking into dust.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "riser",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s053",
+   "start": 168.509,
+   "end": 171.071,
+   "line": "Դու սկսում ես նկատել փոքր բաներ։",
+   "scene": "Street: you walking, small glyphs popping over strangers: red, red, grey, red.",
+   "set": "street",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "carpass",
+     "gain": -18
+    }
+   ]
+  },
+  {
+   "id": "s054",
+   "start": 171.151,
+   "end": 174.833,
+   "line": "Մարդը ասում է՝ լավ եմ։ Բայց իրականում տխուր է։",
+   "scene": "Street medium: a man says «լավ եմ», glyph red; below him a small grey ghost of himself, sad.",
+   "set": "street",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s055",
+   "start": 174.913,
+   "end": 180.357,
+   "line": "Մեկ ուրիշը ասում է՝ ինձ միևնույն է։ Բայց իրականում շատ է վիրավորվել։",
+   "scene": "Street medium: a woman with a cracked glyph and a trembling lip.",
+   "set": "street",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s056",
+   "start": 180.437,
+   "end": 188.922,
+   "line": "Դու տեսնում ես տարբերությունը բառերի և իրական զգացմունքների միջև։ Եվ երբեմն դա օգնում է։ Երբեմն՝ ցավեցնում։",
+   "scene": "Your face lit by street lamps, a red glyph reflected in each eye.",
+   "set": "street",
+   "bars": "scope",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "stinger",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s057",
+   "start": 188.997,
+   "end": 191.948,
+   "line": "Հետո գալիս է աշխատանքային հարցազրույցը։",
+   "scene": "Office wide: blinds, cold light, Mr Black at the glass desk, you opposite.",
+   "set": "office",
+   "in": {
+    "type": "whip",
+    "dur": 0.35
+   },
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.3,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s058",
+   "start": 192.024,
+   "end": 194.066,
+   "line": "Դիմացդ նստած է պարոն Բլեքը։",
+   "scene": "OTS on Black: fedora, sunglasses, the blinds striping his face.",
+   "set": "office",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "stinger",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s059",
+   "start": 194.142,
+   "end": 198.227,
+   "line": "Նա ասում է, որ ընկերությունը գնահատում է ազնվությունը։",
+   "scene": "Black talks, a golden glyph above him; behind him the «VALUES» sign.",
+   "set": "office",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s060",
+   "start": 198.303,
+   "end": 204.128,
+   "line": "Դու գիտես՝ նա պարզապես ուզում է, որ աշխատակիցները չհարցնեն աշխատավարձի մասին։",
+   "scene": "The glyph cracks; a small thought-cloud with a coin and a crossed-out question mark.",
+   "set": "office",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "tick",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s061",
+   "start": 204.204,
+   "end": 208.894,
+   "line": "Նա ասում է, որ այստեղ բոլորը հավասար հնարավորություններ ունեն։",
+   "scene": "Insert: four identical chairs, the fourth already occupied by a ghost silhouette.",
+   "set": "office",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s062",
+   "start": 208.97,
+   "end": 211.845,
+   "line": "Դու գիտես՝ որոշումը վաղուց կայացված է։",
+   "scene": "Insert: a signed sheet on the desk, date circled weeks ago.",
+   "set": "office",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "counter",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s063",
+   "start": 211.92,
+   "end": 214.417,
+   "line": "Նա արդեն ուրիշ թեկնածու է ընտրել։",
+   "scene": "The ghost silhouette in the empty chair gets a name card.",
+   "set": "office",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s064",
+   "start": 214.493,
+   "end": 215.643,
+   "line": "Դու ժպտում ես։",
+   "scene": "Close: your calm smile; no glyph appears.",
+   "set": "office",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s065",
+   "start": 215.643,
+   "end": 221.226,
+   "line": "Հետո հարցնում ես՝ ինչո՞ւ եք ինձ հրավիրել, եթե արդեն ընտրել եք մեկ ուրիշին։",
+   "scene": "Two-shot: you ask, Black's sunglasses catch the light.",
+   "set": "office",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s066",
+   "start": 221.301,
+   "end": 222.451,
+   "line": "Նա քարանում է։",
+   "scene": "Freeze frame: Black mid-word, dust in the blind beams, badge «STOP».",
+   "set": "office",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s067",
+   "start": 222.451,
+   "end": 224.403,
+   "line": "Դու աշխատանքը չես ստանում։",
+   "scene": "You walking out of the office door, the glyph behind you going grey.",
+   "set": "office",
+   "in": {
+    "type": "dip",
+    "dur": 0.5
+   },
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "impact",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s068",
+   "start": 224.479,
+   "end": 229.321,
+   "line": "Բայց առաջին անգամ չես վատնում շաբաթներ՝ սպասելով դատարկ խոստման։",
+   "scene": "Street at evening: you walking, calendar pages flying off behind you.",
+   "set": "street",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s069",
+   "start": 229.396,
+   "end": 232.498,
+   "line": "Իսկ հիմա պատկերացրու՝ դու մտնում ես բանկ։",
+   "scene": "Bank wide: brand wall glow, counter, you at the counter.",
+   "set": "bank",
+   "in": {
+    "type": "whip",
+    "dur": 0.35
+   },
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s070",
+   "start": 232.574,
+   "end": 234.465,
+   "line": "Աշխատակիցը զանգում է քեզ։",
+   "scene": "Your phone rings on the counter; the glyph above the screen flickers.",
+   "set": "bank",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "phonebuzz",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s071",
+   "start": 234.541,
+   "end": 237.34,
+   "line": "Նա ասում է, որ քո հաշվի հետ խնդիր կա։",
+   "scene": "Split screen: a caller in a dark room, a fake ID card, red glyph.",
+   "set": "bank",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "glitch",
+     "gain": -11
+    }
+   ]
+  },
+  {
+   "id": "s072",
+   "start": 237.416,
+   "end": 241.35,
+   "line": "Պետք է գումարդ տեղափոխես հատուկ անվտանգ հաշվեհամարի։",
+   "scene": "Macro: a bank transfer form, the account number glowing suspiciously.",
+   "set": "bank",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "whoosh",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s073",
+   "start": 241.425,
+   "end": 244.48,
+   "line": "Դու անմիջապես գիտես՝ սա խաբեություն է։",
+   "scene": "Giant face: your eyes narrow, a red glyph slams into the frame.",
+   "set": "bank",
+   "bars": "scope",
+   "in": {
+    "type": "smash",
+    "dur": 0.45
+   },
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s074",
+   "start": 244.48,
+   "end": 250.05,
+   "line": "Իրական բանկերը քեզ չեն խնդրում գումարդ տեղափոխել անհայտ «անվտանգ հաշվի»։",
+   "scene": "Blueprint: the fake flow chart (you → «safe account» → ?) with a big red X.",
+   "set": "void",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s075",
+   "start": 250.127,
+   "end": 251.829,
+   "line": "Դու անջատում ես զանգը։",
+   "scene": "Insert: thumb hits the red button; the screen goes dark.",
+   "set": "bank",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s076",
+   "start": 251.906,
+   "end": 258.327,
+   "line": "Բայց քանի՞ մարդ արդեն կորցրել է իր խնայողությունները նման խաբեությունների պատճառով։",
+   "scene": "Freeze frame: hundreds of floating coins frozen mid-fall over a crowd.",
+   "set": "void",
+   "in": {
+    "type": "flash",
+    "dur": 0.4
+   },
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s077",
+   "start": 258.404,
+   "end": 262.504,
+   "line": "Դու կարող էիր նրանց զգուշացնել։ Եվ սկսում ես դա անել։",
+   "scene": "You tap your phone; a wave of gold rings spreads over the crowd.",
+   "set": "void",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "riser",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s078",
+   "start": 262.582,
+   "end": 267.378,
+   "line": "Քեզ գրում են անծանոթ մարդիկ։ Ուղարկում են հաղորդագրություններ։",
+   "scene": "UI montage: chat bubbles flood in from all sides, each with a question.",
+   "set": "void",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s079",
+   "start": 267.455,
+   "end": 273.644,
+   "line": "Հարցնում են՝ այս մարդուն վստահե՞մ։ Այս առաջարկն իրական է՞։ Այս խոստումը ճի՞շտ է։",
+   "scene": "Three chat cards in a row, each answered with a gold/red glyph.",
+   "set": "void",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s080",
+   "start": 273.721,
+   "end": 276.506,
+   "line": "Դու դառնում ես կենդանի ստի դետեկտոր։",
+   "scene": "Hangout wide: you at the table, phone in hand, glyphs orbiting like a constellation.",
+   "set": "hangout",
+   "in": {
+    "type": "iris",
+    "dur": 0.7
+   },
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "heartbeat",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s081",
+   "start": 276.584,
+   "end": 278.827,
+   "line": "Լուրերը քեզ համար փոխվում են։",
+   "scene": "Studio wide: video wall of headlines, all flickering.",
+   "set": "studio",
+   "in": {
+    "type": "whip",
+    "dur": 0.35
+   },
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s082",
+   "start": 278.904,
+   "end": 282.695,
+   "line": "Քաղաքական գործիչը խոսում է մեծ խոստումների մասին։",
+   "scene": "TV insert: a politician at a podium, floating promises as glass cards.",
+   "set": "studio",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "shimmer",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s083",
+   "start": 282.772,
+   "end": 287.027,
+   "line": "Դու գիտես՝ նա չի պատրաստվում կատարել դրանցից մի քանիսը։",
+   "scene": "The glass cards crack one by one.",
+   "set": "studio",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "pop",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s084",
+   "start": 287.104,
+   "end": 290.353,
+   "line": "Ընկերությունը գովազդում է հրաշք արտադրանք։",
+   "scene": "Insert: an ad with a magic product, before/after split.",
+   "set": "studio",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s085",
+   "start": 290.431,
+   "end": 294.376,
+   "line": "Դու գիտես՝ ներկայացված արդյունքները չափազանցված են։",
+   "scene": "Macro: the graph's scale label is blurred and wrong.",
+   "set": "studio",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "counter",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s086",
+   "start": 294.453,
+   "end": 299.017,
+   "line": "Մի մարդ ասում է, որ բարեգործության համար գումար է հավաքում։",
+   "scene": "A man with a collection box on the street, warm smile, red glyph.",
+   "set": "street",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "murmur",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s087",
+   "start": 299.095,
+   "end": 303.22,
+   "line": "Դու գիտես՝ նրա պատմության մեջ մի կարևոր բան կեղծ է։",
+   "scene": "Macro: the box's label, one word peeling off.",
+   "set": "street",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "stinger",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s088",
+   "start": 303.22,
+   "end": 306.756,
+   "line": "Եվ հանկարծ ամբողջ աշխարհը ցանկանում է քեզ լսել։",
+   "scene": "You at the centre of a crowd, cameras, microphones, glyphs everywhere.",
+   "set": "street",
+   "in": {
+    "type": "push",
+    "dur": 0.7
+   },
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "applause",
+     "gain": -14
+    },
+    {
+     "at": 0.9,
+     "name": "riser",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s089",
+   "start": 306.831,
+   "end": 310.367,
+   "line": "Բայց ո՞վ է որոշում՝ ում մասին դու պետք է խոսես։",
+   "scene": "UI: dozens of faces in a grid, each with a hand raised.",
+   "set": "void",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "whoosh",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s090",
+   "start": 310.442,
+   "end": 313.0,
+   "line": "Ո՞վ է պատասխանատու քո ասածի համար։",
+   "scene": "Your face in the middle of the grid, a shadow of doubt.",
+   "set": "void",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s091",
+   "start": 313.075,
+   "end": 320.824,
+   "line": "Չէ՞ որ դու կարող ես իմանալ, որ մարդը ստում է, բայց դա դեռ չի նշանակում, որ գիտես ամբողջ ճշմարտությունը։",
+   "scene": "Diagram: a red glyph with only a fragment of a bigger picture behind it.",
+   "set": "void",
+   "bars": "scope",
+   "amb": {
+    "name": "city",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "stinger",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s092",
+   "start": 320.899,
+   "end": 322.93,
+   "line": "Եվ ահա քո առաջին մեծ սխալը։",
+   "scene": "Smash to the hangout at night: Mia on the sofa, you standing; cracks spreading.",
+   "set": "hangout",
+   "in": {
+    "type": "smash",
+    "dur": 0.45
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "heartbeat",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s093",
+   "start": 323.006,
+   "end": 326.391,
+   "line": "Մի աղջիկ՝ Միան, քեզ ասում է, որ սիրում է քեզ։",
+   "scene": "Two-shot: Mia, soft window light, gold glyph above her… then it cracks.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "shimmer",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s094",
+   "start": 326.466,
+   "end": 328.498,
+   "line": "Դու զգում ես՝ նա անկեղծ չէ։",
+   "scene": "Giant face of Mia: a smile that doesn't reach the eyes.",
+   "set": "hangout",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "impact",
+     "gain": -11
+    }
+   ]
+  },
+  {
+   "id": "s095",
+   "start": 328.573,
+   "end": 329.776,
+   "line": "Դու հեռանում ես։",
+   "scene": "You walking out of frame; the door closing; the glyph going dark.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "wind",
+     "gain": -18
+    }
+   ]
+  },
+  {
+   "id": "s096",
+   "start": 329.852,
+   "end": 333.839,
+   "line": "Մի քանի օր անց իմանում ես, որ նա պարզապես վախեցել էր։",
+   "scene": "Mia alone in the same room, arms around her knees, tears.",
+   "set": "hangout",
+   "in": {
+    "type": "dip",
+    "dur": 0.5
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "tick",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s097",
+   "start": 333.914,
+   "end": 336.773,
+   "line": "Նա դեռ չէր հասկանում իր զգացմունքները։",
+   "scene": "Blueprint: a heart outline with tangled lines inside, unreadable.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "glitch",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s098",
+   "start": 336.848,
+   "end": 339.03,
+   "line": "Նա քեզ չէր խաբում դիտավորյալ։",
+   "scene": "Mia's glyph, cracked, and a quote mark bending back into a question mark.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s099",
+   "start": 339.105,
+   "end": 341.964,
+   "line": "Նա ինքն էլ չէր հասկանում՝ ինչ է զգում։",
+   "scene": "Two Mia silhouettes back to back, one sad, one hopeful.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s100",
+   "start": 342.039,
+   "end": 349.261,
+   "line": "Ուժդ աշխատում է մարդկանց ստերի վրա։ Բայց մարդիկ միշտ չէ, որ հասկանում են սեփական ճշմարտությունը։",
+   "scene": "Blueprint: the glyph over a head made of glass, reflections inside.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s101",
+   "start": 349.336,
+   "end": 350.486,
+   "line": "Իսկ գինը՞։",
+   "scene": "You standing alone in the street, glyphs falling like snow.",
+   "set": "street",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "pop",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s102",
+   "start": 350.486,
+   "end": 356.935,
+   "line": "Դու այլևս չես կարող լսել սովորական հաճոյախոսություն՝ առանց իմանալու՝ որքանով է այն անկեղծ։",
+   "scene": "Hangout: a friend complimenting you, the glyph flickering between gold and red.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "counter",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s103",
+   "start": 357.01,
+   "end": 362.08,
+   "line": "Չես կարող հանգիստ ընդունել «ամեն ինչ լավ կլինի» արտահայտությունը։",
+   "scene": "Wall of quotes: «ամեն ինչ լավ կլինի» reflected in many fonts.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s104",
+   "start": 362.08,
+   "end": 366.566,
+   "line": "Չես կարող պարզապես ուրախանալ, երբ ինչ-որ մեկը ժպտում է։",
+   "scene": "Giant face of a smiling stranger, the smile splitting into a question.",
+   "set": "void",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "tick",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s105",
+   "start": 366.648,
+   "end": 372.602,
+   "line": "Քո ուղեղը սկսում է յուրաքանչյուր նախադասության մեջ փնտրել թաքնված իմաստը։",
+   "scene": "Your head in blueprint, sentences flowing through like wires, glyphs piling up.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "shimmer",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s106",
+   "start": 372.684,
+   "end": 376.028,
+   "line": "Բայց գիտությունը մեկ այլ բան է հիշեցնում։",
+   "scene": "Studio: the video wall switches to a scientific diagram.",
+   "set": "studio",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s107",
+   "start": 376.11,
+   "end": 379.21,
+   "line": "Մարդու հիշողությունը տեսագրություն չէ։",
+   "scene": "Blueprint: a brain with a film strip inside that isn't quite aligned.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "whoosh",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s108",
+   "start": 379.291,
+   "end": 381.004,
+   "line": "Այն վերակառուցվում է։",
+   "scene": "The film strip re-assembles itself, pieces in the wrong order.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "glitch",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s109",
+   "start": 381.086,
+   "end": 385.817,
+   "line": "Մարդը կարող է անկեղծորեն պատմել մի բան, որը սխալ է հիշում։",
+   "scene": "A witness speaking, gold glyph above him, while behind him the memory image is broken.",
+   "set": "studio",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s110",
+   "start": 385.898,
+   "end": 390.874,
+   "line": "Այսինքն՝ նա կարող է քեզ ասել սխալ տեղեկություն՝ առանց ստելու։",
+   "scene": "Diagram: honest speaker → wrong info → your glyph stays gold.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   }
+  },
+  {
+   "id": "s111",
+   "start": 390.956,
+   "end": 396.421,
+   "line": "Դու գիտես նրա խոսքերի անկեղծությունը։ Բայց ոչ միշտ՝ իրականությունը։",
+   "scene": "Split: gold glyph on one side, blurred reality on the other.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -25
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "stinger",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s112",
+   "start": 396.502,
+   "end": 399.194,
+   "line": "Մի երեկո դու տուն ես վերադառնում։",
+   "scene": "Street to home: you walking under the lamps toward a warm window.",
+   "set": "street",
+   "in": {
+    "type": "push",
+    "dur": 0.6
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "roomtone",
+     "gain": -22
+    }
+   ]
+  },
+  {
+   "id": "s113",
+   "start": 399.276,
+   "end": 403.354,
+   "line": "Մայրդ խոհանոցում է։ Նա քո սիրելի թեյն է պատրաստել։",
+   "scene": "Kitchen wide, warm: mom at the counter, tea steaming, plant, lamp.",
+   "set": "kitchenRoom",
+   "in": {
+    "type": "push",
+    "dur": 0.6
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "pop",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s114",
+   "start": 403.436,
+   "end": 410.614,
+   "line": "Դու փոքր ժամանակ ամեն անգամ, երբ վախենում էիր, նա երեք անգամ թակում էր քո սենյակի դուռը։",
+   "scene": "Memory flash: a small door, a kid silhouette, three golden rings on the wood.",
+   "set": "void",
+   "in": {
+    "type": "fade",
+    "dur": 0.5
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   },
+   "sfx": [
+    {
+     "at": 0.35,
+     "name": "hit",
+     "gain": -13
+    },
+    {
+     "at": 0.87,
+     "name": "hit",
+     "gain": -13
+    },
+    {
+     "at": 1.3900000000000001,
+     "name": "hit",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s115",
+   "start": 410.695,
+   "end": 412.082,
+   "line": "Մեկ։ Երկու։ Երեք։",
+   "scene": "Three golden rings land on the door in time with the words.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "hit",
+     "gain": -12
+    },
+    {
+     "at": 0.7,
+     "name": "hit",
+     "gain": -12
+    },
+    {
+     "at": 1.25,
+     "name": "hit",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s116",
+   "start": 412.164,
+   "end": 414.04,
+   "line": "Դա ձեր գաղտնի նշանն էր։",
+   "scene": "Back to the kitchen: mom turns, smiling, the third knock echoing.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "shimmer",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s117",
+   "start": 414.121,
+   "end": 416.161,
+   "line": "Դու նստում ես նրա կողքին։",
+   "scene": "Two-shot: you sit at the counter, tea between you.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   }
+  },
+  {
+   "id": "s118",
+   "start": 416.242,
+   "end": 418.363,
+   "line": "Նա հարցնում է՝ ինչպե՞ս ես։",
+   "scene": "Close: mom's face, careful, a faint glyph above her.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "blip",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s119",
+   "start": 418.445,
+   "end": 423.583,
+   "line": "Դու գիտես, որ նա անհանգստանում է։ Նա չի ուզում քեզ ծանրաբեռնել։",
+   "scene": "Giant face of mom; the glyph flickers gold; behind her the window.\n",
+   "set": "kitchenRoom",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "tick",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s120",
+   "start": 423.665,
+   "end": 427.764,
+   "line": "Բայց դու նաև գիտես, որ նա հոգնել է։ Շատ է հոգնել։",
+   "scene": "Insert: her hands around the cup, a small tremor, the steam.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "heartbeat",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s121",
+   "start": 427.846,
+   "end": 432.84,
+   "line": "Դու հարցնում ես՝ ինչո՞ւ չես ասում, երբ օգնության կարիք ունես։",
+   "scene": "Two-shot, you leaning in; her glyph red.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   }
+  },
+  {
+   "id": "s122",
+   "start": 432.922,
+   "end": 434.072,
+   "line": "Նա ժպտում է։",
+   "scene": "Close: mom's smile, tired eyes.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   }
+  },
+  {
+   "id": "s123",
+   "start": 434.072,
+   "end": 437.998,
+   "line": "Հետո ասում է, որ ամեն ինչ ինքնուրույն կհաղթահարի։",
+   "scene": "Mom talking, the glyph red; she touches her cup.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s124",
+   "start": 438.08,
+   "end": 442.91,
+   "line": "Դու գիտես՝ դա ճիշտ չէ։ Բայց այս անգամ չես բացահայտում նրան։",
+   "scene": "Your face: the ability visible as a gold ring, then a choice: you close your eyes.",
+   "set": "kitchenRoom",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   }
+  },
+  {
+   "id": "s125",
+   "start": 442.992,
+   "end": 445.858,
+   "line": "Դու պարզապես վերցնում ես նրա ձեռքը։",
+   "scene": "Insert: your hand takes hers over the cup; the glyph fades away.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   },
+   "sfx": [
+    {
+     "at": 0.25,
+     "name": "ding",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s126",
+   "start": 445.94,
+   "end": 452.162,
+   "line": "Երբեմն ճշմարտությունն ասելու կարիք չկա։ Երբեմն պետք է պարզապես կողքին լինել։",
+   "scene": "Wide: the two of you in the warm kitchen, the window sunset behind, silence.",
+   "set": "kitchenRoom",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -24
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "shimmer",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s127",
+   "start": 452.244,
+   "end": 454.946,
+   "line": "Հաջորդ առավոտ ամեն ինչ փոխվում է։",
+   "scene": "Gala wide: truss, spotlights, giant LED, crowd silhouettes, morning haze.",
+   "set": "gala",
+   "bars": "scope",
+   "in": {
+    "type": "dip",
+    "dur": 0.5
+   },
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "wind",
+     "gain": -20
+    }
+   ]
+  },
+  {
+   "id": "s128",
+   "start": 455.027,
+   "end": 458.466,
+   "line": "Քո քաղաքում մեծ բարեգործական միջոցառում է։",
+   "scene": "Gala: banners, the LED glowing «ԵՐԵԽԱՆԵՐԻ ՀԱՄԱՐ».",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "murmur",
+     "gain": -18
+    }
+   ]
+  },
+  {
+   "id": "s129",
+   "start": 458.548,
+   "end": 460.922,
+   "line": "Հազարավոր մարդիկ են հավաքվել։",
+   "scene": "Crowd silhouettes, phones raised, glyphs floating above them.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "murmur",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s130",
+   "start": 461.004,
+   "end": 469.437,
+   "line": "Կազմակերպիչը՝ պարոն Բլեքը, հայտարարում է, որ հավաքված գումարը գնալու է հիվանդ երեխաներին օգնելու համար։",
+   "scene": "Black at the podium, spotlight, a golden glyph above him that begins to crack.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "stinger",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s131",
+   "start": 469.519,
+   "end": 473.039,
+   "line": "Բայց դու գիտես՝ նրա խոսքերի մի մասը սուտ է։",
+   "scene": "Giant face of Black: half the glyph gold, half broken.",
+   "set": "gala",
+   "bars": "scope",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   }
+  },
+  {
+   "id": "s132",
+   "start": 473.121,
+   "end": 477.378,
+   "line": "Գումարի մի մասը նախատեսված է ուրիշ նպատակների համար։",
+   "scene": "Macro: a contract paragraph, one line redacted.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s133",
+   "start": 477.46,
+   "end": 481.881,
+   "line": "Դու փորձում ես զգուշացնել մարդկանց։ Ոչ ոք չի հավատում։",
+   "scene": "You in the crowd, arm raised; faces turning away.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "murmur",
+     "gain": -17
+    }
+   ]
+  },
+  {
+   "id": "s134",
+   "start": 481.963,
+   "end": 486.384,
+   "line": "Բլեքը ժպտում է ու ասում, որ դու պարզապես նախանձում ես։",
+   "scene": "Black at the podium pointing at you, red glyph big.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "stinger",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s135",
+   "start": 486.466,
+   "end": 489.004,
+   "line": "Հետո բեմի մեծ էկրանը միանում է։",
+   "scene": "The LED screen flares white then blue.",
+   "set": "gala",
+   "in": {
+    "type": "flash",
+    "dur": 0.35
+   },
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "riser",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s136",
+   "start": 489.086,
+   "end": 491.64,
+   "line": "Նա ներկայացնում է փաստաթղթեր։",
+   "scene": "UI: documents slide onto the screen, seals, signatures.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "whoosh",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s137",
+   "start": 491.64,
+   "end": 496.376,
+   "line": "Դու անմիջապես հասկանում ես՝ դրանք կեղծ չեն։ Դրանք իրական են։",
+   "scene": "Your face lit by the screen; the gold glyph above the documents.",
+   "set": "gala",
+   "bars": "scope",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "stinger",
+     "gain": -11
+    }
+   ]
+  },
+  {
+   "id": "s138",
+   "start": 496.455,
+   "end": 497.876,
+   "line": "Եվ դա ավելի վատ է։",
+   "scene": "The glyph turns black, cracks radiating.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   }
+  },
+  {
+   "id": "s139",
+   "start": 497.955,
+   "end": 503.638,
+   "line": "Նա օրինական ձևով թաքցրել է կարևոր պայմանները։ Նա չի ստում փաստաթղթերում։",
+   "scene": "Blueprint: legal text with one important clause buried in fine print.",
+   "set": "void",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "ding",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s140",
+   "start": 503.717,
+   "end": 507.822,
+   "line": "Նա պարզապես մարդկանց չի ասում ամբողջ ճշմարտությունը։",
+   "scene": "A page with a missing paragraph: a clean rectangular hole.",
+   "set": "void",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   }
+  },
+  {
+   "id": "s141",
+   "start": 507.901,
+   "end": 512.558,
+   "line": "Դու հասկանում ես՝ քո ուժը չի կարող փոխարինել ապացույցներին։",
+   "scene": "You at the crowd rail, glyphs all around, none of them proof.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "glitch",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s142",
+   "start": 512.637,
+   "end": 515.952,
+   "line": "Դու կարող ես իմանալ, որ ինչ-որ բան սխալ է։",
+   "scene": "Your eyes; a gold ring around the iris.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "heartbeat",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s143",
+   "start": 516.031,
+   "end": 519.031,
+   "line": "Բայց մարդկանց պետք է ցույց տալ՝ ինչու։",
+   "scene": "Split: glyph vs. a document; the glyph cannot open the document.",
+   "set": "void",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "counter",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s144",
+   "start": 519.11,
+   "end": 521.635,
+   "line": "Դու ունես երկու հնարավորություն։",
+   "scene": "Two paths of light on the stage floor, one to the dark wing, one to the mic.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s145",
+   "start": 521.714,
+   "end": 525.582,
+   "line": "Լռել և թույլ տալ, որ մարդիկ հավատան նրա խոսքերին։",
+   "scene": "The dark path: the crowd nodding at Black's smiling face.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "riser",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s146",
+   "start": 525.661,
+   "end": 530.792,
+   "line": "Կամ վտանգել քո հեղինակությունը և հրապարակել այն ամենը, ինչ գիտես։",
+   "scene": "The lit path: you stepping toward the mic, glyphs flaring.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   }
+  },
+  {
+   "id": "s147",
+   "start": 530.871,
+   "end": 532.765,
+   "line": "Դու ընտրում ես երկրորդը։",
+   "scene": "Close: your hand takes the microphone.",
+   "set": "gala",
+   "in": {
+    "type": "push",
+    "dur": 0.5
+   },
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "whoosh",
+     "gain": -12
+    },
+    {
+     "at": 0.6,
+     "name": "impact",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s148",
+   "start": 532.844,
+   "end": 539.159,
+   "line": "Բայց ոչ մի գաղտնի ձայնագրություն չես հորինում։ Ոչ ոքի վրա ճնշում չես գործադրում։",
+   "scene": "Insert: your phone, empty recording app, honesty as a motif.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s149",
+   "start": 539.238,
+   "end": 542.159,
+   "line": "Դու գտնում ես միջոցառման պայմանագիրը։",
+   "scene": "Insert: the contract pulled from a folder, its clause circled.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "tick",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s150",
+   "start": 542.238,
+   "end": 544.527,
+   "line": "Հրավիրում ես անկախ հաշվապահի։",
+   "scene": "A new figure (accountant, glasses) steps into the spotlight.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "ding",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s151",
+   "start": 544.606,
+   "end": 549.105,
+   "line": "Խնդրում ես հրապարակել վճարումների իրական հաշվետվությունը։",
+   "scene": "The LED switches to a ledger, numbers counting.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "counter",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s152",
+   "start": 549.184,
+   "end": 554.1,
+   "line": "Թվերը խոսում են։ Մարդիկ տեսնում են, թե ուր է գնացել գումարը։",
+   "scene": "The ledger turns into a bar chart: 40% children, 60% «այլ նպատակներ». cracks spread over the screen.",
+   "set": "gala",
+   "bars": "scope",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "riser",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s153",
+   "start": 554.1,
+   "end": 559.672,
+   "line": "Բլեքը փորձում է արդարանալ։ Ասում է, որ ամեն ինչ սխալ են հասկացել։",
+   "scene": "Black at the podium, hands up, glyph red at every word.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "stinger",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s154",
+   "start": 559.758,
+   "end": 564.816,
+   "line": "Բայց դու գիտես՝ այս անգամ նա պարզապես փորձում է փրկել իրեն։",
+   "scene": "Giant face of Black: the sunglasses crack.",
+   "set": "gala",
+   "bars": "scope",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "murmur",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s155",
+   "start": 564.902,
+   "end": 569.788,
+   "line": "Մարդիկ հեռանում են։ Ոմանք զայրացած են։ Ոմանք՝ հիասթափված։",
+   "scene": "Wide: the crowd draining out of the hall, glyphs falling to the floor.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "footstep",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s156",
+   "start": 569.874,
+   "end": 575.789,
+   "line": "Իսկ մի փոքր խումբ մոտենում է քեզ։ Նրանք շնորհակալություն են հայտնում։",
+   "scene": "A small group around you, hands on shoulders, gold glyphs.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "applause",
+     "gain": -17
+    }
+   ]
+  },
+  {
+   "id": "s157",
+   "start": 575.875,
+   "end": 585.048,
+   "line": "Բայց դու չես զգում հաղթանակի համը։ Որովհետև հասկանում ես՝ ճշմարտությունը միշտ չէ, որ գեղեցիկ ավարտ է տալիս։",
+   "scene": "You alone at the edge of the stage, glyphs dark, the empty hall.",
+   "set": "gala",
+   "bars": "scope",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "heartbeat",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s158",
+   "start": 585.134,
+   "end": 592.078,
+   "line": "Այն պարզապես թույլ է տալիս մարդկանց ընտրություն կատարել՝ իմանալով իրականությունը։",
+   "scene": "The LED shows the real numbers, steady and clear; a single gold line.",
+   "set": "gala",
+   "amb": {
+    "name": "murmur",
+    "gain": -27
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "shimmer",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s159",
+   "start": 592.164,
+   "end": 596.364,
+   "line": "Երեկոյան տուն ես վերադառնում։ Մայրդ դեռ արթուն է։",
+   "scene": "Street to the kitchen window glowing warm in the dark.",
+   "set": "street",
+   "in": {
+    "type": "push",
+    "dur": 0.6
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "footstep",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s160",
+   "start": 596.45,
+   "end": 599.536,
+   "line": "Նա թակում է դուռը։ Մեկ։ Երկու։ Երեք։",
+   "scene": "Kitchen door: three golden rings land on the wood, timed.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.4,
+     "name": "tick",
+     "gain": -14
+    },
+    {
+     "at": 0.9,
+     "name": "tick",
+     "gain": -14
+    },
+    {
+     "at": 1.4,
+     "name": "tick",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s161",
+   "start": 599.622,
+   "end": 600.822,
+   "line": "Դու բացում ես։",
+   "scene": "Door opens, mom's silhouette in the warm light.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "whoosh",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s162",
+   "start": 600.908,
+   "end": 603.566,
+   "line": "Նա հարցնում է՝ ամեն ինչ լա՞վ է։",
+   "scene": "Close: mom's face, worried, glyph gold.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s163",
+   "start": 603.651,
+   "end": 606.566,
+   "line": "Այս անգամ դու ասում ես՝ ոչ այնքան։",
+   "scene": "Close: you, honest, glyph gold.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s164",
+   "start": 606.652,
+   "end": 608.023,
+   "line": "Նա քեզ գրկում է։",
+   "scene": "Hug: the two silhouettes, warm rim light, everything else dark.",
+   "set": "kitchenRoom",
+   "in": {
+    "type": "push",
+    "dur": 0.55
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "shimmer",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s165",
+   "start": 608.109,
+   "end": 611.024,
+   "line": "Եվ դու հասկանում ես մի կարևոր բան։",
+   "scene": "Giant face: your eyes closing, the gold ring fading.",
+   "set": "kitchenRoom",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "stinger",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s166",
+   "start": 611.11,
+   "end": 615.825,
+   "line": "Քեզ պետք չէ, որ ամբողջ աշխարհը միշտ ճշմարտությունն ասի։",
+   "scene": "The room from outside: hundreds of glyphs over the city, slowly dimming.",
+   "set": "street",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s167",
+   "start": 615.91,
+   "end": 621.92,
+   "line": "Քեզ պետք է, որ կողքիդ լինեն մարդիկ, որոնց հետ կարող ես անկեղծ լինել։",
+   "scene": "Wide: the hangout, the friends back at the sofa, laughing; you among them.",
+   "set": "hangout",
+   "in": {
+    "type": "push",
+    "dur": 0.6
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "murmur",
+     "gain": -20
+    }
+   ]
+  },
+  {
+   "id": "s168",
+   "start": 621.92,
+   "end": 625.588,
+   "line": "Դու կարող էիր օգտագործել ուժդ՝ հարստանալու համար։",
+   "scene": "Fantasy frame: you on a throne of gold, but the room is cold blue.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "counter",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s169",
+   "start": 625.663,
+   "end": 628.658,
+   "line": "Կարող էիր բացահայտել բոլորի գաղտնիքները։",
+   "scene": "Fantasy: a corridor of doors, every key in your hand, all dark.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "pop",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s170",
+   "start": 628.733,
+   "end": 631.353,
+   "line": "Կարող էիր ստիպել աշխարհին լսել քեզ։",
+   "scene": "Fantasy: a giant screen with your face, the streets empty.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "applause",
+     "gain": -16
+    }
+   ]
+  },
+  {
+   "id": "s171",
+   "start": 631.428,
+   "end": 634.273,
+   "line": "Բայց դա քեզ ավելի լավ մարդ չէր դարձնի։",
+   "scene": "The fantasy cracks; you standing small in the middle.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "impact",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s172",
+   "start": 634.348,
+   "end": 637.193,
+   "line": "Քո ուժը մարդկանց կառավարելու համար չէ։",
+   "scene": "Blueprint: a hand holding a small light, not a leash.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s173",
+   "start": 637.268,
+   "end": 639.514,
+   "line": "Այն նրանց պաշտպանելու համար է։",
+   "scene": "The light spreads as a shield over a crowd.",
+   "set": "void",
+   "in": {
+    "type": "push",
+    "dur": 0.5
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "shimmer",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s174",
+   "start": 639.589,
+   "end": 647.15,
+   "line": "Եվ առաջին անգամ երկար ժամանակ անց դու ժպտում ես՝ առանց ուրիշի խոսքերի հետևում ճշմարտություն փնտրելու։",
+   "scene": "Giant face of you smiling, genuinely; no glyph appears at all.",
+   "set": "hangout",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "pop",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s175",
+   "start": 647.225,
+   "end": 652.316,
+   "line": "Որովհետև հիմա գիտես՝ վստահությունը միայն այն չէ, որ ոչ ոք քեզ չխաբի։",
+   "scene": "Two-shot with a friend, trust as a warm line between them.",
+   "set": "hangout",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s176",
+   "start": 652.391,
+   "end": 656.808,
+   "line": "Այն նաև այն է, որ դու ընտրես՝ ում հետ կիսվել ճշմարտությամբ։",
+   "scene": "Hands sharing a cup of tea, the glyph dissolving into steam.",
+   "set": "kitchenRoom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s177",
+   "start": 656.883,
+   "end": 658.156,
+   "line": "Իսկ հիմա մի հարց։",
+   "scene": "Black frame, a single gold question mark.",
+   "set": "void",
+   "in": {
+    "type": "dip",
+    "dur": 0.5
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "riser",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s178",
+   "start": 658.231,
+   "end": 663.995,
+   "line": "Եթե մարդիկ այլևս չկարողանային քեզ խաբել, կարո՞ղ էր աշխարհը դառնալ ավելի լավը։",
+   "scene": "Studio wall of faces, each with a glyph, the question mark in the middle.",
+   "set": "studio",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "shimmer",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s179",
+   "start": 664.07,
+   "end": 672.86,
+   "line": "Գիտության տեսանկյունից՝ ոչ մի ապացուցված մեխանիզմ մարդուն չի տալիս ուրիշների ստերը կատարյալ ճանաչելու ունակություն։",
+   "scene": "Blueprint: a human head with a crossed-out lie detector circuit.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "glitch",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s180",
+   "start": 672.86,
+   "end": 681.928,
+   "line": "Հետազոտությունները ցույց են տալիս, որ մարդիկ ստի հայտնաբերման հարցում հաճախ ընդամենը մի փոքր ավելի լավ են պատահական գուշակությունից։",
+   "scene": "Data card: «54% vs 50%» bars, almost equal.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "counter",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s181",
+   "start": 681.997,
+   "end": 685.226,
+   "line": "Պոլիգրաֆն էլ ուղղակիորեն չի հայտնաբերում սուտը։",
+   "scene": "Blueprint: a polygraph drum, needles, and a big «ոչ» label.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "tick",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s182",
+   "start": 685.294,
+   "end": 692.508,
+   "line": "Այն չափում է մարմնի ֆիզիոլոգիական արձագանքները, օրինակ՝ սրտի զարկերը, շնչառությունը և քրտնարտադրությունը։",
+   "scene": "Three meters animate: heart rate, breath, sweat.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   }
+  },
+  {
+   "id": "s183",
+   "start": 692.576,
+   "end": 696.629,
+   "line": "Վախեցած անմեղ մարդը նույնպես կարող է նման արձագանք ունենալ։",
+   "scene": "A scared innocent face, needles spiking — labelled «անմեղ».",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "heartbeat",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s184",
+   "start": 696.698,
+   "end": 701.644,
+   "line": "Իսկ հիշողության սխալները կարող են ստիպել անկեղծ մարդուն պատմել սխալ բան։",
+   "scene": "Memory strip re-ordered again, a gold glyph above it.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "glitch",
+     "gain": -14
+    }
+   ]
+  },
+  {
+   "id": "s185",
+   "start": 701.713,
+   "end": 705.217,
+   "line": "Այս պատմության գերբնական ունակությունը հորինվածք է։",
+   "scene": "The gold glyph breaks into pixels and drifts away.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "impact",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s186",
+   "start": 705.285,
+   "end": 711.674,
+   "line": "Բայց դրա շուրջ առաջացած խնդիրները՝ վստահությունը, գաղտնիքները և ճշմարտության գինը, իրական են։",
+   "scene": "Three glowing words assemble in the void; the room behind them.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "stinger",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s187",
+   "start": 711.743,
+   "end": 717.72,
+   "line": "Ուրեմն գուցե ամենակարևոր հարցը սա է... արդյո՞ք մենք իսկապես ուզում ենք իմանալ ամեն ինչ։",
+   "scene": "Giant face: you looking straight at the viewer, glyph hovering.",
+   "set": "void",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "riser",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s188",
+   "start": 717.788,
+   "end": 722.254,
+   "line": "Այդ գիշեր հեռախոսիդ էկրանին անծանոթ հաղորդագրություն է հայտնվում։",
+   "scene": "Bedroom night: phone on the desk lights up cyan, moon through the window.",
+   "set": "bedroom",
+   "in": {
+    "type": "push",
+    "dur": 0.6
+   },
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "phonebuzz",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s189",
+   "start": 722.322,
+   "end": 729.639,
+   "line": "Ես գիտեմ, որ դու կարողանում ես բացահայտել ստերը։ Բայց կարո՞ղ ես ճանաչել մեկին, ով ինքն իրեն է խաբում։",
+   "scene": "Macro: the message typing itself on the phone screen, cyan glow.",
+   "set": "bedroom",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "stinger",
+     "gain": -11
+    }
+   ]
+  },
+  {
+   "id": "s190",
+   "start": 729.713,
+   "end": 732.149,
+   "line": "Դու կարդում ես հաղորդագրությունը։",
+   "scene": "Insert: your hand picking up the phone, the light on your face.",
+   "set": "bedroom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "heartbeat",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s191",
+   "start": 732.223,
+   "end": 735.545,
+   "line": "Եվ առաջին անգամ... չգիտես՝ ով է այն ուղարկել։",
+   "scene": "Giant face: your eyes, the question mark reflected; a fade in the gold ring.",
+   "set": "bedroom",
+   "bars": "scope",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "glitch",
+     "gain": -13
+    }
+   ]
+  },
+  {
+   "id": "s192",
+   "start": 735.619,
+   "end": 739.458,
+   "line": "Իսկ դու ի՞նչ կանեիր, եթե ոչ ոք չկարողանար քեզ խաբել։",
+   "scene": "Endscreen stack: you silhouetted against the moon window, glyph transformed into a «?».",
+   "set": "bedroom",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.1,
+     "name": "riser",
+     "gain": -12
+    }
+   ]
+  },
+  {
+   "id": "s193",
+   "start": 739.532,
+   "end": 746.102,
+   "line": "Կբացահայտեի՞ր բոլորի գաղտնիքները, թե՞ կպահպանեիր այն մարդկանց գաղտնիքները, ում սիրում ես։",
+   "scene": "Split: a key ring of secrets vs. a hand shielding a small light.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.15,
+     "name": "blip",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s194",
+   "start": 746.176,
+   "end": 749.129,
+   "line": "Գրիր քո պատասխանը մեկնաբանություններում։",
+   "scene": "Endscreen: a comment bubble and a subscribe pill, the glyph as logo.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "pop",
+     "gain": -15
+    }
+   ]
+  },
+  {
+   "id": "s195",
+   "start": 749.203,
+   "end": 762.36,
+   "line": "Եվ եթե այս պատմությունը քեզ ստիպեց մտածել ճշմարտության գնի մասին, հավանիր տեսանյութը և բաժանորդագրվիր՝ ավելի շատ What If պատմությունների համար։",
+   "scene": "Endscreen: the whole cast lined up, title «ՃՇՄԱՐՏՈՒԹՅԱՆ ԳԻՆԸ», subscribe.",
+   "set": "void",
+   "amb": {
+    "name": "roomtone",
+    "gain": -26
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "name": "shimmer",
+     "gain": -12
+    },
+    {
+     "at": 1.1,
+     "name": "ding",
+     "gain": -13
+    }
+   ]
+  }
+ ],
+ "music": [
+  {
+   "start": 0.0,
+   "end": 50.01,
+   "mood": "mystery",
+   "intensity": 0.3
+  },
+  {
+   "start": 50.01,
+   "end": 98.82,
+   "mood": "wonder",
+   "intensity": 0.42
+  },
+  {
+   "start": 98.82,
+   "end": 168.43,
+   "mood": "playful",
+   "intensity": 0.45
+  },
+  {
+   "start": 168.43,
+   "end": 230.0,
+   "mood": "tension",
+   "intensity": 0.52
+  },
+  {
+   "start": 230.0,
+   "end": 290.0,
+   "mood": "dark",
+   "intensity": 0.6
+  },
+  {
+   "start": 290.0,
+   "end": 320.82,
+   "mood": "epic",
+   "intensity": 0.68
+  },
+  {
+   "start": 320.82,
+   "end": 362.0,
+   "mood": "sad",
+   "intensity": 0.42
+  },
+  {
+   "start": 362.0,
+   "end": 396.42,
+   "mood": "calm",
+   "intensity": 0.34
+  },
+  {
+   "start": 396.42,
+   "end": 452.16,
+   "mood": "calm",
+   "intensity": 0.3
+  },
+  {
+   "start": 452.16,
+   "end": 520.0,
+   "mood": "tension",
+   "intensity": 0.55
+  },
+  {
+   "start": 520.0,
+   "end": 592.08,
+   "mood": "epic",
+   "intensity": 0.62
+  },
+  {
+   "start": 592.08,
+   "end": 640.0,
+   "mood": "hopeful",
+   "intensity": 0.48
+  },
+  {
+   "start": 640.0,
+   "end": 680.0,
+   "mood": "wonder",
+   "intensity": 0.36
+  },
+  {
+   "start": 680.0,
+   "end": 722.0,
+   "mood": "sad",
+   "intensity": 0.4
+  },
+  {
+   "start": 722.0,
+   "end": 762.36,
+   "mood": "hopeful",
+   "intensity": 0.55
+  }
+ ]
+}

@@ -1,0 +1,97 @@
+{
+ "duration": 759.76,
+ "gap": 0.18,
+ "chunks": [
+  {
+   "i": 1,
+   "file": "chunk_01.txt",
+   "start": 0.0,
+   "dur": 65.84,
+   "chars": 753
+  },
+  {
+   "i": 2,
+   "file": "chunk_02.txt",
+   "start": 66.02,
+   "dur": 56.36,
+   "chars": 780
+  },
+  {
+   "i": 3,
+   "file": "chunk_03.txt",
+   "start": 122.56,
+   "dur": 63.08,
+   "chars": 788
+  },
+  {
+   "i": 4,
+   "file": "chunk_04.txt",
+   "start": 185.82,
+   "dur": 58.48,
+   "chars": 773
+  },
+  {
+   "i": 5,
+   "file": "chunk_05.txt",
+   "start": 244.48,
+   "dur": 58.56,
+   "chars": 757
+  },
+  {
+   "i": 6,
+   "file": "chunk_06.txt",
+   "start": 303.22,
+   "dur": 58.68,
+   "chars": 780
+  },
+  {
+   "i": 7,
+   "file": "chunk_07.txt",
+   "start": 362.08,
+   "dur": 64.44,
+   "chars": 790
+  },
+  {
+   "i": 8,
+   "file": "chunk_08.txt",
+   "start": 426.7,
+   "dur": 64.76,
+   "chars": 791
+  },
+  {
+   "i": 9,
+   "file": "chunk_09.txt",
+   "start": 491.64,
+   "dur": 62.28,
+   "chars": 789
+  },
+  {
+   "i": 10,
+   "file": "chunk_10.txt",
+   "start": 554.1,
+   "dur": 67.64,
+   "chars": 789
+  },
+  {
+   "i": 11,
+   "file": "chunk_11.txt",
+   "start": 621.92,
+   "dur": 50.76,
+   "chars": 678
+  },
+  {
+   "i": 12,
+   "file": "chunk_12.txt",
+   "start": 672.86,
+   "dur": 52.76,
+   "chars": 768
+  },
+  {
+   "i": 13,
+   "file": "chunk_13.txt",
+   "start": 725.8,
+   "dur": 33.96,
+   "chars": 460
+  }
+ ]
+}
