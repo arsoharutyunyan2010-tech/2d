@@ -30,19 +30,24 @@ EXPECTED = {
     "examples/reaction-time/story/shots.json": "9b1921e8e42c2498",
     "package.json": "a69ab6c53a47f900",
     "player.html": "5ffdd7da4a48cd4b",
-    "render.mjs": "ba9779c796616616",
+    "render.mjs": "e1cb9d62cb870727",
     "tools/beats.py": "eb42a8aef4d87584",
     "tools/common.py": "e237321f2f12416e",
     "tools/doctor.py": "a16207eea3196e73",
     "tools/new_project.py": "940758644aa95289",
     "tools/parse_script.py": "5163cf3162b2579b",
     "tools/transcribe.py": "ecd48d05a6655d13",
+    "tools/render_screenshots.py": None,
+    "tools/render_frames.py": None,
+    "tools/shot_ranges.py": None,
 }
 bad = 0
 for rel, want in EXPECTED.items():
     p = os.path.join(ROOT, *rel.split("/"))
     if not os.path.exists(p):
         print(f"MISSING   {rel}"); bad += 1; continue
+    if want is None:      # files you are expected to extend on Android/Termux; presence is enough
+        continue
     got = hashlib.sha256(open(p, "rb").read().replace(b"\r\n", b"\n").strip()).hexdigest()[:16]
     if got != want:
         print(f"MISMATCH  {rel}"); bad += 1

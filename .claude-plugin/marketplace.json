@@ -1,0 +1,19 @@
+{
+  "name": "razgon-2d",
+  "owner": { "name": "arsoharutyunyan2010-tech" },
+  "metadata": {
+    "description": "Razgon 2D Studio: voiceover/script → cinematic code-rendered 2D video (also runs on Android/Termux).",
+    "version": "0.3.1"
+  },
+  "plugins": [
+    {
+      "name": "razgon-2d-studio",
+      "source": "./",
+      "description": "Turn a voiceover or a script into a finished MP4: story breakdown, style choice, coded shots, frame render, music and SFX. Ships a phone-friendly render path (system Chromium, no Playwright browser) and Termux setup scripts.",
+      "version": "0.3.1",
+      "author": { "name": "Razgon" },
+      "keywords": ["video", "animation", "2d", "stick figure", "explainer", "whisper", "three.js", "termux", "android"],
+      "category": "content"
+    }
+  ]
+}

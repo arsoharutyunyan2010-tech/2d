@@ -34,3 +34,24 @@ Tell the user, in one short list, what is being installed and why: ffmpeg (video
 - On Linux servers and the Cowork VM there's no GPU. Chromium uses SwiftShader automatically (`--gl swiftshader` is the Linux default), so everything works, just slower.
 - Disk: ~600 MB for node_modules + Chromium, plus renders (a 10-minute 1080p video is ~150–300 MB).
 - Updating: when the plugin is updated, copy the new `kit/` over the existing install. It never touches `projects/`, so the user's videos are safe. Custom styles added to `engine/styles.js` would need re-adding, so check first.
+
+## Android / Termux (phone-only setup)
+
+Playwright cannot install its bundled Chromium on Android, so on a phone use the
+studio's own two helpers. They drive the Chromium that Termux already has
+(`pkg install x11-repo && pkg install chromium`) over the DevTools protocol:
+
+| Job | Command |
+|---|---|
+| stills, style grid | `python tools/render_screenshots.py --project projects/<name> --sheet` (or `--stills 3,12,40`, `--styles dusk,midnight --at 3,12`) |
+| video | `python tools/render_frames.py --project projects/<name> --workers 2 [--scale 0.5]` |
+| shots → time range | `python tools/shot_ranges.py --project projects/<name> --shots s003,s004` |
+| sound + mux | `python audio/mix.py --project projects/<name>` (unchanged) |
+
+`node render.mjs` also works if you point it at the system browser:
+`CHROMIUM_PATH=$(command -v chromium-browser) node render.mjs --project projects/<name>`.
+`npx playwright install chromium` failing with a download error is expected and harmless.
+
+Whisper has no Android wheel: supply the script with timecodes (`.srt`/`.vtt` or
+`[00:12.5] text` lines) and run `tools/parse_script.py` instead of `tools/transcribe.py`.
+The full phone walkthrough is in the repo's `termux/README.md` and `termux/studio.sh`.
