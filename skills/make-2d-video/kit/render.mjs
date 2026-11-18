@@ -11,7 +11,126 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
+import { chromium as pwChromium } from 'playwright';
+
+// ---- Chromium launcher: Playwright's browser when it is installed; otherwise any
+// Chromium/Chrome already on the machine (Termux: `pkg install chromium`), driven
+// over the DevTools protocol. The rest of the renderer talks to the same tiny API:
+// launch() -> { newPage, close }, page.goto / evaluate / screenshot / setViewportSize / close.
+const CANDIDATES = [process.env.CHROMIUM_PATH, process.env.CHROME_PATH].filter(Boolean);
+const chromium = {
+  executablePath: () => { try { return pwChromium.executablePath(); } catch { return null; } },
+  async launch(opts = {}) {
+    const exe = process.env.CHROMIUM_PATH || process.env.CHROME_PATH || findSystemChrome();
+    if (exe) {
+      try { return await pwChromium.launch({ ...opts, executablePath: exe }); } catch (e) { console.log(`[chromium] Playwright + ${exe} failed (${String(e.message).split('\n')[0]}), using the DevTools driver…`); }
+      return launchSystem(opts, exe);
+    }
+    return pwChromium.launch(opts);
+  },
+};
+function findSystemChrome() {
+  const fsx = fs, pathx = path;
+  const list = [...CANDIDATES,
+    '/data/data/com.termux/files/usr/bin/chromium-browser', '/data/data/com.termux/files/usr/bin/chromium',
+    '/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/google-chrome', '/usr/bin/google-chrome-stable',
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'];
+  for (const d of (process.env.PATH || '').split(pathx.delimiter)) {
+    for (const n of ['chromium-browser', 'chromium', 'google-chrome', 'google-chrome-stable', 'chrome']) list.push(pathx.join(d, n));
+  }
+  for (const c of list) { try { if (c && fsx.statSync(c).isFile()) return c; } catch {} }
+  return null;
+}
+class SysPage {
+  constructor(cdp, targetId, browser) { this.cdp = cdp; this.targetId = targetId; this.browser = browser; this.handlers = {}; this.vw = 640; this.vh = 360; }
+  on(ev, fn) { (this.handlers[ev] ||= []).push(fn); }
+  emit(ev, arg) { (this.handlers[ev] || []).forEach(f => { try { f(arg); } catch {} }); }
+  async goto(url) {
+    await this.cdp.send('Page.navigate', { url });
+    for (let i = 0; i < 600; i++) {
+      const r = await this.cdp.send('Runtime.evaluate', { expression: 'document.readyState', returnByValue: true });
+      if (r.result?.value === 'complete') break;
+      await new Promise(r2 => setTimeout(r2, 100));
+    }
+  }
+  async evaluate(expr) {
+    const r = await this.cdp.send('Runtime.evaluate', { expression: `(async () => { return (${expr}); })()`, awaitPromise: true, returnByValue: true });
+    if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description || r.exceptionDetails.text);
+    return r.result?.value;
+  }
+  async waitForFunction(expr, _arg, o = {}) {
+    const deadline = Date.now() + (o.timeout || 30000);
+    while (Date.now() < deadline) {
+      if (await this.evaluate(`!!(${expr})`)) return true;
+      await new Promise(r => setTimeout(r, 150));
+    }
+    throw new Error('waitForFunction timeout: ' + expr);
+  }
+  async setViewportSize({ width, height }) {
+    this.vw = width; this.vh = height;
+    await this.cdp.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false, screenWidth: width, screenHeight: height });
+  }
+  async screenshot({ type = 'png', quality } = {}) {
+    // force a composited frame first: captureScreenshot can otherwise grab the page before the canvas is drawn
+    await this.evaluate('new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => r(1))))').catch(() => {});
+    const p = { format: type === 'jpeg' ? 'jpeg' : 'png', captureBeyondViewport: false, fromSurface: true, ...(type === 'jpeg' ? { quality } : {}) };
+    const r = await this.cdp.send('Page.captureScreenshot', p);
+    return Buffer.from(r.data, 'base64');
+  }
+  async setContent(html) {
+    const data = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+    await this.goto(data);
+  }
+  async close() { try { await this.cdp.send('Target.closeTarget', { targetId: this.targetId }); } catch {} }
+}
+async function launchSystem(opts = {}, exeFound) {
+  const exe = exeFound || findSystemChrome();
+  if (!exe) throw new Error('No Chromium found. Install one (Termux: pkg install chromium) or set CHROMIUM_PATH.');
+  const { spawn } = await import('node:child_process');
+  const { writeFileSync, mkdtempSync } = fs; const os2 = (await import('node:os')).default;
+  const userDir = mkdtempSync(path.join(os2.tmpdir(), 'studio-chrome-'));
+  const port = 9000 + Math.floor(Math.random() * 900);
+  const args = ['--headless=new', '--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu-sandbox', '--hide-scrollbars',
+    `--remote-debugging-port=${port}`, `--user-data-dir=${userDir}`, '--no-first-run', '--no-default-browser-check', 'about:blank',
+    ...(opts.args || [])];
+  const proc = spawn(exe, args, { stdio: ['ignore', 'ignore', 'ignore'] });
+  let ws = null;
+  for (let i = 0; i < 100; i++) {
+    try { const r = await fetch(`http://127.0.0.1:${port}/json/version`); const j = await r.json(); ws = j.webSocketDebuggerUrl; break; } catch {}
+    await new Promise(r => setTimeout(r, 200));
+  }
+  if (!ws) { proc.kill('SIGKILL'); throw new Error('Chromium did not open a DevTools port: ' + exe); }
+  const sock = new WebSocket(ws);
+  await new Promise((res, rej) => { sock.onopen = res; sock.onerror = () => rej(new Error('DevTools connection failed')); });
+  let id = 0; const pending = new Map(); const pages = new Map();
+  sock.onmessage = (m) => {
+    const msg = JSON.parse(m.data);
+    if (msg.id && pending.has(msg.id)) { const { res, rej } = pending.get(msg.id); pending.delete(msg.id); msg.error ? rej(new Error(msg.error.message)) : res(msg.result); }
+    else if (msg.method && msg.sessionId) { const p = pages.get(msg.sessionId); if (p) p.emit(msg.method, msg.params); }
+  };
+  const send = (method, params = {}, sessionId) => new Promise((res, rej) => {
+    const i = ++id; pending.set(i, { res, rej }); sock.send(JSON.stringify({ id: i, method, params, ...(sessionId ? { sessionId } : {}) }));
+  });
+  const browser = {
+    async newPage() {
+      const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
+      const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
+      const cdp = {
+        send: (method, params) => send(method, params, sessionId),
+        on: () => {},
+      };
+      const page = new SysPage(cdp, targetId, browser);
+      cdp.on = (ev, fn) => page.on(ev, fn);
+      pages.set(sessionId, page);
+      await cdp.send('Page.enable'); await cdp.send('Runtime.enable');
+      await page.setViewportSize({ width: 640, height: 360 });
+      return page;
+    },
+    async close() { try { await send('Browser.close'); } catch {} sock.close(); try { proc.kill('SIGKILL'); } catch {} try { fs.rmSync(userDir, { recursive: true, force: true }); } catch {} },
+  };
+  return browser;
+}
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const args = {}; { const a = process.argv.slice(2); for (let i = 0; i < a.length; i++) { if (a[i].startsWith('--')) { const k = a[i].slice(2); const v = a[i + 1] && !a[i + 1].startsWith('--') ? a[++i] : true; args[k] = v; } } }
@@ -39,14 +158,16 @@ async function openPlayer(browser, style) {
   const qs = new URLSearchParams(); if (args.scale) qs.set('scale', args.scale); if (style || args.style) qs.set('style', style || args.style); if (args.debug) qs.set('debug', '1');
   const page = await browser.newPage({ viewport: { width: 640, height: 360 } });
   page.on('pageerror', e => console.log('[pageerror]', e.message));
-  page.on('console', m => { const t = m.text(); if (/ERROR|missing/i.test(t)) console.log('[page]', t); });
+  page.on('console', m => { const t = m.text(); if (/ERROR|missing|BOOT/i.test(t)) console.log('[page]', t); });
+  page.on('Runtime.exceptionThrown', p => console.log('[pageerror]', p.exceptionDetails?.exception?.description || p.exceptionDetails?.text));
+  page.on('Runtime.consoleAPICalled', p => { const t = (p.args || []).map(a => a.value ?? a.description ?? '').join(' '); if (/ERROR|missing|BOOT/i.test(t)) console.log('[page]', t); });
   await page.goto(`http://localhost:${PORT}/player.html?${qs}`);
   await page.waitForFunction('window.READY === true || !!window.BOOT_ERROR', null, { timeout: 120000 });
   const boot = await page.evaluate('window.BOOT_ERROR'); if (boot) throw new Error('Player failed to boot: ' + boot);
   const [w, h] = await page.evaluate('window.OUT'); await page.setViewportSize({ width: w, height: h });
   return page;
 }
-const shot = (page, f) => page.evaluate(i => window.renderFrame(i), f).then(() => page.screenshot({ type: FORMAT, ...(FORMAT === 'jpeg' ? { quality: 94 } : {}) }));
+const shot = async (page, f) => { await page.evaluate(i => window.renderFrame(i), f); return page.screenshot({ type: FORMAT, ...(FORMAT === 'jpeg' ? { quality: 94 } : {}) }); };
 const fmtT = s => `${Math.floor(s / 60)}m${String(Math.round(s % 60)).padStart(2, '0')}s`;
 
 async function renderVideo() {

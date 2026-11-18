@@ -31,6 +31,32 @@ Whisper downloads its speech model on the first transcription. Roughly 1 GB of d
 ## Render times
 A small 2-core cloud machine renders 720p at about 2 frames per second (a 47-second video takes ~11 minutes). 1080p takes about 2× longer and 4K about 8×. A modern desktop is 3–5× faster. Long videos at 4K are best rendered overnight.
 
+## On a phone (Android / Termux)
+
+The studio also runs on the phone itself: Chromium from Termux draws the frames, ffmpeg
+encodes them, python mixes the sound. No PC and no Playwright browser download needed.
+
+```bash
+pkg install -y git && git clone https://github.com/arsoharutyunyan2010-tech/2d
+cd 2d && bash termux/studio.sh setup      # ffmpeg, node, python, chromium, numpy/scipy + studio
+bash termux/studio.sh key sk-tyl-...      # your TylerTokens key
+bash termux/studio.sh claude              # Claude Code (inside Ubuntu) with the key wired
+bash termux/studio.sh demo                # test render of the bundled example
+```
+- Preview stills: `python tools/render_screenshots.py --project projects/<name> --sheet`
+- Render: `python tools/render_frames.py --project projects/<name> --workers 2`
+- Sound + MP4: `python audio/mix.py --project projects/<name>`, then `bash termux/studio.sh pull <name>`
+
+Details, limits and speed tips: `termux/README.md`.
+
+## Install as a Claude Code plugin (desktop or phone)
+
+```
+/plugin marketplace add arsoharutyunyan2010-tech/2d
+/plugin install razgon-2d-studio@razgon-2d
+```
+Both desktop Claude Code and the Ubuntu-side Claude Code on the phone can use it.
+
 ## Contents
 - `skills/make-2d-video/`: the full pipeline, style bible and references, plus the studio kit (`kit/`: renderer, animation engine, transcription tools, sound synthesis and a reference example project).
 - `skills/new-video`, `skills/video-styles`, `skills/render-video`, `skills/video-sound`: stage commands.

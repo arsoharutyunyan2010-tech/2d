@@ -1,0 +1,10 @@
+# studio install + renders (created by termux/studio.sh install)
+razgon-2d-studio/
+# per-project render output and audio
+**/build/
+**/out/
+**/node_modules/
+.DS_Store
+# never commit API keys
+*.env
+.tyler-tokens.env
