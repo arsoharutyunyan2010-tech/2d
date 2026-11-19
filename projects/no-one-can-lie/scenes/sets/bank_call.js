@@ -20,7 +20,7 @@ export function bankCallSet(g, t, cam, moodName = 'night') {
     rr(q, CX - V(610, 760), GY - V(260, 330), V(440, 570), V(180, 230), 10);
     q.fillStyle = shade(M.dark, -0.48); q.fill();
     glow(q, CX - V(360, 450), GY - V(360, 450), V(170, 220), M.practical, 0.18);
-    FX.lampPost(q, { x: CX - V(360, 450), y: GY - V(430, 550), h: V(180, 220), color: M.practical });
+    FX.lampPost(q, CX - V(360, 450), GY - V(430, 550), V(180, 220), { color: shade(M.dark, -0.5), light: M.practical, on: true, a: 0.18 });
   });
   layer(g, cam, 0.9, q => {
     q.fillStyle = linGrad(q, 0, GY, 0, GY + E.H, [shade(M.floor, -0.24), shade(M.dark, -0.58)]);
