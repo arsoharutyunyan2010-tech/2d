@@ -25,7 +25,7 @@ export function kitchenSet(g, t, cam, moodName = 'interiorWarm') {
     rr(q, CX - V(650, 840), GY - V(330, 430), V(1300, 1680), V(72, 92), 10);
     q.fillStyle = shade(M.dark, -0.5); q.fill();
     q.fillStyle = 'rgba(226,190,137,.18)'; q.fillRect(CX - V(640, 825), GY - V(330, 430), V(1280, 1650), 5);
-    FX.clock(q, { x: CX - V(600, 780), y: GY - V(720, 930), r: V(42, 54), color: '#d9c49f' });
+    FX.clock(q, CX - V(600, 780), GY - V(720, 930), V(42, 54), t, { face: '#d9c49f', ink: shade(M.dark, -0.55) });
   });
   layer(g, cam, 0.9, q => {
     q.fillStyle = linGrad(q, 0, GY, 0, GY + E.H, [shade(M.floor, -0.16), shade(M.dark, -0.48)]);
