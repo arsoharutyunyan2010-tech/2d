@@ -145,10 +145,9 @@ function resize(){
   DPR=Math.min(window.devicePixelRatio||1,2);
   SW=innerWidth; SH=innerHeight;
   cv.width=Math.round(SW*DPR); cv.height=Math.round(SH*DPR); cv.style.width=SW+"px"; cv.style.height=SH+"px";
-  const pad=Math.min(SW,SH)*0.018;
-  let cw=SW-pad*2, ch=cw/CARD_ASPECT;
-  if(ch>SH-pad*2){ ch=SH-pad*2; cw=ch*CARD_ASPECT; }
-  card.w=cw; card.h=ch; card.x=(SW-cw)/2; card.y=(SH-ch)/2;
+  // խաղը լրացնում է ամբողջ էկրանը (ինչպես ամենասկզբում)
+  const cw=SW, ch=SH;
+  card.w=cw; card.h=ch; card.x=0; card.y=0;
   W=cw; H=ch; k=Math.min(W/1080, H/560);
 }
 addEventListener("resize", resize); resize();
@@ -156,8 +155,10 @@ const FONT = '"Arial Black","Segoe UI Black",Impact,Arial,sans-serif';
 const font = (px, w="900") => `${w} ${Math.max(6,px)}px ${FONT}`;
 
 function L(){
-  const hdrY=H*0.02, hdrH=H*0.223, bfY=H*0.24;
-  return {hdrY,hdrH,portrait:false,legY:0,legH:0,bfY,bfH:H-bfY,fansY:0,fansH:0};
+  const hdrY=6*k, hdrH=150*k;
+  const legY=hdrY+hdrH+6*k, legH=Math.max(34*k, 66*k);
+  const bfY=legY+legH+6*k;
+  return {hdrY,hdrH,portrait:SH>=SW*1.05,legY,legH,bfY,bfH:H-bfY-4*k,fansY:0,fansH:0};
 }
 
 /* ============ AUDIO ============ */
@@ -267,7 +268,7 @@ function score(t, pts, info){
   }
   if(Math.abs(R[0].score-R[1].score) >= Math.max(1,cfg.ko) && koT<0) koT=0.42;
 }
-function geom(){ const l=L(), y=l.bfY, h=l.bfH, ground=y+h*0.86, gh=y+h-ground; return {l,y,h,ground,gh,gy:ground+gh*0.12,u:Math.min(h*0.088, W*0.07),dx:DX()}; }
+function geom(){ const l=L(), y=l.bfY, h=l.bfH, ground=y+h*0.86, gh=y+h-ground; return {l,y,h,ground,gh,gy:ground+gh*0.12,u:Math.min(h*0.088, W*0.088),dx:DX()}; }
 function startKick(t,power){
   const r=R[t];
   if(power){ r.kt=0; r.kp=1; r.hitDone=false; return; }
@@ -690,7 +691,7 @@ function draw(){
   const rad=g.createRadialGradient(SW/2,SH/2,0,SW/2,SH/2,Math.max(SW,SH)*0.72);
   rad.addColorStop(0,"rgba(96,130,255,.20)"); rad.addColorStop(1,"rgba(0,0,0,0)"); g.fillStyle=rad; g.fillRect(0,0,SW,SH);
   // խաղի շերտը՝ կենտրոնում
-  const cr=Math.min(W,H)*CARD_RAD;
+  const cr=0;
   g.save(); g.translate(card.x,card.y);
   g.save(); g.shadowColor="rgba(0,0,0,.6)"; g.shadowBlur=Math.min(W,H)*0.09; g.shadowOffsetY=Math.min(W,H)*0.02;
   rr(0,0,W,H,cr); g.fillStyle="#0a0d1f"; g.fill(); g.restore();
@@ -722,9 +723,9 @@ function drawField(l){
   if(t1.stripes){ g.fillStyle="rgba(255,255,255,.28)"; const sw=W/9; for(let x=W-sw*1.5;x>dx;x-=sw*2) g.fillRect(x,y,sw,ground-y); }
   // big faded names
   g.globalAlpha=0.10;
-  txt(t0.name, dx/2, y+h*0.26, 110*k, "#fff","center",null,0,Math.max(40,dx*0.9));
-  txt(t1.name, dx+(W-dx)/2, y+h*0.26, 110*k, "#fff","center",null,0,Math.max(40,(W-dx)*0.9));
-  txt(t0.num, dx*0.5, y+h*0.5, 170*k, "#fff"); txt(t1.num, dx+(W-dx)*0.5, y+h*0.5, 170*k, "#fff");
+  txt(t0.name, dx/2, y+h*0.30, 130*k, "#fff","center",null,0,Math.max(40,dx*0.9));
+  txt(t1.name, dx+(W-dx)/2, y+h*0.30, 130*k, "#fff","center",null,0,Math.max(40,(W-dx)*0.9));
+  txt(t0.num, dx*0.5, y+h*0.56, 210*k, "#fff"); txt(t1.num, dx+(W-dx)*0.5, y+h*0.56, 210*k, "#fff");
   g.globalAlpha=1;
   // grass
   const gh=y+h-ground; gr=g.createLinearGradient(0,ground,0,y+h); gr.addColorStop(0,"#3fae4a"); gr.addColorStop(1,"#23772e"); g.fillStyle=gr; g.fillRect(0,ground,W,gh);
@@ -742,8 +743,8 @@ function drawField(l){
 }
 function drawPlayers(l){
   const y=l.bfY, h=l.bfH, dx=DX(), ground=y+h*0.86, gh=y+h-ground;
-  g.save(); rr(0,0,W,H,Math.min(W,H)*CARD_RAD); g.clip();
-  const u=Math.min(h*0.088, W*0.07);
+  g.save(); rr(0,0,W,H,0); g.clip();
+  const u=Math.min(h*0.088, W*0.088);
   const gap=0.12*u;
   for(let t=0;t<2;t++){
     const dir=t===0?1:-1, px=dx-dir*(WALL*u+gap), gy=ground+gh*0.12, f=R[t].fly;
@@ -812,7 +813,7 @@ function drawHeader(l){
     txt(tm.name, nx, y+bh*0.5, bh*0.3, "#fff","center",OUT,Math.max(3,5*k),Math.max(10,nw));
   }
   // նվերների պատկերները՝ վերևում (երկու թիմերը կողք-կողքի)
-  const sy=y+bh+H*0.011, sh=H*0.079, gap=W*0.006;
+  const sy=l.legY, sh=l.legH, gap=W*0.006;
   const cw=(W-pad*2-gap*7)/8;
   let ci=0;
   for(let t=0;t<2;t++){
@@ -837,7 +838,7 @@ function drawPops(l){
   for(const p of pops){
     const a=p.age, t=p.t, dx=DX();
     const cx = t===0 ? W*0.265 : W*0.735;
-    const yy = H*0.905 - p.slot*H*0.072 - a*H*0.045;
+    const yy = l.bfY+l.bfH*0.90 - p.slot*H*0.055 - a*H*0.04;
     const al = a<0.15 ? a/0.15 : a>1.7 ? Math.max(0,1-(a-1.7)/0.5) : 1;
     const sc = a<0.15 ? 0.6+a/0.15*0.4 : 1;
     g.save(); g.globalAlpha=al; g.translate(cx,yy); g.scale(sc,sc);
@@ -852,8 +853,8 @@ function drawPops(l){
 }
 function drawBanner(l){
   const b=banner, a=b.t/b.life, s = a<0.15 ? 0.3+a/0.15*0.9 : a<0.25 ? 1.2-(a-0.15)*2 : 1;
-  g.save(); g.globalAlpha = a>0.8 ? (1-a)/0.2 : 1; g.translate(W/2, l.bfY+l.bfH*0.5); g.scale(s,s); g.rotate(-0.06);
-  txt(b.text,0,0,Math.min(H*0.135,72*k),"#fff","center",OUT,Math.max(6*k,H*0.02),W*0.86);
+  g.save(); g.globalAlpha = a>0.8 ? (1-a)/0.2 : 1; g.translate(W/2, l.bfY+l.bfH*0.42); g.scale(s,s); g.rotate(-0.06);
+  txt(b.text,0,0,Math.min(H*0.10,86*k),"#fff","center",OUT,Math.max(6*k,H*0.016),W*0.86);
   g.restore();
 }
 function drawEnd(l){
@@ -864,9 +865,9 @@ function drawEnd(l){
     const tm=team(winner);
     const s=1+0.05*Math.sin(tsec*5);
     g.save(); g.translate(W/2,cy); g.scale(s,s);
-    txt("🏆 "+tm.name+" "+st.wins, 0, 0, Math.min(H*0.16,84*k), "#ffd54a","center",OUT,Math.max(6*k,H*0.024),W*0.8);
+    txt("🏆 "+tm.name+" "+st.wins, 0, 0, Math.min(H*0.09,78*k), "#ffd54a","center",OUT,Math.max(6*k,H*0.018),W*0.8);
     g.restore();
-  } else txt(st.draw, W/2, cy, Math.min(H*0.17,88*k), "#fff","center",OUT,Math.max(6*k,H*0.024),W*0.8);
+  } else txt(st.draw, W/2, cy, Math.min(H*0.09,82*k), "#fff","center",OUT,Math.max(6*k,H*0.018),W*0.8);
   if(!(phase==="end" && cfg.autoRestart)) txt(st.wait, W/2, l.bfY+l.bfH*0.92 - 6*k, 30*k, "#fff","center",OUT,6*k);
 }
 function drawStatusDot(){
