@@ -42,13 +42,11 @@
   <div class="grid">
     <button class="b l" data-t="0" data-k="small">Ձախ +1</button>
     <button class="b r" data-t="1" data-k="small">Աջ +1</button>
-    <button class="b l" data-t="0" data-k="super">Ձախ ՍՈՒՊԵՐ</button>
-    <button class="b r" data-t="1" data-k="super">Աջ ՍՈՒՊԵՐ</button>
     <button class="b" id="newRound">Նոր ռաունդ (R)</button>
     <button class="b" id="resetSeries">Զրոյացնել հաշիվը</button>
   </div>
   <label class="chk"><input type="checkbox" id="demo"> Դեմո ռեժիմ (կեղծ նվերներ՝ փորձարկելու համար)</label>
-  <div class="hint">Ստեղներ՝ 1 / 2 = +1, 3 / 4 = սուպեր, R = նոր ռաունդ, S = այս պանելը։</div>
+  <div class="hint">Ստեղներ՝ 1 / 2 = +1, 3 / 4 = սուպեր (փորձարկման համար), R = նոր ռաունդ, S = այս պանելը։</div>
 
   <h3>Ձախ թիմ</h3>
   <div class="row"><div><label>Անուն</label><input type="text" id="l_name"></div><div style="flex:.4"><label>Համար</label><input type="text" id="l_num"></div></div>
@@ -85,7 +83,7 @@
     <option value="cloud">☁️ Ամպային ծառայություն tik.tools (API բանալի)</option>
   </select>
   <label class="chk"><input type="checkbox" id="tapControl"> Սեղմումով կառավարում դաշտի վրա</label>
-  <div class="hint">📱 Ձեռքով ռեժիմ՝ սեղմիր դաշտի <b>ձախ</b> կեսին = ձախ թիմ +1, <b>աջ</b> կեսին = աջ թիմ +1։ <b>Երկար սեղմիր</b> (կես վայրկյան) = ՍՈՒՊԵՐ հարված։</div>
+  <div class="hint">📱 Ձեռքով ռեժիմ՝ սեղմիր դաշտի <b>ձախ</b> կեսին = ձախ թիմ +1, <b>աջ</b> կեսին = աջ թիմ +1։ Ամեն ինչ ավտոմատ է նաև հեռախոսով․ էկրանին հավելյալ կոճակներ պետք չեն։</div>
   <div id="boxTik"><label>TikFinity WebSocket հասցե</label><input type="text" id="wsUrl"></div>
   <div id="boxCloud"><div class="row"><div><label>Քո TikTok username-ը (առանց @)</label><input type="text" id="cloudUser"></div></div><label>tik.tools API բանալի</label><input type="text" id="cloudKey"><div class="hint">Ծառայությունը TikTok-ինը չէ, անվճար է միայն փորձնական շրջանում։</div></div>
   <button class="b" id="fs" style="width:100%;margin-top:10px">⛶ Լիէկրան</button>
@@ -139,18 +137,27 @@ const team = i => i===0 ? cfg.left : cfg.right;
 
 /* ============ CANVAS ============ */
 const cv = document.getElementById("c"), g = cv.getContext("2d");
-let W=0,H=0,DPR=1,k=1;
-function resize(){ DPR=Math.min(window.devicePixelRatio||1,2); W=innerWidth; H=innerHeight; cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR); cv.style.width=W+"px"; cv.style.height=H+"px"; k=Math.min(W,H)/1080; }
+let W=0,H=0,SW=0,SH=0,DPR=1,k=1;
+// Խաղը ամբողջ էկրանը չէ. այն կենտրոնում դրված լայն շերտ է (ինչպես TikTok LIVE-ի օվերլեյը)։
+const CARD_ASPECT=1.85, CARD_RAD=0.055;
+const card={x:0,y:0,w:0,h:0};
+function resize(){
+  DPR=Math.min(window.devicePixelRatio||1,2);
+  SW=innerWidth; SH=innerHeight;
+  cv.width=Math.round(SW*DPR); cv.height=Math.round(SH*DPR); cv.style.width=SW+"px"; cv.style.height=SH+"px";
+  const pad=Math.min(SW,SH)*0.035;
+  let cw=SW-pad*2, ch=cw/CARD_ASPECT;
+  if(ch>SH-pad*2){ ch=SH-pad*2; cw=ch*CARD_ASPECT; }
+  card.w=cw; card.h=ch; card.x=(SW-cw)/2; card.y=(SH-ch)/2;
+  W=cw; H=ch; k=Math.min(W/1080, H/560);
+}
 addEventListener("resize", resize); resize();
 const FONT = '"Arial Black","Segoe UI Black",Impact,Arial,sans-serif';
 const font = (px, w="900") => `${w} ${Math.max(6,px)}px ${FONT}`;
 
 function L(){
-  const portrait = H >= W*1.05;
-  const hdrY=18*k, hdrH=150*k, legY=hdrY+hdrH+12*k, legH=62*k, bfY=legY+legH+14*k;
-  const bfH = portrait ? Math.min(H*0.46, W*0.95) : Math.max(200*k, H - bfY - 225*k);
-  const fansY = bfY+bfH+16*k;
-  return {portrait,hdrY,hdrH,legY,legH,bfY,bfH,fansY,fansH:195*k};
+  const hdrY=H*0.035, hdrH=H*0.135;
+  return {hdrY,hdrH,portrait:false,legY:0,legH:0,bfY:0,bfH:H,fansY:0,fansH:0};
 }
 
 /* ============ AUDIO ============ */
@@ -273,7 +280,9 @@ function impact(t,power){
   const cy=G.gy-(1.55+1.75*power)*G.u;
   fx.push({x:G.dx,y:cy,age:0,life:power?0.55:0.35,s:power?1.6:1});
   const n=power?26:10; for(let i=0;i<n;i++) spark(G.dx,cy);
-  ball.v = -(power?1150:620)*k; ball.spin += (t===0?1:-1)*(power?22:10); ball.rest=0;
+  // Գնդակը բարձրանում է խաղացողի հասակին համաչափ, ոչ մի դեպքում գլխից վերև։
+  const maxUp=(power?4.6:3.3)*G.u;
+  ball.v = -Math.sqrt(2*2600*k*maxUp); ball.spin += (t===0?1:-1)*(power?22:10); ball.rest=0;
   lightT=0;
   if(power){ shake=Math.min(1,shake+0.8); flash=0.45; } else shake=Math.min(1,shake+0.15);
   sfx.hit();
@@ -618,7 +627,7 @@ function drawHead(c, ta, t, mood, u, dir, r, SK){
 
 /* ============ DRAW HELPERS ============ */
 function rr(x,y,w,h,r){ g.beginPath(); g.moveTo(x+r,y); g.arcTo(x+w,y,x+w,y+h,r); g.arcTo(x+w,y+h,x,y+h,r); g.arcTo(x,y+h,x,y,r); g.arcTo(x,y,x+w,y,r); g.closePath(); }
-function fitFont(text,maxW,size,w){ let s=size; g.font=font(s,w); while(s>8 && g.measureText(text).width>maxW){ s*=0.92; g.font=font(s,w); } return s; }
+function fitFont(text,maxW,size,w){ let s=size; g.font=font(s,w); while(s>4.5 && g.measureText(text).width>maxW){ s*=0.92; g.font=font(s,w); } return s; }
 function txt(text,x,y,size,col,align="center",stroke=null,sw=0,maxW=0,base="middle"){
   if(maxW) fitFont(text,maxW,size); else g.font=font(size);
   g.textAlign=align; g.textBaseline=base;
@@ -657,7 +666,9 @@ function update(dt){
     if(!(phase!=="play" && winner>=0 && t!==winner)){ const st=Math.min(dt,1/30); const acc=-70*r.hx-10*r.hv; r.hv+=acc*st; r.hx+=r.hv*st; if(Math.abs(r.hx)<1e-4&&Math.abs(r.hv)<1e-3){r.hx=0;r.hv=0;} }
     r.combo.t=Math.max(0,r.combo.t-dt); }
   // ball physics
-  ball.v+=2600*k*dt; ball.y+=ball.v*dt; if(ball.y>0){ ball.y=0; if(Math.abs(ball.v)>90*k) ball.v=-ball.v*0.45; else { ball.v=0; } }
+  ball.v+=2600*k*dt; ball.y+=ball.v*dt;
+  { const capY=5.1*geom().u; if(ball.y<-capY){ ball.y=-capY; if(ball.v<0) ball.v=0; } }
+  if(ball.y>0){ ball.y=0; if(Math.abs(ball.v)>90*k) ball.v=-ball.v*0.32; else { ball.v=0; } }
   if(ball.y===0 && ball.v===0){ ball.rest+=dt; if(ball.rest>1.1){ ball.v=-260*k; ball.rest=0; } }
   ball.rot+=ball.spin*dt; ball.spin*=Math.pow(0.35,dt); if(Math.abs(ball.spin)<1.5) ball.spin=1.5*Math.sign(ball.spin||1);
   for(let i=fx.length-1;i>=0;i--){ fx[i].age+=dt; if(fx[i].age>fx[i].life) fx.splice(i,1); }
@@ -674,23 +685,32 @@ function update(dt){
 function draw(){
   g.setTransform(DPR,0,0,DPR,0,0);
   const l=L();
-  // page bg
-  const bg=g.createLinearGradient(0,0,0,H); bg.addColorStop(0,"#0d1430"); bg.addColorStop(1,"#070a16"); g.fillStyle=bg; g.fillRect(0,0,W,H);
+  // էկրանի ֆոն (խաղից դուրս մասը)
+  const bg=g.createLinearGradient(0,0,0,SH); bg.addColorStop(0,"#15151f"); bg.addColorStop(.5,"#08080e"); bg.addColorStop(1,"#15151f"); g.fillStyle=bg; g.fillRect(0,0,SW,SH);
+  const rad=g.createRadialGradient(SW/2,SH/2,0,SW/2,SH/2,Math.max(SW,SH)*0.72);
+  rad.addColorStop(0,"rgba(96,130,255,.20)"); rad.addColorStop(1,"rgba(0,0,0,0)"); g.fillStyle=rad; g.fillRect(0,0,SW,SH);
+  // խաղի շերտը՝ կենտրոնում
+  const cr=Math.min(W,H)*CARD_RAD;
+  g.save(); g.translate(card.x,card.y);
+  g.save(); g.shadowColor="rgba(0,0,0,.6)"; g.shadowBlur=Math.min(W,H)*0.09; g.shadowOffsetY=Math.min(W,H)*0.02;
+  rr(0,0,W,H,cr); g.fillStyle="#0a0d1f"; g.fill(); g.restore();
   g.save();
-  if(shake>0){ g.translate((Math.random()-.5)*28*k*shake,(Math.random()-.5)*28*k*shake); }
+  rr(0,0,W,H,cr); g.clip();
+  if(shake>0){ g.translate((Math.random()-.5)*22*k*shake,(Math.random()-.5)*22*k*shake); }
   drawField(l);
   drawHeader(l);
+  drawPlayers(l);
   drawLegend(l);
-  drawButtons(l);
   drawPops(l);
   // particles
   for(const p of parts){ const a=1-p.age/p.life; g.globalAlpha=Math.min(1,a*2); if(p.type==="c"){ g.save(); g.translate(p.x,p.y); g.rotate(p.rot); g.fillStyle=p.c; g.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); g.restore(); } else { circle(p.x,p.y,p.s*a,p.c); } }
   g.globalAlpha=1;
-  g.restore();
   if(flash>0){ g.fillStyle=`rgba(255,255,255,${flash*0.6})`; g.fillRect(0,0,W,H); }
   if(banner) drawBanner(l);
   if(phase!=="play") drawEnd(l);
   drawStatusDot();
+  g.restore();
+  g.restore();
 }
 function drawField(l){
   const y=l.bfY, h=l.bfH, dx=DX(), ground=y+h*0.86;
@@ -702,10 +722,10 @@ function drawField(l){
   gr=g.createLinearGradient(0,y,0,ground); gr.addColorStop(0,shade(t1.c1,1.12)); gr.addColorStop(1,shade(t1.c1,0.78)); g.fillStyle=gr; g.fillRect(dx,y,W-dx,h);
   if(t1.stripes){ g.fillStyle="rgba(255,255,255,.28)"; const sw=W/9; for(let x=W-sw*1.5;x>dx;x-=sw*2) g.fillRect(x,y,sw,ground-y); }
   // big faded names
-  g.globalAlpha=0.16;
-  txt(t0.name, dx/2, y+h*0.3, 150*k, "#fff","center",null,0,Math.max(40,dx*0.9));
-  txt(t1.name, dx+(W-dx)/2, y+h*0.3, 150*k, "#fff","center",null,0,Math.max(40,(W-dx)*0.9));
-  txt(t0.num, dx*0.5, y+h*0.58, 260*k, "#fff"); txt(t1.num, dx+(W-dx)*0.5, y+h*0.58, 260*k, "#fff");
+  g.globalAlpha=0.10;
+  txt(t0.name, dx/2, y+h*0.26, 110*k, "#fff","center",null,0,Math.max(40,dx*0.9));
+  txt(t1.name, dx+(W-dx)/2, y+h*0.26, 110*k, "#fff","center",null,0,Math.max(40,(W-dx)*0.9));
+  txt(t0.num, dx*0.5, y+h*0.5, 170*k, "#fff"); txt(t1.num, dx+(W-dx)*0.5, y+h*0.5, 170*k, "#fff");
   g.globalAlpha=1;
   // grass
   const gh=y+h-ground; gr=g.createLinearGradient(0,ground,0,y+h); gr.addColorStop(0,"#3fae4a"); gr.addColorStop(1,"#23772e"); g.fillStyle=gr; g.fillRect(0,ground,W,gh);
@@ -717,9 +737,13 @@ function drawField(l){
   for(const [w,c] of [[10*k,"rgba(255,240,255,.55)"],[4*k,"#fff"]]){ g.strokeStyle=c; g.lineWidth=w; g.beginPath(); lightning.forEach((o,i)=>{ const yy=y+h*i/(lightning.length-1); i?g.lineTo(dx+o,yy):g.moveTo(dx+o,yy); }); g.stroke(); }
   g.restore();
   // ball on the line
-  const br=26*k;
+  const br=22*k;
   drawBall(dx, ground-br+gh*0.1+ball.y, br);
-  // players
+  g.restore();
+}
+function drawPlayers(l){
+  const y=l.bfY, h=l.bfH, dx=DX(), ground=y+h*0.86, gh=y+h-ground;
+  g.save(); rr(0,0,W,H,Math.min(W,H)*CARD_RAD); g.clip();
   const u=Math.min(h*0.075, W*0.058);
   const gap=0.12*u;
   for(let t=0;t<2;t++){
@@ -732,12 +756,8 @@ function drawField(l){
   for(const f of fx){ const a=f.age/f.life, rad=(18+70*a)*k*f.s; g.save(); g.globalAlpha=1-a; g.strokeStyle="#fff"; g.lineWidth=(8*(1-a)+2)*k; g.beginPath(); g.arc(f.x,f.y,rad,0,Math.PI*2); g.stroke();
     g.fillStyle="#fffbd0"; g.beginPath(); for(let i=0;i<16;i++){ const an=i*Math.PI/8+f.age*3, rr2=(i%2?0.35:1)*rad*0.8; g.lineTo(f.x+Math.cos(an)*rr2,f.y+Math.sin(an)*rr2);} g.closePath(); g.globalAlpha=(1-a)*0.8; g.fill(); g.restore(); }
   // combo badges
-  for(let t=0;t<2;t++){ const c=R[t].combo; if(c.t>0 && c.n>1){ const s=1+Math.max(0,c.t-1.1)*1.5; const bx=t===0?70*k:W-70*k, by=y+70*k; g.save(); g.translate(bx,by); g.scale(s,s); starBurst(0,0,52*k,t===0?cfg.left.c1:cfg.right.c1); txt("x"+c.n,0,2*k,40*k,"#fff","center",OUT,6*k); g.restore(); } }
-  // LIVE tag
-  rr(W/2-48*k,y+14*k,96*k,34*k,8*k); g.fillStyle="#ff2d55"; g.fill(); txt("● LIVE",W/2,y+31*k,20*k,"#fff");
+  for(let t=0;t<2;t++){ const c=R[t].combo; if(c.t>0 && c.n>1){ const s=1+Math.max(0,c.t-1.1)*1.5; const bx=t===0?dx-0.17*W:dx+0.17*W, by=H*0.34; g.save(); g.translate(bx,by); g.scale(s,s); starBurst(0,0,52*k,t===0?cfg.left.c1:cfg.right.c1); txt("x"+c.n,0,2*k,40*k,"#fff","center",OUT,6*k); g.restore(); } }
   g.restore();
-  // frame
-  g.strokeStyle="rgba(255,255,255,.25)"; g.lineWidth=3*k; g.strokeRect(0,y,W,h);
 }
 function drawBall(x,y,r){
   if(BALL_IMG.complete && BALL_IMG.naturalWidth){
@@ -761,97 +781,100 @@ function drawBall(x,y,r){
 }
 function starBurst(x,y,r,col){ g.beginPath(); for(let i=0;i<24;i++){ const a=i*Math.PI/12, rr2=i%2?r*0.7:r; g.lineTo(x+Math.cos(a)*rr2,y+Math.sin(a)*rr2);} g.closePath(); g.fillStyle=col; g.fill(); g.strokeStyle="#fff"; g.lineWidth=3*k; g.stroke(); }
 function drawHeader(l){
-  const y=l.hdrY, h=110*k, cx=W/2, tw=180*k;
+  const y=l.hdrY, h=l.hdrH, pw=W*0.33, pad=W*0.015;
+  const lw=W*0.115, lh=h*0.5;
+  // ● LIVE պիտակ՝ մեջտեղում
+  rr(W/2-lw/2,y,lw,lh,lh*0.34); g.fillStyle="#ff2d55"; g.fill();
+  g.fillStyle="#fff"; g.beginPath(); g.arc(W/2-lw*0.3,y+lh*0.5,lh*0.14,0,Math.PI*2); g.fill();
+  txt("LIVE",W/2+lw*0.07,y+lh*0.5+1*k,lh*0.52,"#fff","center",null,0,lw*0.6);
+  // ռաունդ
+  txt(S().round+" "+roundNo, W/2, y+lh+h*0.09, h*0.24, "#ffd54a", "center", OUT, 4*k, W*0.24);
+  // առավելության գիծ
+  const ko=Math.max(1,cfg.ko), diff=R[0].score-R[1].score, fr=Math.min(1,Math.abs(diff)/ko);
+  const pbw=W*0.235, pbh=Math.max(5*k,h*0.05), pbx=W/2-pbw/2, pby=y+lh+h*0.22;
+  rr(pbx,pby,pbw,pbh,pbh/2); g.fillStyle="rgba(255,255,255,.18)"; g.fill();
+  if(diff!==0){ g.save(); rr(pbx,pby,pbw,pbh,pbh/2); g.clip(); g.fillStyle=diff>0?cfg.left.c1:cfg.right.c1; const w2=pbw/2*fr; g.fillRect(diff>0?W/2-w2:W/2,pby,w2,pbh); g.restore(); }
+  g.fillStyle="#fff"; g.fillRect(W/2-Math.max(1,k),pby-pbh*0.5,Math.max(2,2*k),pbh*2);
+  txt(Math.min(ko,Math.round(Math.abs(diff)))+" / "+ko, W/2, pby+pbh+h*0.055, h*0.17, "#fff", "center", OUT, 3.5*k, W*0.22);
+  // թիմերի ցուցատախտակներ
   for(let t=0;t<2;t++){
-    const tm=team(t), sgn=t===0?-1:1;
-    const x0 = t===0 ? 16*k : cx+tw/2+8*k, x1 = t===0 ? cx-tw/2-8*k : W-16*k, sk=26*k;
+    const tm=team(t);
+    const x0 = t===0 ? pad : W-pad-pw, x1 = t===0 ? pad+pw : W-pad, sk=pw*0.13;
     g.beginPath();
     if(t===0){ g.moveTo(x0,y); g.lineTo(x1,y); g.lineTo(x1-sk,y+h); g.lineTo(x0,y+h); }
     else { g.moveTo(x0+sk,y); g.lineTo(x1,y); g.lineTo(x1,y+h); g.lineTo(x0,y+h); }
     g.closePath();
-    const gr=g.createLinearGradient(0,y,0,y+h); gr.addColorStop(0,shade(tm.c1,1.15)); gr.addColorStop(1,shade(tm.c1,0.8)); g.fillStyle=gr; g.fill();
-    g.strokeStyle="#fff"; g.lineWidth=3*k; g.stroke();
-    // score box
-    const sbw=Math.min(200*k,(x1-x0)*0.48), sbx = t===0 ? x0+10*k : x1-10*k-sbw;
-    rr(sbx,y+10*k,sbw,h-20*k,12*k); g.fillStyle="rgba(10,12,30,.82)"; g.fill();
-    txt(fmt(R[t].score), sbx+sbw/2, y+h/2+3*k, 64*k, "#fff","center",null,0,sbw-16*k);
-    // name
-    const nx = t===0 ? (sbx+sbw + x1-sk)/2 : (x0+sk + sbx)/2, nw=Math.abs((t===0? x1-sk-(sbx+sbw) : sbx-(x0+sk)))-12*k;
-    txt(tm.name, nx, y+h*0.4, 40*k, "#fff","center",OUT,7*k,nw);
-    txt("🏆 "+series[t], nx, y+h*0.78, 24*k, "#fff","center",OUT,5*k);
+    const gr=g.createLinearGradient(0,y,0,y+h); gr.addColorStop(0,shade(tm.c1,1.18)); gr.addColorStop(1,shade(tm.c1,0.78)); g.fillStyle=gr; g.fill();
+    g.strokeStyle="#fff"; g.lineWidth=Math.max(1.5,3*k); g.stroke();
+    const sbw=pw*0.36, sbx = t===0 ? x0+4*k : x1-4*k-sbw;
+    rr(sbx,y+h*0.1,sbw,h*0.8,h*0.2); g.fillStyle="rgba(8,10,24,.85)"; g.fill();
+    txt(fmt(R[t].score), sbx+sbw/2, y+h*0.44, h*0.5, "#fff","center",null,0,sbw-8*k);
+    txt("🏆 "+series[t], sbx+sbw/2, y+h*0.78, h*0.18, "#dfe6ff","center",null,0,sbw-8*k);
+    const nx = t===0 ? (sbx+sbw + x1-sk)/2 : (x0+sk + sbx)/2;
+    const nw = t===0 ? (x1-sk-(sbx+sbw))-10*k : (sbx-(x0+sk))-10*k;
+    txt(tm.name, nx, y+h*0.5, h*0.34, "#fff","center",OUT,Math.max(3,6*k),Math.max(10,nw));
   }
-  // timer
-  rr(cx-tw/2,y-4*k,tw,h+8*k,16*k); g.fillStyle="#0a0d1f"; g.fill(); g.strokeStyle="#ffd54a"; g.lineWidth=4*k; g.stroke();
-  txt(S().round+" "+roundNo, cx, y+20*k, 20*k, "#ffd54a");
-  txt("VS", cx, y+h*0.5, 50*k, "#fff","center",null,0,tw-16*k);
-  const diff=R[0].score-R[1].score, ko=Math.max(1,cfg.ko), fr=Math.min(1,Math.abs(diff)/ko);
-  const bx=cx-tw/2+16*k, bw=tw-32*k, by=y+h*0.8;
-  rr(bx,by-7*k,bw,14*k,7*k); g.fillStyle="rgba(255,255,255,.15)"; g.fill();
-  if(diff!==0){ g.fillStyle=diff>0?cfg.left.c1:cfg.right.c1; const w2=bw/2*fr; g.fillRect(diff>0?cx-w2:cx, by-7*k, w2, 14*k); }
-  g.fillStyle="#fff"; g.fillRect(cx-1.5*k,by-10*k,3*k,20*k);
-  txt(Math.min(ko,Math.round(Math.abs(diff)))+" / "+ko, cx, y+h+26*k, 22*k, "#ffd54a","center",OUT,5*k);
 }
 function drawLegend(l){
-  const y=l.legY, h=l.legH;
+  const pw=W*0.29, rowH=H*0.092, headH=H*0.064, padX=pw*0.05, y0=H*0.198;
   for(let t=0;t<2;t++){
-    const tm=team(t), x = t===0 ? 16*k : W/2+8*k, w=W/2-24*k;
-    rr(x,y,w,h,h/2); g.fillStyle="rgba(255,255,255,.08)"; g.fill(); g.strokeStyle=tm.c1; g.lineWidth=3*k; g.stroke();
-    const parts2 = rules[t].slice(0, W<700?2:4).map(r=>`${emojiFor(r.label)} ${r.label} +${r.pts!=null?fmt(r.pts):"💰"}`);
-    const s = parts2.join("   ");
-    txt(s||"—", x+w/2, y+h/2+2*k, 26*k, "#fff","center",null,0,w-56*k);
+    const tm=team(t), list=rules[t].slice(0,4);
+    if(!list.length) continue;
+    const x = t===0 ? W*0.015 : W-W*0.015-pw;
+    const ph = headH + list.length*rowH + rowH*0.2;
+    rr(x,y0,pw,ph,H*0.028); g.fillStyle="rgba(6,8,20,.5)"; g.fill();
+    g.strokeStyle=shade(tm.c1,1.12); g.lineWidth=Math.max(1.5,2.2*k); g.stroke();
+    txt(tm.name, x+pw/2, y0+headH*0.55, headH*0.46, "#fff","center",OUT,4*k,pw-padX*2);
+    for(let i=0;i<list.length;i++){
+      const r=list[i], ry=y0+headH+i*rowH;
+      const d=rowH*0.82, cx=x+padX+d/2, cy=ry+rowH*0.5;
+      g.beginPath(); g.arc(cx,cy,d/2,0,Math.PI*2); g.fillStyle=shade(tm.c1,0.92); g.fill();
+      g.strokeStyle="rgba(255,255,255,.85)"; g.lineWidth=Math.max(1,1.6*k); g.stroke();
+      g.font=font(d*0.66); g.textAlign="center"; g.textBaseline="middle"; g.fillStyle="#fff"; g.fillText(emojiFor(r.label),cx,cy+d*0.05);
+      const pTxt="+"+(r.pts!=null?fmt(r.pts):"💰");
+      g.font=font(rowH*0.38); const pW=g.measureText(pTxt).width+4*k;
+      const lx=cx+d*0.6+3*k, lw=Math.max(12, x+pw-padX-pW-lx);
+      txt(r.label.toUpperCase(), lx, ry+rowH*0.5, rowH*0.32, "#eef2ff","left",OUT,2.8*k, lw);
+      txt(pTxt, x+pw-padX, ry+rowH*0.5, rowH*0.4, "#ffd54a","right",OUT,2.8*k,pW+2*k);
+    }
   }
 }
-function btnRect(t,l){ const x = t===0 ? 16*k : W/2+8*k, w=W/2-24*k; return {x,y:l.fansY,w,h:l.fansH}; }
 function superRule(t){ return rules[t].filter(r=>(r.pts??0)>=cfg.superAt).sort((a,b)=>a.pts-b.pts)[0]; }
-function superTap(t){ const sr=superRule(t); btnP[t]=1; score(t, sr?sr.pts:cfg.superAt, {gift:sr?sr.label:"", combo:1}); }
-function drawButtons(l){
-  for(let t=0;t<2;t++){
-    const tm=team(t), b=btnRect(t,l), p=btnP[t], sc=1-0.07*p, sr=superRule(t);
-    g.save(); g.translate(b.x+b.w/2,b.y+b.h/2); g.scale(sc,sc); g.translate(-b.w/2,-b.h/2);
-    rr(0,6*k,b.w,b.h,26*k); g.fillStyle=shade(tm.c1,0.5); g.fill();
-    rr(0,0,b.w,b.h,26*k); const gr=g.createLinearGradient(0,0,0,b.h); gr.addColorStop(0,shade(tm.c1,1.25)); gr.addColorStop(1,shade(tm.c1,0.8)); g.fillStyle=gr; g.fill();
-    g.lineWidth=4*k; g.strokeStyle="#fff"; g.stroke();
-    g.globalAlpha=0.25+0.2*Math.abs(Math.sin(tsec*3+t)); rr(8*k,8*k,b.w-16*k,b.h*0.42,20*k); g.fillStyle="#fff"; g.fill(); g.globalAlpha=1;
-    txt("⚡ "+S().sup, b.w/2, b.h*0.4, 50*k, "#fff","center",OUT,8*k,b.w-24*k);
-    txt(tm.name+(sr?"  +"+fmt(sr.pts)+" "+emojiFor(sr.label):""), b.w/2, b.h*0.76, 26*k, "#fff","center",OUT,5*k,b.w-24*k);
-    g.restore();
-  }
-}
+function superTap(t){ const sr=superRule(t); score(t, sr?sr.pts:cfg.superAt, {gift:sr?sr.label:"", combo:1}); }
 function drawPops(l){
-  const counts=[0,0];
   for(const p of pops){
     const a=p.age, t=p.t, dx=DX();
-    const cx = t===0 ? Math.max(170*k,dx*0.5) : Math.min(W-170*k,dx+(W-dx)*0.5);
-    const yy = l.bfY + l.bfH*0.22 + p.slot*58*k - a*70*k;
+    const cx = t===0 ? W*0.265 : W*0.735;
+    const yy = H*0.905 - p.slot*H*0.072 - a*H*0.045;
     const al = a<0.15 ? a/0.15 : a>1.7 ? Math.max(0,1-(a-1.7)/0.5) : 1;
     const sc = a<0.15 ? 0.6+a/0.15*0.4 : 1;
     g.save(); g.globalAlpha=al; g.translate(cx,yy); g.scale(sc,sc);
     const label=`${p.nick?p.nick+"  ":""}+${fmt(p.pts)} ${p.gift?emojiFor(p.gift):""}`;
-    g.font=font(24*k); const tw=Math.min(300*k,g.measureText(label).width);
-    const hasAv=!!(p.nick||p.pic), hgt=48*k, w=tw+(hasAv?72:40)*k;
+    g.font=font(24*k); const tw=Math.min(190*k,g.measureText(label).width);
+    const hasAv=!!(p.nick||p.pic), hgt=40*k, w=tw+(hasAv?64:30)*k;
     rr(-w/2,-hgt/2,w,hgt,hgt/2); g.fillStyle=t===0?cfg.left.c1:cfg.right.c1; g.fill(); g.strokeStyle="#fff"; g.lineWidth=3*k; g.stroke();
     if(hasAv) avatar(-w/2+hgt/2, 0, hgt/2-5*k, p.pic, p.nick||"?", "rgba(0,0,0,.35)");
-    txt(label, -w/2+(hasAv?hgt+4*k:20*k), 2*k, 24*k, "#fff","left",OUT,5*k,300*k);
+    txt(label, -w/2+(hasAv?hgt+4*k:14*k), 2*k, 20*k, "#fff","left",OUT,4*k,190*k);
     g.restore();
   }
 }
 function drawBanner(l){
   const b=banner, a=b.t/b.life, s = a<0.15 ? 0.3+a/0.15*0.9 : a<0.25 ? 1.2-(a-0.15)*2 : 1;
   g.save(); g.globalAlpha = a>0.8 ? (1-a)/0.2 : 1; g.translate(W/2, l.bfY+l.bfH*0.5); g.scale(s,s); g.rotate(-0.06);
-  txt(b.text,0,0,92*k,"#fff","center",OUT,16*k,W*0.9);
+  txt(b.text,0,0,52*k,"#fff","center",OUT,10*k,W*0.86);
   g.restore();
 }
 function drawEnd(l){
   const st=S();
   g.fillStyle="rgba(0,0,0,.45)"; g.fillRect(0,l.bfY,W,l.bfH);
-  const cy=l.bfY+l.bfH*0.2;
+  const cy=l.bfY+l.bfH*0.34;
   if(winner>=0){
     const tm=team(winner);
     const s=1+0.05*Math.sin(tsec*5);
     g.save(); g.translate(W/2,cy); g.scale(s,s);
-    txt("🏆 "+tm.name+" "+st.wins, 0, 0, 84*k, "#ffd54a","center",OUT,14*k,W*0.92);
+    txt("🏆 "+tm.name+" "+st.wins, 0, 0, 62*k, "#ffd54a","center",OUT,11*k,W*0.8);
     g.restore();
-  } else txt(st.draw, W/2, cy, 90*k, "#fff","center",OUT,14*k);
+  } else txt(st.draw, W/2, cy, 66*k, "#fff","center",OUT,11*k,W*0.8);
   if(!(phase==="end" && cfg.autoRestart)) txt(st.wait, W/2, l.bfY+l.bfH*0.92 - 6*k, 30*k, "#fff","center",OUT,6*k);
 }
 function drawStatusDot(){
@@ -898,9 +921,10 @@ $("fs").onclick=()=>{ keepAwake(); const el=document.documentElement; try{ const
 // tap control on the battlefield
 let tap=null;
 cv.addEventListener("contextmenu",e=>e.preventDefault());
-cv.addEventListener("pointerdown",e=>{ audio(); loadClips(); keepAwake(); showGear(); const l=L();
-  for(let t=0;t<2;t++){ const b=btnRect(t,l); if(e.clientX>=b.x&&e.clientX<=b.x+b.w&&e.clientY>=b.y&&e.clientY<=b.y+b.h){ superTap(t); return; } }
-  if(!cfg.tapControl) return; if(e.clientY<l.bfY||e.clientY>l.bfY+l.bfH) return; tap={t:e.clientX<DX()?0:1, at:performance.now(), id:e.pointerId}; });
+cv.addEventListener("pointerdown",e=>{ audio(); loadClips(); keepAwake(); showGear();
+  const lx=e.clientX-card.x, ly=e.clientY-card.y;
+  if(!cfg.tapControl) return; if(lx<0||lx>W||ly<0||ly>H) return;
+  tap={t:lx<DX()?0:1, at:performance.now(), id:e.pointerId}; });
 cv.addEventListener("pointerup",e=>{ if(!tap||tap.id!==e.pointerId) return; const big=performance.now()-tap.at>=450; const rs=rules[tap.t]; const sup=rs.filter(r=>(r.pts??0)>=cfg.superAt).sort((a,b)=>a.pts-b.pts)[0]; const r=big?sup:rs[0]; score(tap.t, big?(sup?sup.pts:cfg.superAt):(rs[0]&&rs[0].pts||1), {gift:r?r.label:"", combo:1}); tap=null; });
 cv.addEventListener("pointercancel",()=>tap=null);
 $("demo").onchange=e=>setDemo(e.target.checked);
