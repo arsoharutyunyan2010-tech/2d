@@ -145,9 +145,10 @@ function resize(){
   DPR=Math.min(window.devicePixelRatio||1,2);
   SW=innerWidth; SH=innerHeight;
   cv.width=Math.round(SW*DPR); cv.height=Math.round(SH*DPR); cv.style.width=SW+"px"; cv.style.height=SH+"px";
-  const pad=Math.min(SW,SH)*0.018;
-  let cw=SW-pad*2, ch=cw/CARD_ASPECT;
-  if(ch>SH-pad*2){ ch=SH-pad*2; cw=ch*CARD_ASPECT; }
+  const m=Math.min(SW,SH)*0.012;
+  let cw=SW-m*2, ch;
+  if(SW/SH>=1.3){ ch=SH-m*2; }                    // լայն էկրան՝ լրացնում ենք ամբողջը
+  else { ch=Math.min(SH*0.62, cw/0.92); }         // հեռախոս ուղղահայաց՝ մեծ շերտ կենտրոնում
   card.w=cw; card.h=ch; card.x=(SW-cw)/2; card.y=(SH-ch)/2;
   W=cw; H=ch; k=Math.min(W/1080, H/560);
 }
@@ -267,7 +268,7 @@ function score(t, pts, info){
   }
   if(Math.abs(R[0].score-R[1].score) >= Math.max(1,cfg.ko) && koT<0) koT=0.42;
 }
-function geom(){ const l=L(), y=l.bfY, h=l.bfH, ground=y+h*0.86, gh=y+h-ground; return {l,y,h,ground,gh,gy:ground+gh*0.12,u:Math.min(h*0.088, W*0.07),dx:DX()}; }
+function geom(){ const l=L(), y=l.bfY, h=l.bfH, ground=y+h*0.86, gh=y+h-ground; return {l,y,h,ground,gh,gy:ground+gh*0.12,u:Math.min(h*0.088, W*0.082),dx:DX()}; }
 function startKick(t,power){
   const r=R[t];
   if(power){ r.kt=0; r.kp=1; r.hitDone=false; return; }
@@ -743,7 +744,7 @@ function drawField(l){
 function drawPlayers(l){
   const y=l.bfY, h=l.bfH, dx=DX(), ground=y+h*0.86, gh=y+h-ground;
   g.save(); rr(0,0,W,H,Math.min(W,H)*CARD_RAD); g.clip();
-  const u=Math.min(h*0.088, W*0.07);
+  const u=Math.min(h*0.088, W*0.082);
   const gap=0.12*u;
   for(let t=0;t<2;t++){
     const dir=t===0?1:-1, px=dx-dir*(WALL*u+gap), gy=ground+gh*0.12, f=R[t].fly;
