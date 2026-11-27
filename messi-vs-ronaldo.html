@@ -155,10 +155,13 @@ const FONT = '"Arial Black","Segoe UI Black",Impact,Arial,sans-serif';
 const font = (px, w="900") => `${w} ${Math.max(6,px)}px ${FONT}`;
 
 function L(){
-  const hdrY=6*k, hdrH=150*k;
-  const legY=hdrY+hdrH+6*k, legH=Math.max(34*k, 66*k);
-  const bfY=legY+legH+6*k;
-  return {hdrY,hdrH,portrait:SH>=SW*1.05,legY,legH,bfY,bfH:H-bfY-4*k,fansY:0,fansH:0};
+  // ինչպես ամենասկզբում՝ խաղը վերևում փոքրիկ շերտով, ներքևը՝ դատարկ
+  const portrait = SH >= SW*1.05;
+  const hdrY=10*k, hdrH=150*k;
+  const legY=hdrY+hdrH+8*k, legH=Math.max(34, 66*k);
+  const bfY=legY+legH+10*k;
+  const bfH = portrait ? Math.min(H*0.46, W*0.95) : (H - bfY - 6*k);
+  return {hdrY,hdrH,portrait,legY,legH,bfY,bfH,fansY:0,fansH:0};
 }
 
 /* ============ AUDIO ============ */
@@ -268,7 +271,7 @@ function score(t, pts, info){
   }
   if(Math.abs(R[0].score-R[1].score) >= Math.max(1,cfg.ko) && koT<0) koT=0.42;
 }
-function geom(){ const l=L(), y=l.bfY, h=l.bfH, ground=y+h*0.86, gh=y+h-ground; return {l,y,h,ground,gh,gy:ground+gh*0.12,u:Math.min(h*0.088, W*0.088),dx:DX()}; }
+function geom(){ const l=L(), y=l.bfY, h=l.bfH, ground=y+h*0.86, gh=y+h-ground; return {l,y,h,ground,gh,gy:ground+gh*0.12,u:Math.min(h*0.075, W*0.058),dx:DX()}; }
 function startKick(t,power){
   const r=R[t];
   if(power){ r.kt=0; r.kp=1; r.hitDone=false; return; }
@@ -744,7 +747,7 @@ function drawField(l){
 function drawPlayers(l){
   const y=l.bfY, h=l.bfH, dx=DX(), ground=y+h*0.86, gh=y+h-ground;
   g.save(); rr(0,0,W,H,0); g.clip();
-  const u=Math.min(h*0.088, W*0.088);
+  const u=Math.min(h*0.075, W*0.058);
   const gap=0.12*u;
   for(let t=0;t<2;t++){
     const dir=t===0?1:-1, px=dx-dir*(WALL*u+gap), gy=ground+gh*0.12, f=R[t].fly;
