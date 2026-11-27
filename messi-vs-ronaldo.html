@@ -232,7 +232,8 @@ let phase="play", endT=0, winner=-1, series=[0,0], roundNo=1, pending=[];
 let pos=0, btnP=[0,0], koT=-1, ball={y:0,v:0,rot:0,spin:2,rest:0}, tsec=0, shake=0, flash=0, banner=null, lastTick=-1;
 const pops=[], parts=[], fx=[];
 const imgCache=new Map();
-const DX=()=>W*(0.5+0.47*pos);
+// բաժանարարի շարժը չափված է այնպես, որ պարտվողը էկրանից դուրս գա հենց 100% KO-ի պահին
+const DX=()=>{ const l=L(), u=Math.min(l.bfH*0.075, W*0.058), A=Math.max(0.22, Math.min(0.47, 0.5-2.0*u/W)); return W*(0.5+A*pos); };
 function img(url){ if(!url) return null; let e=imgCache.get(url); if(!e){ const im=new Image(); e={im,ok:false}; im.onload=()=>e.ok=true; im.referrerPolicy="no-referrer"; im.src=url; imgCache.set(url,e); if(imgCache.size>400) imgCache.delete(imgCache.keys().next().value); } return e.ok?e.im:null; }
 
 function newRound(){
@@ -667,8 +668,6 @@ function update(dt){
   }
   btnP=btnP.map(v=>Math.max(0,v-dt*4));
   if(koT>=0){ koT-=dt; if(koT<0){ if(phase==="play" && Math.abs(R[0].score-R[1].score)>=Math.max(1,cfg.ko)) endRound(); } }
-  // երբ պարտվողը դուրս է գալիս էկրանից (մնացել է ~2 հարված)՝ հաղթանակ
-  if(phase==="play"){ const dd=Math.abs(R[0].score-R[1].score); if(dd >= Math.max(1,cfg.ko)*0.82) endRound(); }
   for(let t=0;t<2;t++){ const r=R[t];
     if(r.kt>=0){ r.kt+=dt; const p=r.kt/KDUR[r.kp];
       if(!r.hitDone && p>=KHIT){ r.hitDone=true; if(phase==="play") impact(t,r.kp); }
