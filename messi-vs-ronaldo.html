@@ -139,13 +139,13 @@ const team = i => i===0 ? cfg.left : cfg.right;
 const cv = document.getElementById("c"), g = cv.getContext("2d");
 let W=0,H=0,SW=0,SH=0,DPR=1,k=1;
 // Խաղը ամբողջ էկրանը չէ. այն կենտրոնում դրված լայն շերտ է (ինչպես TikTok LIVE-ի օվերլեյը)։
-const CARD_ASPECT=1.85, CARD_RAD=0.055;
+const CARD_ASPECT=1.45, CARD_RAD=0.05;
 const card={x:0,y:0,w:0,h:0};
 function resize(){
   DPR=Math.min(window.devicePixelRatio||1,2);
   SW=innerWidth; SH=innerHeight;
   cv.width=Math.round(SW*DPR); cv.height=Math.round(SH*DPR); cv.style.width=SW+"px"; cv.style.height=SH+"px";
-  const pad=Math.min(SW,SH)*0.035;
+  const pad=Math.min(SW,SH)*0.018;
   let cw=SW-pad*2, ch=cw/CARD_ASPECT;
   if(ch>SH-pad*2){ ch=SH-pad*2; cw=ch*CARD_ASPECT; }
   card.w=cw; card.h=ch; card.x=(SW-cw)/2; card.y=(SH-ch)/2;
@@ -156,8 +156,8 @@ const FONT = '"Arial Black","Segoe UI Black",Impact,Arial,sans-serif';
 const font = (px, w="900") => `${w} ${Math.max(6,px)}px ${FONT}`;
 
 function L(){
-  const hdrY=H*0.035, hdrH=H*0.135;
-  return {hdrY,hdrH,portrait:false,legY:0,legH:0,bfY:0,bfH:H,fansY:0,fansH:0};
+  const hdrY=H*0.02, hdrH=H*0.223, bfY=H*0.24;
+  return {hdrY,hdrH,portrait:false,legY:0,legH:0,bfY,bfH:H-bfY,fansY:0,fansH:0};
 }
 
 /* ============ AUDIO ============ */
@@ -267,7 +267,7 @@ function score(t, pts, info){
   }
   if(Math.abs(R[0].score-R[1].score) >= Math.max(1,cfg.ko) && koT<0) koT=0.42;
 }
-function geom(){ const l=L(), y=l.bfY, h=l.bfH, ground=y+h*0.86, gh=y+h-ground; return {l,y,h,ground,gh,gy:ground+gh*0.12,u:Math.min(h*0.075, W*0.058),dx:DX()}; }
+function geom(){ const l=L(), y=l.bfY, h=l.bfH, ground=y+h*0.86, gh=y+h-ground; return {l,y,h,ground,gh,gy:ground+gh*0.12,u:Math.min(h*0.088, W*0.07),dx:DX()}; }
 function startKick(t,power){
   const r=R[t];
   if(power){ r.kt=0; r.kp=1; r.hitDone=false; return; }
@@ -700,7 +700,6 @@ function draw(){
   drawField(l);
   drawHeader(l);
   drawPlayers(l);
-  drawLegend(l);
   drawPops(l);
   // particles
   for(const p of parts){ const a=1-p.age/p.life; g.globalAlpha=Math.min(1,a*2); if(p.type==="c"){ g.save(); g.translate(p.x,p.y); g.rotate(p.rot); g.fillStyle=p.c; g.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); g.restore(); } else { circle(p.x,p.y,p.s*a,p.c); } }
@@ -744,7 +743,7 @@ function drawField(l){
 function drawPlayers(l){
   const y=l.bfY, h=l.bfH, dx=DX(), ground=y+h*0.86, gh=y+h-ground;
   g.save(); rr(0,0,W,H,Math.min(W,H)*CARD_RAD); g.clip();
-  const u=Math.min(h*0.075, W*0.058);
+  const u=Math.min(h*0.088, W*0.07);
   const gap=0.12*u;
   for(let t=0;t<2;t++){
     const dir=t===0?1:-1, px=dx-dir*(WALL*u+gap), gy=ground+gh*0.12, f=R[t].fly;
@@ -781,64 +780,57 @@ function drawBall(x,y,r){
 }
 function starBurst(x,y,r,col){ g.beginPath(); for(let i=0;i<24;i++){ const a=i*Math.PI/12, rr2=i%2?r*0.7:r; g.lineTo(x+Math.cos(a)*rr2,y+Math.sin(a)*rr2);} g.closePath(); g.fillStyle=col; g.fill(); g.strokeStyle="#fff"; g.lineWidth=3*k; g.stroke(); }
 function drawHeader(l){
-  const y=l.hdrY, h=l.hdrH, pw=W*0.33, pad=W*0.015;
-  const lw=W*0.115, lh=h*0.5;
+  const y=l.hdrY, h=l.hdrH, pad=W*0.014, pw=W*0.315, bh=h*0.54;
   // ● LIVE պիտակ՝ մեջտեղում
+  const lw=W*0.1, lh=bh*0.42;
   rr(W/2-lw/2,y,lw,lh,lh*0.34); g.fillStyle="#ff2d55"; g.fill();
   g.fillStyle="#fff"; g.beginPath(); g.arc(W/2-lw*0.3,y+lh*0.5,lh*0.14,0,Math.PI*2); g.fill();
-  txt("LIVE",W/2+lw*0.07,y+lh*0.5+1*k,lh*0.52,"#fff","center",null,0,lw*0.6);
-  // ռաունդ
-  txt(S().round+" "+roundNo, W/2, y+lh+h*0.09, h*0.24, "#ffd54a", "center", OUT, 4*k, W*0.24);
-  // առավելության գիծ
+  txt("LIVE",W/2+lw*0.07,y+lh*0.5+1*k,lh*0.54,"#fff","center",null,0,lw*0.6);
   const ko=Math.max(1,cfg.ko), diff=R[0].score-R[1].score, fr=Math.min(1,Math.abs(diff)/ko);
-  const pbw=W*0.235, pbh=Math.max(5*k,h*0.05), pbx=W/2-pbw/2, pby=y+lh+h*0.22;
+  txt(S().round+" "+roundNo+" · "+Math.min(ko,Math.round(Math.abs(diff)))+" / "+ko, W/2, y+lh+bh*0.3, bh*0.25, "#ffd54a","center",OUT,3.5*k, W*0.3);
+  // առավելության բարակ գիծ
+  const pbw=W*0.2, pbh=Math.max(4*k,bh*0.075), pbx=W/2-pbw/2, pby=y+bh-pbh*1.3;
   rr(pbx,pby,pbw,pbh,pbh/2); g.fillStyle="rgba(255,255,255,.18)"; g.fill();
   if(diff!==0){ g.save(); rr(pbx,pby,pbw,pbh,pbh/2); g.clip(); g.fillStyle=diff>0?cfg.left.c1:cfg.right.c1; const w2=pbw/2*fr; g.fillRect(diff>0?W/2-w2:W/2,pby,w2,pbh); g.restore(); }
-  g.fillStyle="#fff"; g.fillRect(W/2-Math.max(1,k),pby-pbh*0.5,Math.max(2,2*k),pbh*2);
-  txt(Math.min(ko,Math.round(Math.abs(diff)))+" / "+ko, W/2, pby+pbh+h*0.055, h*0.17, "#fff", "center", OUT, 3.5*k, W*0.22);
+  g.fillStyle="#fff"; g.fillRect(W/2-Math.max(1,k),pby-pbh*0.4,Math.max(2,2*k),pbh*1.8);
   // թիմերի ցուցատախտակներ
   for(let t=0;t<2;t++){
     const tm=team(t);
     const x0 = t===0 ? pad : W-pad-pw, x1 = t===0 ? pad+pw : W-pad, sk=pw*0.13;
     g.beginPath();
-    if(t===0){ g.moveTo(x0,y); g.lineTo(x1,y); g.lineTo(x1-sk,y+h); g.lineTo(x0,y+h); }
-    else { g.moveTo(x0+sk,y); g.lineTo(x1,y); g.lineTo(x1,y+h); g.lineTo(x0,y+h); }
+    if(t===0){ g.moveTo(x0,y); g.lineTo(x1,y); g.lineTo(x1-sk,y+bh); g.lineTo(x0,y+bh); }
+    else { g.moveTo(x0+sk,y); g.lineTo(x1,y); g.lineTo(x1,y+bh); g.lineTo(x0,y+bh); }
     g.closePath();
-    const gr=g.createLinearGradient(0,y,0,y+h); gr.addColorStop(0,shade(tm.c1,1.18)); gr.addColorStop(1,shade(tm.c1,0.78)); g.fillStyle=gr; g.fill();
-    g.strokeStyle="#fff"; g.lineWidth=Math.max(1.5,3*k); g.stroke();
+    const gr=g.createLinearGradient(0,y,0,y+bh); gr.addColorStop(0,shade(tm.c1,1.18)); gr.addColorStop(1,shade(tm.c1,0.78)); g.fillStyle=gr; g.fill();
+    g.strokeStyle="#fff"; g.lineWidth=Math.max(1.5,2.6*k); g.stroke();
     const sbw=pw*0.36, sbx = t===0 ? x0+4*k : x1-4*k-sbw;
-    rr(sbx,y+h*0.1,sbw,h*0.8,h*0.2); g.fillStyle="rgba(8,10,24,.85)"; g.fill();
-    txt(fmt(R[t].score), sbx+sbw/2, y+h*0.44, h*0.5, "#fff","center",null,0,sbw-8*k);
-    txt("🏆 "+series[t], sbx+sbw/2, y+h*0.78, h*0.18, "#dfe6ff","center",null,0,sbw-8*k);
+    rr(sbx,y+bh*0.1,sbw,bh*0.8,bh*0.2); g.fillStyle="rgba(8,10,24,.85)"; g.fill();
+    txt(fmt(R[t].score), sbx+sbw/2, y+bh*0.44, bh*0.46, "#fff","center",null,0,sbw-8*k);
+    txt("🏆 "+series[t], sbx+sbw/2, y+bh*0.79, bh*0.17, "#dfe6ff","center",null,0,sbw-8*k);
     const nx = t===0 ? (sbx+sbw + x1-sk)/2 : (x0+sk + sbx)/2;
-    const nw = t===0 ? (x1-sk-(sbx+sbw))-10*k : (sbx-(x0+sk))-10*k;
-    txt(tm.name, nx, y+h*0.5, h*0.34, "#fff","center",OUT,Math.max(3,6*k),Math.max(10,nw));
+    const nw = t===0 ? (x1-sk-(sbx+sbw))-8*k : (sbx-(x0+sk))-8*k;
+    txt(tm.name, nx, y+bh*0.5, bh*0.3, "#fff","center",OUT,Math.max(3,5*k),Math.max(10,nw));
   }
-}
-function drawLegend(l){
-  const pw=W*0.29, rowH=H*0.092, headH=H*0.064, padX=pw*0.05, y0=H*0.198;
+  // նվերների պատկերները՝ վերևում (երկու թիմերը կողք-կողքի)
+  const sy=y+bh+H*0.011, sh=H*0.079, gap=W*0.006;
+  const cw=(W-pad*2-gap*7)/8;
+  let ci=0;
   for(let t=0;t<2;t++){
-    const tm=team(t), list=rules[t].slice(0,4);
-    if(!list.length) continue;
-    const x = t===0 ? W*0.015 : W-W*0.015-pw;
-    const ph = headH + list.length*rowH + rowH*0.2;
-    rr(x,y0,pw,ph,H*0.028); g.fillStyle="rgba(6,8,20,.5)"; g.fill();
-    g.strokeStyle=shade(tm.c1,1.12); g.lineWidth=Math.max(1.5,2.2*k); g.stroke();
-    txt(tm.name, x+pw/2, y0+headH*0.55, headH*0.46, "#fff","center",OUT,4*k,pw-padX*2);
-    for(let i=0;i<list.length;i++){
-      const r=list[i], ry=y0+headH+i*rowH;
-      const d=rowH*0.82, cx=x+padX+d/2, cy=ry+rowH*0.5;
-      g.beginPath(); g.arc(cx,cy,d/2,0,Math.PI*2); g.fillStyle=shade(tm.c1,0.92); g.fill();
-      g.strokeStyle="rgba(255,255,255,.85)"; g.lineWidth=Math.max(1,1.6*k); g.stroke();
-      g.font=font(d*0.66); g.textAlign="center"; g.textBaseline="middle"; g.fillStyle="#fff"; g.fillText(emojiFor(r.label),cx,cy+d*0.05);
-      const pTxt="+"+(r.pts!=null?fmt(r.pts):"💰");
-      g.font=font(rowH*0.38); const pW=g.measureText(pTxt).width+4*k;
-      const lx=cx+d*0.6+3*k, lw=Math.max(12, x+pw-padX-pW-lx);
-      txt(r.label.toUpperCase(), lx, ry+rowH*0.5, rowH*0.32, "#eef2ff","left",OUT,2.8*k, lw);
-      txt(pTxt, x+pw-padX, ry+rowH*0.5, rowH*0.4, "#ffd54a","right",OUT,2.8*k,pW+2*k);
+    const tm=team(t);
+    for(const r of rules[t].slice(0,4)){
+      const cx0=pad+ci*(cw+gap), cy0=sy;
+      rr(cx0,cy0,cw,sh,sh*0.28);
+      const gr=g.createLinearGradient(0,cy0,0,cy0+sh); gr.addColorStop(0,shade(tm.c1,1.05)); gr.addColorStop(1,shade(tm.c1,0.62)); g.fillStyle=gr; g.fill();
+      g.strokeStyle="rgba(255,255,255,.75)"; g.lineWidth=Math.max(1,1.6*k); g.stroke();
+      g.font=font(sh*0.56); g.textAlign="left"; g.textBaseline="middle"; g.fillStyle="#fff";
+      g.fillText(emojiFor(r.label), cx0+sh*0.14, cy0+sh*0.54);
+      const ew=g.measureText(emojiFor(r.label)).width;
+      txt("+"+(r.pts!=null?fmt(r.pts):"💰"), cx0+cw-sh*0.12, cy0+sh*0.52, sh*0.4, "#fff","right",OUT,2.6*k, cw-ew-sh*0.5);
+      ci++;
     }
   }
 }
+
 function superRule(t){ return rules[t].filter(r=>(r.pts??0)>=cfg.superAt).sort((a,b)=>a.pts-b.pts)[0]; }
 function superTap(t){ const sr=superRule(t); score(t, sr?sr.pts:cfg.superAt, {gift:sr?sr.label:"", combo:1}); }
 function drawPops(l){
@@ -861,7 +853,7 @@ function drawPops(l){
 function drawBanner(l){
   const b=banner, a=b.t/b.life, s = a<0.15 ? 0.3+a/0.15*0.9 : a<0.25 ? 1.2-(a-0.15)*2 : 1;
   g.save(); g.globalAlpha = a>0.8 ? (1-a)/0.2 : 1; g.translate(W/2, l.bfY+l.bfH*0.5); g.scale(s,s); g.rotate(-0.06);
-  txt(b.text,0,0,52*k,"#fff","center",OUT,10*k,W*0.86);
+  txt(b.text,0,0,Math.min(H*0.135,72*k),"#fff","center",OUT,Math.max(6*k,H*0.02),W*0.86);
   g.restore();
 }
 function drawEnd(l){
@@ -872,9 +864,9 @@ function drawEnd(l){
     const tm=team(winner);
     const s=1+0.05*Math.sin(tsec*5);
     g.save(); g.translate(W/2,cy); g.scale(s,s);
-    txt("🏆 "+tm.name+" "+st.wins, 0, 0, 62*k, "#ffd54a","center",OUT,11*k,W*0.8);
+    txt("🏆 "+tm.name+" "+st.wins, 0, 0, Math.min(H*0.16,84*k), "#ffd54a","center",OUT,Math.max(6*k,H*0.024),W*0.8);
     g.restore();
-  } else txt(st.draw, W/2, cy, 66*k, "#fff","center",OUT,11*k,W*0.8);
+  } else txt(st.draw, W/2, cy, Math.min(H*0.17,88*k), "#fff","center",OUT,Math.max(6*k,H*0.024),W*0.8);
   if(!(phase==="end" && cfg.autoRestart)) txt(st.wait, W/2, l.bfY+l.bfH*0.92 - 6*k, 30*k, "#fff","center",OUT,6*k);
 }
 function drawStatusDot(){
