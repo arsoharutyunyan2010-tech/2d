@@ -9,6 +9,9 @@
   canvas{display:block;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
   #gear{position:fixed;bottom:10px;right:10px;width:48px!important;height:48px!important;font-size:24px!important;width:38px;height:38px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:20px;cursor:pointer;opacity:0;transition:opacity .3s;z-index:5}
   #gear.show,#gear:hover{opacity:1}
+  #mus{position:fixed;right:10px;bottom:66px;border:0;border-radius:16px;background:rgba(0,0,0,.5);color:#fff;font:12px/1.15 Arial,"Segoe UI",sans-serif;padding:8px 11px;z-index:5;opacity:.82;cursor:pointer;max-width:46vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .25s,background .25s}
+  #mus:active{opacity:1;background:rgba(0,0,0,.72)}
+  #mus.off{opacity:.45}
   #panel{position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);overflow:auto;background:#141a2e;color:#e8ecf8;z-index:6;box-shadow:-8px 0 30px rgba(0,0,0,.5);padding:14px 16px 40px;box-sizing:border-box;font-size:14px}
   #panel[hidden]{display:none}
   #panel h2{margin:4px 0 10px;font-size:18px}
@@ -33,6 +36,7 @@
 <body>
 <canvas id="c"></canvas>
 <button id="gear" title="Կարգավորումներ (S)">⚙</button>
+<button id="mus" title="Երաժշտություն (M)">🎵</button>
 <div id="panel" hidden>
   <button id="close" title="Փակել">✕</button>
   <h2>⚽ Messi vs Ronaldo — կարգավորումներ</h2>
@@ -75,6 +79,16 @@
   <label class="chk"><input type="checkbox" id="sound"> Ձայներ</label>
   <label>Ձայնի ուժգնություն</label><input type="range" id="volume" min="0" max="1" step="0.05" style="width:100%">
 
+  <h3>Երաժշտություն (ֆոն)</h3>
+  <label class="chk"><input type="checkbox" id="musicOn"> Ֆոնային երաժշտություն</label>
+  <label>Թրեք</label><select id="musicTrack"></select>
+  <label>Երաժշտության ուժգնություն</label><input type="range" id="musicVol" min="0" max="1" step="0.05" style="width:100%">
+  <label>Կամ դիր քո mp3-ները (փլեյլիստ, հերթով)</label>
+  <div class="row"><input type="file" id="musicFiles" accept="audio/*" multiple><button class="b" id="musicClr" style="flex:.4">Ջնջել</button></div>
+  <div class="hint" id="musicSt"></div>
+  <div class="hint">Ներկառուցված 5 թրեքները հենց բրաուզերում են սինթեզվում՝ ոչ մի ձայնագրություն չկա, այնպես որ TikTok-ը դրանք չի mute-ի։ Հայտնի (streaming-ային) երգերը LIVE-ում հաճախ ձայնը անջատելու պատճառ են դառնում հեղինակային իրավունքի պատճառով — եթե ուզում ես իրական երգ, ավելի լավ է քո mp3-ը, որի իրավունքն ունես։</div>
+
+
   <h3>Կապ TikTok LIVE-ի հետ</h3>
   <label>Ինչպե՞ս են նվերները գալիս խաղ</label>
   <select id="mode">
@@ -101,7 +115,7 @@ const DEFAULTS = {
   right: { name:"RONALDO", num:"7",  c1:"#D0202E", c2:"#0b6b3a", stripes:false, gifts:"Rose = 1\nRosa = 8" },
   ko:24, superAt:8, lang:"en", autoRestart:true, endPause:0.35,
   chatVotes:false, chatL:"1", chatR:"2", chatCooldown:10,
-  sound:true, volume:0.6, wsUrl:"ws://localhost:21213/", mode:"manual", tapControl:true, cloudUser:"", cloudKey:""
+  sound:true, volume:0.6, musicOn:true, musicTrack:0, musicVol:0.45, wsUrl:"ws://localhost:21213/", mode:"manual", tapControl:true, cloudUser:"", cloudKey:""
 };
 const KEY = "mvr_cfg_v3";
 let cfg = JSON.parse(JSON.stringify(DEFAULTS));
@@ -211,10 +225,10 @@ function noise(dur, vol=0.3, f=1200, q=0.8, delay=0, attack=0.01){
 const sfx = {
   pop(i){ tone(i===0?660:520, .12, "triangle", .25, 1.6); },
   hit(){ noise(.12,.35,900,1); tone(140,.15,"sine",.35,.5); },
-  superk(){ noise(.35,.5,500,.7); tone(90,.5,"sine",.6,.4); tone(900,.25,"sawtooth",.08,2,.05); },
+  superk(){ duckMusic(.45); noise(.35,.5,500,.7); tone(90,.5,"sine",.6,.4); tone(900,.25,"sawtooth",.08,2,.05); },
   whistle(){ const a=audio(); if(!a) return; const t=a.currentTime,o=a.createOscillator(),l=a.createOscillator(),lg=a.createGain(),gn=a.createGain(); o.frequency.value=2900; l.frequency.value=38; lg.gain.value=160; l.connect(lg); lg.connect(o.frequency); gn.gain.setValueAtTime(.0001,t); gn.gain.exponentialRampToValueAtTime(.14,t+.02); gn.gain.setValueAtTime(.14,t+.55); gn.gain.exponentialRampToValueAtTime(.0001,t+.7); o.connect(gn); gn.connect(master); o.start(t); l.start(t); o.stop(t+.75); l.stop(t+.75); },
   tick(){ tone(1200,.05,"square",.08); },
-  cheer(){ noise(2.6,.28,1500,.4,0,.5); noise(2.2,.18,3000,.6,.2,.4); [523,659,784,1046].forEach((f,i)=>tone(f,.35,"triangle",.18,0,i*.12)); }
+  cheer(){ duckMusic(1.4); noise(2.6,.28,1500,.4,0,.5); noise(2.2,.18,3000,.6,.2,.4); [523,659,784,1046].forEach((f,i)=>tone(f,.35,"triangle",.18,0,i*.12)); }
 };
 
 /* ============ VOICES ============ */
@@ -237,6 +251,142 @@ function playClip(t){
   const c=clipBuf[t]; if(!c || c.url!==(SND[t]||CLIP[t])){ loadClips(); return; }
   try{ if(clipSrc[t]) clipSrc[t].stop(); }catch(e){}
   try{ const sr=a.createBufferSource(); sr.buffer=c.buf; const gn=a.createGain(); gn.gain.value=1.4; sr.connect(gn); gn.connect(master); sr.start(); clipSrc[t]=sr; }catch(e){}
+}
+
+/* ============ BACKGROUND MUSIC (browser-synthesised, no recordings) ============ */
+let musicGain=null, musTimer=null, musStep=0, musNext=0, musNoise=null, mp3Src=null, mp3Idx=0;
+const mp3s=[];
+const mFreq=m=>440*Math.pow(2,(m-69)/12);
+function mNoise(a){
+  if(musNoise) return musNoise;
+  const n=Math.floor(a.sampleRate*2), b=a.createBuffer(1,n,a.sampleRate), d=b.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+  musNoise=b; return b;
+}
+function mNz(t,dur,vol,type,freq,q){
+  const a=ac; if(!a) return;
+  const s=a.createBufferSource(); s.buffer=mNoise(a); s.loop=true;
+  const fl=a.createBiquadFilter(); fl.type=type; fl.frequency.value=freq; if(q!=null) fl.Q.value=q;
+  const g=a.createGain();
+  g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
+  s.connect(fl); fl.connect(g); g.connect(musicGain); s.start(t); s.stop(t+dur+0.03);
+}
+function mKick(t,vol){
+  const a=ac,o=a.createOscillator(),g=a.createGain();
+  o.type="sine"; o.frequency.setValueAtTime(165,t); o.frequency.exponentialRampToValueAtTime(44,t+0.13);
+  g.gain.setValueAtTime(0.0008,t); g.gain.linearRampToValueAtTime(vol,t+0.006); g.gain.exponentialRampToValueAtTime(0.0008,t+0.3);
+  o.connect(g); g.connect(musicGain); o.start(t); o.stop(t+0.34);
+}
+function mSub(t,f,dur,vol){
+  const a=ac,o=a.createOscillator(),g=a.createGain(),lp=a.createBiquadFilter();
+  o.type="triangle"; o.frequency.setValueAtTime(f*1.03,t); o.frequency.exponentialRampToValueAtTime(f,t+0.07);
+  lp.type="lowpass"; lp.frequency.value=260;
+  g.gain.setValueAtTime(0.0008,t); g.gain.linearRampToValueAtTime(vol,t+0.02);
+  g.gain.setValueAtTime(vol,t+Math.max(0.05,dur*0.55)); g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
+  o.connect(lp); lp.connect(g); g.connect(musicGain); o.start(t); o.stop(t+dur+0.04);
+}
+function mHat(t,vol,open){ mNz(t, open?0.16:0.035, vol, "highpass", 7800, 0.7); }
+function mSnare(t,vol){
+  mNz(t,0.14,vol,"bandpass",1700,1.1);
+  const a=ac,o=a.createOscillator(),g=a.createGain();
+  o.type="triangle"; o.frequency.setValueAtTime(200,t);
+  g.gain.setValueAtTime(vol*0.5,t); g.gain.exponentialRampToValueAtTime(0.0008,t+0.09);
+  o.connect(g); g.connect(musicGain); o.start(t); o.stop(t+0.11);
+}
+function mLead(t,f,dur,vol,type){
+  const a=ac,o=a.createOscillator(),g=a.createGain(),lp=a.createBiquadFilter();
+  o.type=type||"square"; o.frequency.setValueAtTime(f,t);
+  lp.type="lowpass"; lp.frequency.setValueAtTime(3200,t); lp.frequency.exponentialRampToValueAtTime(1400,t+dur);
+  g.gain.setValueAtTime(0.0008,t); g.gain.linearRampToValueAtTime(vol,t+0.012); g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
+  o.connect(lp); lp.connect(g); g.connect(musicGain); o.start(t); o.stop(t+dur+0.02);
+}
+function mPad(t,freqs,dur,vol){
+  const a=ac,g=a.createGain(),lp=a.createBiquadFilter();
+  lp.type="lowpass"; lp.frequency.value=1500;
+  g.gain.setValueAtTime(0.0008,t); g.gain.linearRampToValueAtTime(vol,t+Math.min(0.25,dur*0.2));
+  g.gain.setValueAtTime(vol,t+dur*0.7); g.gain.exponentialRampToValueAtTime(0.0008,t+dur);
+  lp.connect(g); g.connect(musicGain);
+  freqs.forEach((f,i)=>{ const o=a.createOscillator(); o.type="sawtooth"; o.frequency.value=f; o.detune.value=(i-1)*7; o.connect(lp); o.start(t); o.stop(t+dur+0.03); });
+}
+const TRACKS=[
+ {name:"Ֆոնկ", bpm:138, h:"xXxXxXxoxXxXxXxo",
+  k:[[0,.85],[3,.66],[8,.85],[11,.66],[14,.56]],
+  s:[[4,.3],[12,.3]],
+  b:[[0,33,2.4,.5],[6,33,1.6,.42],[10,31,1.6,.42],[13,29,1.6,.4]],
+  m:[[0,69,1,.14],[2,72,1,.11],[3,76,1,.11],[6,72,1,.11],[8,69,1,.14],[10,67,1,.1],[11,72,1,.1],[14,76,1,.11]] },
+ {name:"Թրեպ", bpm:75, h:"x.x.xXx.x.x.xxxx",
+  k:[[0,.9],[6,.72],[10,.66],[13,.6]],
+  s:[[8,.34]],
+  b:[[0,26,3.2,.52],[6,26,1.4,.46],[10,29,1.4,.46],[13,24,1.2,.42]],
+  m:[[0,62,1.6,.09,"triangle"],[4,65,.8,.08,"triangle"],[8,62,1.6,.09,"triangle"],[11,69,.8,.08,"triangle"]],
+  p:[[0,[50,53,57],4,.1]] },
+ {name:"Աֆրո", bpm:112, h:"..x..x..x..x..x.",
+  k:[[0,.8],[7,.66],[10,.66],[14,.56]],
+  s:[[4,.24],[12,.24]],
+  b:[[0,36,1,.42],[3,43,1,.38],[6,41,1,.38],[10,36,1,.4],[12,39,1,.36]],
+  m:[[0,84,1.6,.09,"triangle"],[6,87,1.6,.08,"triangle"],[10,79,1.6,.08,"triangle"]],
+  p:[[0,[60,63,67],4,.09]] },
+ {name:"Ռեյջ", bpm:168, h:"xXxxXxxXxXxxXxxX",
+  k:[[0,.8],[4,.8],[8,.8],[12,.8],[10,.5]],
+  s:[[4,.3],[12,.3]],
+  b:[[0,28,3.6,.46],[8,31,3.6,.46]],
+  p:[[0,[52,55,59],3.6,.12],[8,[48,52,55],3.6,.12]] },
+ {name:"Ռաբիզ", bpm:128, h:"..x..x..x..x..x.",
+  k:[[0,.8],[3,.56],[6,.74],[8,.62],[11,.56],[14,.74]],
+  s:[[2,.26],[5,.26],[9,.26],[12,.26]],
+  b:[[0,33,1.2,.44],[3,33,1,.36],[6,40,1,.4],[8,33,1.2,.44],[11,31,1,.36],[14,28,1,.4]],
+  m:[[0,69,1.4,.12],[3,72,1.4,.1],[6,76,1.4,.1],[8,74,1.4,.1],[11,72,1.4,.1],[14,69,1.4,.12]] }
+];
+function mkSeq(d){
+  const h=d.h||"";
+  return (s,t,sd)=>{
+    for(const x of d.k||[]) if(x[0]===s) mKick(t,x[1]);
+    for(const x of d.s||[]) if(x[0]===s) mSnare(t,x[1]);
+    const ch=h[s%h.length];
+    if(ch==="x") mHat(t,.085,false); else if(ch==="X") mHat(t,.15,false); else if(ch==="o") mHat(t,.11,true);
+    for(const x of d.b||[]) if(x[0]===s) mSub(t,mFreq(x[1]),x[2]*sd,x[3]);
+    for(const x of d.m||[]) if(x[0]===s) mLead(t,mFreq(x[1]),x[2]*sd,x[3],x[4]);
+    for(const x of d.p||[]) if(x[0]===s) mPad(t,x[1].map(mFreq),x[2]*sd,x[3]);
+  };
+}
+TRACKS.forEach(t=>{ t.seq=mkSeq(t); });
+function musicTick(){
+  if(!musicGain||!ac) return;
+  if(ac.state!=="running"){ musNext=0; return; }
+  const tr=TRACKS[Number(cfg.musicTrack)||0]||TRACKS[0];
+  const sd=(60/tr.bpm)/4, now=ac.currentTime;
+  if(!musNext||musNext<now) musNext=now+0.02;
+  while(musNext<now+0.3){ tr.seq(musStep,musNext,sd); musStep=(musStep+1)%16; musNext+=sd; }
+}
+function playMp3(){
+  if(!mp3s.length||!musicGain||!ac) return;
+  try{ if(mp3Src){ mp3Src.onended=null; mp3Src.stop(); } }catch(e){}
+  const s=ac.createBufferSource(); s.buffer=mp3s[mp3Idx%mp3s.length]; s.connect(musicGain);
+  s.onended=()=>{ mp3Idx++; playMp3(); };
+  s.start(); mp3Src=s;
+}
+function musicStop(){
+  if(musTimer){ clearInterval(musTimer); musTimer=null; }
+  try{ if(mp3Src){ mp3Src.onended=null; mp3Src.stop(); } }catch(e){}
+  mp3Src=null; musStep=0; musNext=0;
+}
+function musicStart(){
+  musicStop();
+  if(!cfg.musicOn) return;
+  const a=audio(); if(!a) return;
+  if(!musicGain){ musicGain=a.createGain(); musicGain.connect(master); }
+  try{ musicGain.gain.cancelScheduledValues(a.currentTime); musicGain.gain.value=cfg.musicVol; }catch(e){}
+  if(mp3s.length) playMp3(); else musTimer=setInterval(musicTick,40);
+}
+function duckMusic(hold){
+  if(!musicGain||!ac) return;
+  try{
+    const t=ac.currentTime, v=Math.max(0.001,cfg.musicVol);
+    musicGain.gain.cancelScheduledValues(t);
+    musicGain.gain.setValueAtTime(v*0.25,t);
+    musicGain.gain.setValueAtTime(v*0.25,t+hold);
+    musicGain.gain.linearRampToValueAtTime(v,t+hold+0.35);
+  }catch(e){}
 }
 
 /* ============ GAME STATE ============ */
@@ -924,7 +1074,7 @@ function updStatus(){ const m={on:"🟢 միացված է, նվերները գա
   $("boxTik").style.display=cfg.mode==="tikfinity"?"":"none"; $("boxCloud").style.display=cfg.mode==="cloud"?"":"none"; }
 const binds=[["l_name","left.name"],["l_num","left.num"],["l_c1","left.c1"],["l_c2","left.c2"],["l_stripes","left.stripes"],["l_gifts","left.gifts"],
   ["r_name","right.name"],["r_num","right.num"],["r_c1","right.c1"],["r_c2","right.c2"],["r_stripes","right.stripes"],["r_gifts","right.gifts"],
-  ["ko","ko"],["superAt","superAt"],["lang","lang"],["chatVotes","chatVotes"],["chatL","chatL"],["chatR","chatR"],["sound","sound"],["volume","volume"],["wsUrl","wsUrl"],["mode","mode"],["tapControl","tapControl"],["cloudUser","cloudUser"],["cloudKey","cloudKey"]];
+  ["ko","ko"],["superAt","superAt"],["lang","lang"],["chatVotes","chatVotes"],["chatL","chatL"],["chatR","chatR"],["sound","sound"],["volume","volume"],["musicOn","musicOn"],["musicTrack","musicTrack"],["musicVol","musicVol"],["wsUrl","wsUrl"],["mode","mode"],["tapControl","tapControl"],["cloudUser","cloudUser"],["cloudKey","cloudKey"]];
 const getP=(p)=>p.split(".").reduce((o,kk)=>o[kk],cfg);
 const setP=(p,v)=>{ const ks=p.split("."), last2=ks.pop(); ks.reduce((o,kk)=>o[kk],cfg)[last2]=v; };
 function fillForm(){ sndUI(); for(const [id,p] of binds){ const el=$(id), v=getP(p); if(el.type==="checkbox") el.checked=!!v; else el.value=v; } $("demo").checked=demoOn; updStatus(); }
@@ -933,6 +1083,7 @@ for(const [id,p] of binds){
   el.addEventListener(el.type==="checkbox"||el.tagName==="SELECT"||el.type==="color"?"change":"input", ()=>{
     let v = el.type==="checkbox" ? el.checked : el.value;
     if(el.type==="number"||el.type==="range") v=parseFloat(v)||0;
+    if(p==="musicTrack") v=parseInt(v,10)||0;
     if(p==="left.name"||p==="right.name") v=String(v).toUpperCase();
     setP(p,v); saveCfg(); rebuildRules();
   });
@@ -945,6 +1096,40 @@ for(const [t,id] of [[0,"l"],[1,"r"]]){
   $(id+"_snd").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ SND[t]=rd.result; try{ localStorage.setItem("mvr_snd"+t, rd.result); }catch(err){ $(id+"_sndst").textContent="⚠️ ֆայլը մեծ է պահելու համար, կաշխատի միայն մինչև էջը փակելը"; } sndUI(); loadClips(); setTimeout(()=>playClip(t),300); }; rd.readAsDataURL(f); };
   $(id+"_clr").onclick=()=>{ SND[t]=null; try{ localStorage.removeItem("mvr_snd"+t); }catch(e){} $(id+"_snd").value=""; sndUI(); loadClips(); };
 }
+/* ---- music UI ---- */
+$("musicTrack").innerHTML = TRACKS.map((t,i)=>`<option value="${i}">${i+1}. ${t.name}</option>`).join("");
+function musUI(){
+  const b=$("mus");
+  if(cfg.musicOn){ b.textContent="🎵 "+(TRACKS[Number(cfg.musicTrack)||0]||TRACKS[0]).name; b.classList.remove("off"); }
+  else { b.textContent="🔇 Երաժշտ."; b.classList.add("off"); }
+  $("musicOn").checked=!!cfg.musicOn; $("musicTrack").value=Number(cfg.musicTrack)||0; $("musicVol").value=cfg.musicVol;
+  $("musicSt").textContent = mp3s.length ? "✅ "+mp3s.length+" քո երգը՝ հերթով" : "Հիմա՝ 5 ներկառուցված բիթերը";
+}
+$("musicOn").addEventListener("change",()=>{ musUI(); musicStart(); });
+$("musicTrack").addEventListener("change",()=>{ musUI(); musicStart(); });
+$("musicVol").addEventListener("input",()=>{
+  if(!musicGain||!ac) return;
+  try{ musicGain.gain.cancelScheduledValues(ac.currentTime); musicGain.gain.value=cfg.musicVol; }catch(e){}
+});
+$("sound").addEventListener("change",()=>{
+  if(!cfg.sound){ musicStop(); try{ if(master) master.gain.value=0; }catch(e){} }
+  else musicStart();
+});
+$("mus").onclick=()=>{
+  audio();
+  if(!cfg.musicOn) cfg.musicOn=true;
+  else { cfg.musicTrack=(Number(cfg.musicTrack)+1)%TRACKS.length; if(Number(cfg.musicTrack)===0) cfg.musicOn=false; }
+  saveCfg(); musUI(); musicStart();
+};
+$("musicFiles").onchange=async e=>{
+  const list=[...e.target.files].slice(0,10); if(!list.length) return;
+  const a=audio(); if(!a) return;
+  mp3s.length=0;
+  for(const f of list){ try{ mp3s.push(await a.decodeAudioData(await f.arrayBuffer())); }catch(err){} }
+  mp3Idx=0; musUI(); musicStart();
+};
+$("musicClr").onclick=()=>{ mp3s.length=0; $("musicFiles").value=""; mp3Idx=0; musUI(); musicStart(); };
+musUI();
 $("fs").onclick=()=>{ keepAwake(); const el=document.documentElement; try{ const r=(el.requestFullscreen||el.webkitRequestFullscreen).call(el); if(r&&r.catch) r.catch(()=>{}); }catch(e){} togglePanel(false); };
 // tap control on the battlefield
 let tap=null;
@@ -968,6 +1153,7 @@ addEventListener("keydown",e=>{
   if(kk==="1") testGift(0,false); else if(kk==="2") testGift(1,false);
   else if(kk==="3") testGift(0,true); else if(kk==="4") testGift(1,true);
   else if(kk==="r") newRound(); else if(kk==="s") togglePanel();
+  else if(kk==="m"){ const b=$("mus"); if(b) b.onclick(); }
 });
 addEventListener("pointerdown",()=>{ audio(); loadClips(); },{once:true});
 const qs=new URLSearchParams(location.search);
@@ -976,6 +1162,7 @@ if(qs.has("lang")) cfg.lang=qs.get("lang");
 
 roundNo=0; newRound();
 connect();
+musicStart();
 requestAnimationFrame(frame);
 })();
 </script>
