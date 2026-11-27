@@ -155,12 +155,16 @@ const FONT = '"Arial Black","Segoe UI Black",Impact,Arial,sans-serif';
 const font = (px, w="900") => `${w} ${Math.max(6,px)}px ${FONT}`;
 
 function L(){
-  // ինչպես ամենասկզբում՝ խաղը վերևում փոքրիկ շերտով, ներքևը՝ դատարկ
+  // նույն չափը, ինչ ամենասկզբում, բայց ամբողջ բլոկը՝ էկրանի մեջտեղում
   const portrait = SH >= SW*1.05;
-  const hdrY=10*k, hdrH=150*k;
-  const legY=hdrY+hdrH+8*k, legH=Math.max(34, 66*k);
+  const hdrH=150*k;
+  const legH=Math.max(40, 80*k);
+  const bfH = portrait ? Math.min(H*0.46, W*0.95) : (H - (10*k+hdrH+8*k+legH+10*k) - 6*k);
+  const total = 10*k + hdrH + 8*k + legH + 10*k + bfH;
+  const oy = Math.max(0, (SH - total)/2);
+  const hdrY=10*k+oy;
+  const legY=hdrY+hdrH+8*k;
   const bfY=legY+legH+10*k;
-  const bfH = portrait ? Math.min(H*0.46, W*0.95) : (H - bfY - 6*k);
   return {hdrY,hdrH,portrait,legY,legH,bfY,bfH,fansY:0,fansH:0};
 }
 
@@ -232,7 +236,7 @@ const DX=()=>W*(0.5+0.47*pos);
 function img(url){ if(!url) return null; let e=imgCache.get(url); if(!e){ const im=new Image(); e={im,ok:false}; im.onload=()=>e.ok=true; im.referrerPolicy="no-referrer"; im.src=url; imgCache.set(url,e); if(imgCache.size>400) imgCache.delete(imgCache.keys().next().value); } return e.ok?e.im:null; }
 
 function newRound(){
-  R=[mkRun(),mkRun()]; phase="play"; winner=-1; roundNo++; koT=-1;
+  R=[mkRun(),mkRun()]; phase="play"; winner=-1; roundNo++; koT=-1; pos=0;
   banner={text:S().go, color:"#fff", t:0, life:1.6};
   sfx.whistle();
   const p=pending; pending=[]; p.forEach(a=>score(...a));
@@ -663,6 +667,8 @@ function update(dt){
   }
   btnP=btnP.map(v=>Math.max(0,v-dt*4));
   if(koT>=0){ koT-=dt; if(koT<0){ if(phase==="play" && Math.abs(R[0].score-R[1].score)>=Math.max(1,cfg.ko)) endRound(); } }
+  // երբ պարտվողը դուրս է գալիս էկրանից (մնացել է ~2 հարված)՝ հաղթանակ
+  if(phase==="play"){ const dd=Math.abs(R[0].score-R[1].score); if(dd >= Math.max(1,cfg.ko)*0.82) endRound(); }
   for(let t=0;t<2;t++){ const r=R[t];
     if(r.kt>=0){ r.kt+=dt; const p=r.kt/KDUR[r.kp];
       if(!r.hitDone && p>=KHIT){ r.hitDone=true; if(phase==="play") impact(t,r.kp); }
@@ -826,10 +832,10 @@ function drawHeader(l){
       rr(cx0,cy0,cw,sh,sh*0.28);
       const gr=g.createLinearGradient(0,cy0,0,cy0+sh); gr.addColorStop(0,shade(tm.c1,1.05)); gr.addColorStop(1,shade(tm.c1,0.62)); g.fillStyle=gr; g.fill();
       g.strokeStyle="rgba(255,255,255,.75)"; g.lineWidth=Math.max(1,1.6*k); g.stroke();
-      g.font=font(sh*0.56); g.textAlign="left"; g.textBaseline="middle"; g.fillStyle="#fff";
-      g.fillText(emojiFor(r.label), cx0+sh*0.14, cy0+sh*0.54);
-      const ew=g.measureText(emojiFor(r.label)).width;
-      txt("+"+(r.pts!=null?fmt(r.pts):"💰"), cx0+cw-sh*0.12, cy0+sh*0.52, sh*0.4, "#fff","right",OUT,2.6*k, cw-ew-sh*0.5);
+      g.font=font(sh*0.68); g.textAlign="left"; g.textBaseline="middle"; g.fillStyle="#fff";
+      g.fillText(emojiFor(r.label), cx0+sh*0.10, cy0+sh*0.53);
+      const ew=g.measureText(emojiFor(r.label)).width*1.06;
+      txt("+"+(r.pts!=null?fmt(r.pts):"💰"), cx0+cw-sh*0.10, cy0+sh*0.53, sh*0.34, "#fff","right",OUT,2.6*k, cw-ew-sh*0.24);
       ci++;
     }
   }
