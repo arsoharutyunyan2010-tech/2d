@@ -17,11 +17,6 @@
   #wsbadge{position:fixed;left:10px;bottom:10px;z-index:6;display:flex;align-items:center;gap:7px;max-width:min(78vw,420px);
     background:rgba(10,14,28,.88);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:7px 11px;color:#fff;
     font:12px/1.25 Arial,"Segoe UI",sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.45)}
-  #finHint{position:fixed;left:50%;transform:translateX(-50%);z-index:5;pointer-events:none;
-    display:inline-block;white-space:nowrap;max-width:96vw;overflow:hidden;text-overflow:ellipsis;
-    padding:3px 10px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(255,213,74,.55);
-    color:#ffd54a;font-weight:800;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.45)}
-  #finHint[hidden]{display:none}
   #wsbadge[hidden]{display:none}
   #wsbadge .d{width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:#ff3b3b}
   #wsbadge.ok .d{background:#2ee66b} #wsbadge.wait .d{background:#ffc23a} #wsbadge.idle .d{background:#a8b0cc}
@@ -52,7 +47,6 @@
 <canvas id="c"></canvas>
 <button id="gear" title="Կարգավորումներ (S)">⚙</button>
 <button id="mus" title="Երաժշտություն (M)">🎵</button>
-<div id="finHint" hidden></div>
 <div id="wsbadge" hidden title="Սեղմիր՝ պատճառը տեսնելու համար"><span class="d"></span><span class="t"></span></div>
 <div id="panel" hidden>
   <button id="close" title="Փակել">✕</button>
@@ -246,19 +240,19 @@ function L(){
   const hdrH=150*k;
   const legH=Math.max(46, 84*k);
   // 🏁 ազատ տեղ գավաթներից վերև՝ վերջնական նվերների պատկերների համար
-  const finHintH = Math.max(18, Math.min(26, W*0.052));
-  const finH = (portrait ? Math.max(64*k, W*0.235) : Math.max(38*k, W*0.08)) + finHintH;
+  const finH = portrait ? Math.max(84*k, W*0.25) : Math.max(34*k, W*0.075);
   const chrome = finH + 12*k + hdrH + 8*k + legH + 10*k;
   const bfH = portrait
     ? (cfg.fill ? Math.max(H*0.55, SH - chrome) : Math.min(H*0.46, W*0.95))
     : (H - chrome - 6*k);
   const total = chrome + bfH;
-  const oy = (portrait && cfg.fill) ? Math.max(14, SH*0.016) : Math.max(0, (SH - total)/2);
+  // ամբողջ բլոկը մի քիչ վերև (ոչ կենտրոնում)
+  const oy = (portrait && cfg.fill) ? Math.max(8, SH*0.010) : Math.max(0, (SH - total)/2 - Math.min(44, SH*0.048));
   const finY=oy;
   const hdrY=finY+finH+12*k;
   const legY=hdrY+hdrH+8*k;
   const bfY=legY+legH+10*k;
-  return {hdrY,hdrH,portrait,legY,legH,bfY,bfH,fansY:0,fansH:0,finY,finH,finHintH};
+  return {hdrY,hdrH,portrait,legY,legH,bfY,bfH,fansY:0,fansH:0,finY,finH};
 }
 
 /* ============ AUDIO ============ */
@@ -407,10 +401,19 @@ function mkSeq(d){
   };
 }
 TRACKS.forEach(t=>{ t.seq=mkSeq(t); });
+// 🏆 Չեմպիոնի երաժշտությունը (հաղթական, սինթեզ) — չկա ընտրացանկում, հնչում է միայն խաղի ավարտին
+const FINAL_TRACK = { name:"Չեմպիոն", bpm:104, h:"X..xX..xX..xX..x",
+  k:[[0,.9],[4,.55],[8,.82],[12,.55]],
+  s:[[4,.26],[12,.26]],
+  b:[[0,45,2,.52],[4,48,1.6,.46],[8,50,1.6,.5],[12,43,1.6,.44]],
+  m:[[0,69,1.2,.17],[2,72,1.2,.15],[4,76,1.6,.18],[8,74,1.2,.15],[10,72,1.2,.14],[12,69,1.6,.16]],
+  p:[[0,[57,60,64,69],4,.11],[8,[59,62,67,71],4,.10]] };
+FINAL_TRACK.seq=mkSeq(FINAL_TRACK);
+let musChampion=false;
 function musicTick(){
   if(!musicGain||!ac) return;
   if(ac.state!=="running"){ musNext=0; return; }
-  const tr=TRACKS[Number(cfg.musicTrack)||0]||TRACKS[0];
+  const tr = musChampion ? FINAL_TRACK : (TRACKS[Number(cfg.musicTrack)||0]||TRACKS[0]);
   const sd=(60/tr.bpm)/4, now=ac.currentTime;
   if(!musNext||musNext<now) musNext=now+0.02;
   while(musNext<now+0.3){ tr.seq(musStep,musNext,sd); musStep=(musStep+1)%16; musNext+=sd; }
@@ -433,7 +436,23 @@ function musicStart(){
   const a=audio(); if(!a) return;
   if(!musicGain){ musicGain=a.createGain(); musicGain.connect(master); }
   try{ musicGain.gain.cancelScheduledValues(a.currentTime); musicGain.gain.value=cfg.musicVol; }catch(e){}
-  if(mp3s.length) playMp3(); else musTimer=setInterval(musicTick,40);
+  if(mp3s.length && !musChampion) playMp3(); else musTimer=setInterval(musicTick,40);
+}
+// 🏆 Անմիջապես անջատում է հնչող 3 թրեքներից որևէ մեկը և միացնում չեմպիոնի երաժշտությունը
+function championMusic(){
+  musChampion=true; musStep=0; musNext=0;
+  try{ if(mp3Src){ mp3Src.onended=null; mp3Src.stop(); } }catch(e){}
+  mp3Src=null;
+  if(musTimer){ clearInterval(musTimer); musTimer=null; }
+  if(!cfg.musicOn) return;
+  const a=audio(); if(!a) return;
+  if(!musicGain){ musicGain=a.createGain(); musicGain.connect(master); }
+  try{ musicGain.gain.cancelScheduledValues(a.currentTime); musicGain.gain.value=cfg.musicVol; }catch(e){}
+  musTimer=setInterval(musicTick,40);
+}
+function normalMusic(){
+  if(!musChampion) return;
+  musChampion=false; musicStart();
 }
 function duckMusic(hold){
   if(!musicGain||!ac) return;
@@ -460,6 +479,7 @@ function img(url){ if(!url) return null; let e=imgCache.get(url); if(!e){ const 
 
 function newRound(){
   R=[mkRun(),mkRun()]; phase="play"; winner=-1; roundNo++; koT=-1; pos=0; finalDone=false; finalT=-1; finalAt=0; chatCnt=[0,0];
+  try{ normalMusic(); }catch(e){}
   banner={text:S().go, color:"#fff", t:0, life:1.6};
   sfx.whistle();
   const p=pending; pending=[]; p.forEach(a=>score(...a));
@@ -498,6 +518,7 @@ function finalWin(t){
   shake=1; flash=1;
   for(let i=0;i<180;i++) confetti(W*Math.random(), -20*k, t);
   try{ sfx.superk(); setTimeout(()=>sfx.cheer(),250); }catch(e){}
+  try{ championMusic(); }catch(e){}
 }
 
 function score(t, pts, info){
@@ -732,7 +753,8 @@ window.mvrDbg = {   // թեստերի համար (չի ազդում խաղի վ�
   get phase(){return phase}, get winner(){return winner}, get series(){return series.slice()},
   get scores(){return [R[0].score,R[1].score]}, get finalDone(){return finalDone}, get finalT(){return finalT},
   get roundNo(){return roundNo}, get cfg(){return cfg}, get tracks(){return TRACKS.map(t=>t.name)},
-  get finalSrc(){return FINAL_SRC}, get L(){return L()}, newRound:()=>newRound(), finalTeamFor
+  get finalSrc(){return FINAL_SRC}, get L(){return L()}, newRound:()=>newRound(), finalTeamFor,
+  get musChampion(){return musChampion}, get finalTrack(){return FINAL_TRACK.name}, get trackNames(){return TRACKS.map(t=>t.name)}
 };
 window.mvrClips = ()=>clipBuf.map(c=>c?+c.buf.duration.toFixed(2):null);
 
@@ -1076,7 +1098,6 @@ function draw(){
   if(flash>0){ g.fillStyle=`rgba(255,255,255,${flash*0.6})`; g.fillRect(0,0,W,H); }
   if(banner && !finalDone) drawBanner(l);
   if(phase!=="play") drawEnd(l);
-  try{ updFinHint(); }catch(e){}
   drawStatusDot();
   g.restore();
   g.restore();
@@ -1232,21 +1253,24 @@ function drawChatTally(l){
   g.restore();
 }
 
-// 🏁 Վերջնական նվերների պատկերները՝ գավաթներից վերևի ազատ տարածքում
+// 🏁 Վերջնական նվերներ՝ փոքրիկ նկարներ + «END GAME / MESSI WINS» պիտակներ
 function drawFinalRow(l){
-  const h=l.finH, y=l.finY, hintH=l.finHintH||0;
-  const r=Math.min((h-hintH)*0.40, W*0.125);
-  const cy=y+hintH+(h-hintH)*0.5;
+  const h=l.finH, y=l.finY;
+  const cy=y+h*0.72;
+  const r=Math.min(h*0.24, W*0.075);
   for(let t=0;t<2;t++){
     const tm=team(t);
-    const cx = t===0 ? W*0.21 : W*0.79;
-    const im = FINAL_IMG[t===0?"left":"right"];
-    // շրջանակ
+    const cx = t===0 ? W*0.255 : W*0.745;
+    // պիտակները՝ նկարի վերևում
+    txt("END GAME", cx, y+h*0.12, Math.min(h*0.15, W*0.036), "#ffd54a", "center", OUT, Math.max(2.5,3*k), W*0.44);
+    txt(t===0?"MESSI WINS":"CR7 WIN", cx, y+h*0.32, Math.min(h*0.22, W*0.052), "#fff", "center", OUT, Math.max(3,4*k), W*0.46);
+    // շրջանակ + նկար
     g.beginPath(); g.arc(cx,cy,r*1.14,0,Math.PI*2);
     g.fillStyle="rgba(255,255,255,.09)"; g.fill();
-    g.lineWidth=Math.max(2,3.2*k);
+    g.lineWidth=Math.max(2,3*k);
     g.strokeStyle = (finalT===t) ? "#ffd54a" : tm.c1;
     g.stroke();
+    const im = FINAL_IMG[t===0?"left":"right"];
     const d=r*2.05;
     if(im && im.complete && im.naturalWidth){
       const sc=Math.min(d/im.naturalWidth, d/im.naturalHeight);
@@ -1257,22 +1281,6 @@ function drawFinalRow(l){
       g.fillStyle="#fff"; g.fillText(t===0?"✈️":"🦁", cx, cy);
     }
   }
-  // մեջտեղում՝ FINAL պիտակ
-  txt("FINAL", W/2, cy, r*0.62, "#ffd54a", "center", OUT, Math.max(2.5,3.6*k), W*0.24);
-}
-// 🏁 Հայերեն բացատրությունը՝ նվերներից վերև (DOM, որ հեռախոսում տառերը չմշուշվեն)
-const FIN_HINT_TEXT = "🏁 Ուղարկիր՝ խաղն ավարտվում է · հաղթում է ուղարկողի թիմը";
-let finHintKey="";
-function updFinHint(){
-  const el=$("finHint"); if(!el) return;
-  const l=L();
-  const key=Math.round(l.finY)+"|"+Math.round(W)+"|"+(finalDone?1:0)+"|"+(panel.hidden?1:0);
-  if(key===finHintKey) return; finHintKey=key;
-  el.textContent=FIN_HINT_TEXT;
-  el.hidden = !!finalDone || !panel.hidden;
-  el.style.top = Math.round(Math.max(0,l.finY+1))+"px";
-  el.style.maxWidth = Math.round(W*0.96)+"px";
-  el.style.fontSize = Math.round(Math.max(9.5, Math.min(13, W*0.028)))+"px";
 }
 function superRule(t){ return rules[t].filter(r=>(r.pts??0)>=cfg.superAt).sort((a,b)=>a.pts-b.pts)[0]; }
 function superTap(t){ const sr=superRule(t); score(t, sr?sr.pts:cfg.superAt, {gift:sr?sr.label:"", combo:1}); }
