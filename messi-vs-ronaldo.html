@@ -305,8 +305,12 @@ function loadClips(){
       a.decodeAudioData(arr.buffer).then(buf=>{ clipBuf[t]={url,buf}; clipLoading[t]=null; }).catch(()=>{ clipLoading[t]=null; }); }catch(e){ clipLoading[t]=null; }
   }
 }
+const clipLast=[0,0];
 function playClip(t){
   const a=audio(); if(!a) return;
+  const now=performance.now();
+  if(now-(clipLast[t]||0) < 90) return;   // 🛡 90ms-ից ավելի հաճախ չի հնչում
+  clipLast[t]=now;
   const c=clipBuf[t]; if(!c || c.url!==(SND[t]||CLIP[t])){ loadClips(); return; }
   try{ if(clipSrc[t]) clipSrc[t].stop(); }catch(e){}
   try{ const sr=a.createBufferSource(); sr.buffer=c.buf; const gn=a.createGain(); gn.gain.value=1.4; sr.connect(gn); gn.connect(master); sr.start(); clipSrc[t]=sr; }catch(e){}
@@ -527,7 +531,7 @@ function score(t, pts, info){
   if(!(pts>0)) return;
   pts = Math.round(pts*100)/100;
   if(!info.queued){ addPop(t, pts, info); playClip(t); }
-  if(phase!=="play"){ pending.push([t,pts,Object.assign({},info,{queued:true})]); return; }
+  if(phase!=="play"){ if(pending.length<250) pending.push([t,pts,Object.assign({},info,{queued:true})]); return; }
   const r=R[t], o=R[1-t];
   r.score+=pts;
   const id=info.user||info.nick;
@@ -570,11 +574,12 @@ function addPop(t, pts, info){
   if(pops.length>14) pops.shift();
 }
 function confetti(x,y,t,burst){
+  if(parts.length>320) return;   // 🛡 պաշտպանություն նվերների հեղեղից
   const cols = t===0?[cfg.left.c1,"#ffffff",cfg.left.c2,"#ffd54a"] : t===1?[cfg.right.c1,cfg.right.c2,"#ffffff","#ffd54a"] : ["#ffd54a","#fff","#ff6"];
   const a=Math.random()*Math.PI*2, sp=(burst?(4+Math.random()*10):(1+Math.random()*3))*k*60;
   parts.push({x,y,vx:Math.cos(a)*sp,vy:burst?Math.sin(a)*sp-300*k:Math.random()*200*k,life:burst?1.6:4,age:0,c:cols[(Math.random()*cols.length)|0],s:(8+Math.random()*10)*k,rot:Math.random()*6,vr:(Math.random()-.5)*12,type:"c"});
 }
-function spark(x,y){ const a=Math.random()*Math.PI*2, sp=(200+Math.random()*500)*k; parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:.45,age:0,c:"#fffbe0",s:(4+Math.random()*4)*k,type:"s"}); }
+function spark(x,y){ if(parts.length>320) return; const a=Math.random()*Math.PI*2, sp=(200+Math.random()*500)*k; parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:.45,age:0,c:"#fffbe0",s:(4+Math.random()*4)*k,type:"s"}); }
 
 /* ============ TIKTOK (TikFinity WebSocket) ============ */
 let ws=null, wsState="off", wsTimer=null;
@@ -747,14 +752,16 @@ function handle(type, d){
     }
   }
 }
-setInterval(()=>{ const now=performance.now(); for(const [kk,v] of streaks) if(now-v.t>60000) streaks.delete(kk); },15000);
+setInterval(()=>{ const now=performance.now(); for(const [kk,v] of streaks) if(now-v.t>60000) streaks.delete(kk);
+  if(chatCd.size>400) for(const [kk,v] of chatCd) if(now-v>120000) chatCd.delete(kk); },15000);
 window.mvrHandle = handle; // for testing
 window.mvrDbg = {   // թեստերի համար (չի ազդում խաղի վրա)
   get phase(){return phase}, get winner(){return winner}, get series(){return series.slice()},
   get scores(){return [R[0].score,R[1].score]}, get finalDone(){return finalDone}, get finalT(){return finalT},
   get roundNo(){return roundNo}, get cfg(){return cfg}, get tracks(){return TRACKS.map(t=>t.name)},
   get finalSrc(){return FINAL_SRC}, get L(){return L()}, newRound:()=>newRound(), finalTeamFor,
-  get musChampion(){return musChampion}, get finalTrack(){return FINAL_TRACK.name}, get trackNames(){return TRACKS.map(t=>t.name)}
+  get musChampion(){return musChampion}, get finalTrack(){return FINAL_TRACK.name}, get trackNames(){return TRACKS.map(t=>t.name)},
+  get partsN(){return parts.length}, get pendingN(){return pending.length}, get popsN(){return pops.length}, get logN(){return wsLog.length}
 };
 window.mvrClips = ()=>clipBuf.map(c=>c?+c.buf.duration.toFixed(2):null);
 
