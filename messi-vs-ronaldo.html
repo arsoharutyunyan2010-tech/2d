@@ -12,6 +12,13 @@
   #mus{position:fixed;right:10px;bottom:66px;border:0;border-radius:16px;background:rgba(0,0,0,.5);color:#fff;font:12px/1.15 Arial,"Segoe UI",sans-serif;padding:8px 11px;z-index:5;opacity:.82;cursor:pointer;max-width:46vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .25s,background .25s}
   #mus:active{opacity:1;background:rgba(0,0,0,.72)}
   #mus.off{opacity:.45}
+  #wsbadge{position:fixed;left:10px;bottom:10px;z-index:6;display:flex;align-items:center;gap:7px;max-width:min(78vw,420px);
+    background:rgba(10,14,28,.88);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:7px 11px;color:#fff;
+    font:12px/1.25 Arial,"Segoe UI",sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.45)}
+  #wsbadge[hidden]{display:none}
+  #wsbadge .d{width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:#ff3b3b}
+  #wsbadge.ok .d{background:#2ee66b} #wsbadge.wait .d{background:#ffc23a} #wsbadge.idle .d{background:#a8b0cc}
+  #wsbadge .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   #panel{position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);overflow:auto;background:#141a2e;color:#e8ecf8;z-index:6;box-shadow:-8px 0 30px rgba(0,0,0,.5);padding:14px 16px 40px;box-sizing:border-box;font-size:14px}
   #panel[hidden]{display:none}
   #panel h2{margin:4px 0 10px;font-size:18px}
@@ -37,6 +44,7 @@
 <canvas id="c"></canvas>
 <button id="gear" title="Կարգավորումներ (S)">⚙</button>
 <button id="mus" title="Երաժշտություն (M)">🎵</button>
+<div id="wsbadge" hidden title="Սեղմիր՝ պատճառը տեսնելու համար"><span class="d"></span><span class="t"></span></div>
 <div id="panel" hidden>
   <button id="close" title="Փակել">✕</button>
   <h2>⚽ Messi vs Ronaldo — կարգավորումներ</h2>
@@ -100,6 +108,11 @@
   <div class="hint">📱 Ձեռքով ռեժիմ՝ սեղմիր դաշտի <b>ձախ</b> կեսին = ձախ թիմ +1, <b>աջ</b> կեսին = աջ թիմ +1։ Ամեն ինչ ավտոմատ է նաև հեռախոսով․ էկրանին հավելյալ կոճակներ պետք չեն։</div>
   <div id="boxTik"><label>TikFinity WebSocket հասցե</label><input type="text" id="wsUrl"></div>
   <div id="boxCloud"><div class="row"><div><label>Քո TikTok username-ը (առանց @)</label><input type="text" id="cloudUser"></div></div><label>tik.tools API բանալի</label><input type="text" id="cloudKey"><div class="hint">Ծառայությունը TikTok-ինը չէ, անվճար է միայն փորձնական շրջանում։</div></div>
+
+  <h3>Ինչու է կապը կարմիր (ախտորոշում)</h3>
+  <div class="hint">Այստեղ գրվում է ամեն մի փորձ՝ կոդերով։ Եթե կարմիր է մնում, սեղմիր «Պատճենել» ու ուղարկիր ինձ այս տեքստը։</div>
+  <div class="row"><button class="b" id="wsRetry" style="flex:.6">🔄 Նորից միանալ</button><button class="b" id="wsCopy" style="flex:.5">📋 Պատճենել</button></div>
+  <pre id="wslog" style="background:#0d1224;color:#a9e8b0;border:1px solid #2f3a63;border-radius:6px;padding:8px;font:11px/1.45 Consolas,monospace;white-space:pre-wrap;max-height:180px;overflow:auto;margin:6px 0 0">Դատարկ է — միացում դեռ չի եղել։</pre>
   <button class="b" id="fs" style="width:100%;margin-top:10px">⛶ Լիէկրան</button>
   <div class="hint" style="margin-top:8px"><b>Հեռախոսով</b>՝ բացիր այս էջը Chrome-ում → ⛶ Լիէկրան → TikTok-ում + → LIVE → <b>Mobile Gaming</b> (էկրանի ցուցադրում) → վերադարձիր Chrome։<br><b>Համակարգչով</b>՝ TikFinity + TikTok LIVE Studio (Browser/Link աղբյուր)։</div>
   <h3></h3>
@@ -474,23 +487,50 @@ function spark(x,y){ const a=Math.random()*Math.PI*2, sp=(200+Math.random()*500)
 /* ============ TIKTOK (TikFinity WebSocket) ============ */
 let ws=null, wsState="off", wsTimer=null;
 const streaks=new Map(), chatCd=new Map();
+const wsLog=[];
+let wsTry=0, wsGotData=false, giftLogN=0;
+function logWS(msg){
+  const d=new Date();
+  const t=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")+":"+String(d.getSeconds()).padStart(2,"0");
+  wsLog.push(t+"  "+msg);
+  if(wsLog.length>200) wsLog.shift();
+  try{ const el=document.getElementById("wslog"); if(el) el.textContent=wsLog.slice(-60).join("\n"); }catch(e){}
+}
+function maskKey(k){ k=(k||"").trim(); return k ? (k.length<=8 ? "••••" : k.slice(0,4)+"…"+k.slice(-3)) : "—"; }
 function connect(){
   clearTimeout(wsTimer);
   try{ if(ws){ ws.onclose=null; ws.close(); } }catch(e){}
-  ws=null;
+  ws=null; wsGotData=false;
   if(cfg.mode==="manual"){ wsState="manual"; updStatus(); return; }
-  let url=cfg.wsUrl;
+  let url=cfg.wsUrl, label=cfg.wsUrl;
   if(cfg.mode==="cloud"){
     const u=(cfg.cloudUser||"").replace(/^@/,"").trim();
-    if(!u||!cfg.cloudKey){ wsState="nouser"; updStatus(); return; }
+    if(!u||!cfg.cloudKey){ wsState="nouser"; updStatus(); logWS("⏸ Չմիացա — username կամ API բանալին դատարկ է"); return; }
     url="wss://api.tik.tools?uniqueId="+encodeURIComponent(u)+"&apiKey="+encodeURIComponent(cfg.cloudKey.trim());
+    label="api.tik.tools · @"+u+" · բանալի "+maskKey(cfg.cloudKey);
   }
-  wsState="connecting"; updStatus();
-  try{ ws=new WebSocket(url); }catch(e){ wsState="error"; updStatus(); wsTimer=setTimeout(connect,4000); return; }
-  ws.onopen=()=>{ wsState="on"; updStatus(); };
-  ws.onclose=()=>{ wsState="off"; updStatus(); wsTimer=setTimeout(connect,3000); };
-  ws.onerror=()=>{};
-  ws.onmessage=ev=>{ try{ const m=JSON.parse(ev.data); handle(m.event||m.type, m.data||m); }catch(e){} };
+  wsState="connecting"; updStatus(); wsTry++;
+  logWS("→ Միացում #"+wsTry+" · "+label);
+  try{ ws=new WebSocket(url); }catch(e){ wsState="error"; updStatus(); logWS("✖ WebSocket չբացվեց — "+(e&&e.message||e)); wsTimer=setTimeout(connect,4000); return; }
+  ws.onopen=()=>{ wsState="wait"; updStatus(); logWS("✔ Հասցեն բացվեց, սպասում եմ TikTok-ի տվյալին…"); };
+  ws.onclose=e=>{
+    const code=(e&&e.code)||0, reason=(e&&e.reason)||"";
+    wsState = wsGotData ? "off" : "reject";
+    updStatus();
+    logWS("✖ Փակվեց · կոդ "+code+(reason?" · պատճառ՝ "+reason:"")+(wsGotData?"":" · ոչ մի տվյալ չեկավ"));
+    if(wsState==="reject") logWS("   ⓘ Կոդ 1006/1008 առանց տվյալի = սերվերը մերժեց՝ սխալ/ժամկետանց բանալի, կամ եթերը դեռ միացած չէ");
+    wsTimer=setTimeout(connect,3000);
+  };
+  ws.onerror=()=>{ logWS("⚠ WebSocket սխալ (բանալի/եթեր/ցանց)"); };
+  ws.onmessage=ev=>{
+    let m=null;
+    try{ m=JSON.parse(ev.data); }catch(e){ if(!wsGotData){ wsGotData=true; wsState="on"; updStatus(); logWS("📡 Ստացա տվյալ (ոչ JSON) — կապը աշխատում է"); } return; }
+    if(!wsGotData){ wsGotData=true; wsState="on"; updStatus(); logWS("📡 Առաջին տվյալը՝ "+(m.event||m.type||"?")); }
+    const nm=String(m.event||m.type||"").toLowerCase();
+    if(m.error || nm==="error" || nm==="handshake" || nm==="disconnected" || nm==="streamend")
+      logWS("⚠ Սերվերից՝ "+JSON.stringify(m).slice(0,170));
+    handle(m.event||m.type, m.data||m);
+  };
 }
 function userOf(d){
   const u=d.user||d;
@@ -518,14 +558,17 @@ function handle(type, d){
       if(delta<=0) return;
     }
     const lname=name.toLowerCase().trim();
+    if(giftLogN++<20) logWS("🎁 նվեր եկավ՝ «"+name+"» ×"+delta);
     for(let t=0;t<2;t++){
       const rule=rules[t].find(r=>r.key===lname || r.key===String(id));
       if(rule){
         const per = rule.pts!=null ? rule.pts : Math.max(1,diamonds);
+        if(giftLogN++<20) logWS("🎁 "+name+" ×"+delta+" → "+(t?"RONALDO":"MESSI")+" +"+(per*delta));
         score(t, per*delta, Object.assign(u,{gift:name, combo:rc}));
         return;
       }
     }
+    if(giftLogN<20) logWS("   ⓘ «"+name+"»-ը կանոնների մեջ չկա (ստուգիր անունը անգլերեն)");
   } else if(type==="chat" && cfg.chatVotes){
     const u=userOf(d); const c=(d.comment||"").trim().toLowerCase();
     const t = c===cfg.chatL.toLowerCase() ? 0 : c===cfg.chatR.toLowerCase() ? 1 : -1;
@@ -1056,11 +1099,7 @@ function drawEnd(l){
   if(!(phase==="end" && cfg.autoRestart)) txt(st.wait, W/2, l.bfY+l.bfH*0.92 - 6*k, 30*k, "#fff","center",OUT,6*k);
 }
 function drawStatusDot(){
-  if(wsState==="on"||wsState==="manual") return;
-  const c = wsState==="on"?"#2ee66b": wsState==="connecting"?"#ffc23a":"#ff3b3b";
-  g.globalAlpha = wsState==="on" ? 0.5 : 0.9;
-  circle(14*k+6, H-14*k-6, 7*k+2, c);
-  g.globalAlpha=1;
+  // Կարգավիճակը ցուցադրվում է էջի վրա (#wsbadge), որովհետև հայերեն տեքստը canvas-ում կարող է չերևալ որոշ հեռախոսներում։
 }
 
 /* ============ UI ============ */
@@ -1070,8 +1109,30 @@ function togglePanel(v){ panel.hidden = v===undefined ? !panel.hidden : !v; if(!
 $("gear").onclick=()=>togglePanel();
 let gearT=null; function showGear(){ $("gear").classList.add("show"); clearTimeout(gearT); gearT=setTimeout(()=>$("gear").classList.remove("show"),3000); }
 addEventListener("mousemove",showGear); $("close").onclick=()=>togglePanel(false);
-function updStatus(){ const m={on:"🟢 միացված է, նվերները գալիս են",connecting:"🟡 միանում է…",off:cfg.mode==="cloud"?"🔴 միացված չէ (ստուգիր username-ը, բանալին և որ լայվը միացված է)":"🔴 միացված չէ (բաց չէ՞ TikFinity-ն)",error:"🔴 սխալ հասցե",manual:"📱 Ձեռքով ռեժիմ",nouser:"⚪ գրիր username-ը և API բանալին"}; $("st").textContent=m[wsState]||wsState;
-  $("boxTik").style.display=cfg.mode==="tikfinity"?"":"none"; $("boxCloud").style.display=cfg.mode==="cloud"?"":"none"; }
+let badgeT=null;
+function updStatus(){ const m={on:"🟢 միացված է, նվերները գալիս են",wait:"🟡 հասցեն բացվեց, սպասում եմ լայվի տվյալին…",connecting:"🟡 միանում է…",off:cfg.mode==="cloud"?"🔴 կապը կտրվեց (ինքնուրույն նորից կմիանա)":"🔴 կապը կտրվեց (բաց չէ՞ TikFinity-ն)","reject":"🔴 սերվերը չընդունեց — ստուգիր բանալին և որ եթերը միացած է","error":"🔴 սխալ հասցե",manual:"📱 Ձեռքով ռեժիմ",nouser:"⚪ գրիր username-ը և API բանալին"}; $("st").textContent=m[wsState]||wsState;
+  $("boxTik").style.display=cfg.mode==="tikfinity"?"":"none"; $("boxCloud").style.display=cfg.mode==="cloud"?"":"none";
+  const badge=$("wsbadge");
+  if(badge){
+    const map={
+      on:["ok","Նվերները գալիս են"],
+      wait:["wait","Սպասում եմ լայվի տվյալին…"],
+      connecting:["wait","Միանում եմ…"],
+      reject:["","Կապը մերժվեց — սեղմիր պատճառի համար"],
+      off:["","Կապը կտրվեց — նորից միանում եմ…"],
+      error:["","Սխալ հասցե — սեղմիր"],
+      nouser:["idle","Լրացրու username և API բանալի"],
+      manual:["idle","📱 Ձեռքով ռեժիմ"]
+    };
+    const v=map[wsState]||["idle","—"];
+    badge.className=v[0];
+    badge.hidden=false;
+    const tEl=badge.querySelector?badge.querySelector(".t"):null;
+    if(tEl) tEl.textContent=v[1];
+    clearTimeout(badgeT);
+    if(wsState==="on"||wsState==="manual") badgeT=setTimeout(()=>{ badge.hidden=true; },5000);
+  }
+}
 const binds=[["l_name","left.name"],["l_num","left.num"],["l_c1","left.c1"],["l_c2","left.c2"],["l_stripes","left.stripes"],["l_gifts","left.gifts"],
   ["r_name","right.name"],["r_num","right.num"],["r_c1","right.c1"],["r_c2","right.c2"],["r_stripes","right.stripes"],["r_gifts","right.gifts"],
   ["ko","ko"],["superAt","superAt"],["lang","lang"],["chatVotes","chatVotes"],["chatL","chatL"],["chatR","chatR"],["sound","sound"],["volume","volume"],["musicOn","musicOn"],["musicTrack","musicTrack"],["musicVol","musicVol"],["wsUrl","wsUrl"],["mode","mode"],["tapControl","tapControl"],["cloudUser","cloudUser"],["cloudKey","cloudKey"]];
@@ -1130,6 +1191,14 @@ $("musicFiles").onchange=async e=>{
 };
 $("musicClr").onclick=()=>{ mp3s.length=0; $("musicFiles").value=""; mp3Idx=0; musUI(); musicStart(); };
 musUI();
+$("wsbadge").onclick=()=>{ togglePanel(true); try{ const p=$("wslog"); if(p&&p.scrollIntoView) p.scrollIntoView({block:"center"}); }catch(e){} };
+$("wsRetry").onclick=()=>{ wsTry=0; logWS("— Սեղմվեց «Նորից միանալ» —"); connect(); };
+$("wsCopy").onclick=async()=>{
+  const text=wsLog.join("\n")||"(դատարկ)";
+  try{ await navigator.clipboard.writeText(text); $("wsCopy").textContent="✅ Պատճենվեց"; }
+  catch(e){ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); $("wsCopy").textContent="✅ Պատճենվեց"; }catch(err){ $("wsCopy").textContent="⚠ Չստացվեց"; } ta.remove(); }
+  setTimeout(()=>{ $("wsCopy").textContent="📋 Պատճենել"; },2000);
+};
 $("fs").onclick=()=>{ keepAwake(); const el=document.documentElement; try{ const r=(el.requestFullscreen||el.webkitRequestFullscreen).call(el); if(r&&r.catch) r.catch(()=>{}); }catch(e){} togglePanel(false); };
 // tap control on the battlefield
 let tap=null;
