@@ -208,17 +208,14 @@ addEventListener("resize", resize); resize();
 const FONT = '"Arial Black","Segoe UI Black",Impact,Arial,sans-serif';
 const font = (px, w="900") => `${w} ${Math.max(6,px)}px ${FONT}`;
 
-function groundY(l){ return l.bfY + l.bfH - Math.min(l.bfH*0.14, Math.max(46, W*0.16)); }
 function L(){
   // նույն չափը, ինչ ամենասկզբում, բայց ամբողջ բլոկը՝ էկրանի մեջտեղում
   const portrait = SH >= SW*1.05;
   const hdrH=150*k;
   const legH=Math.max(46, 84*k);
-  const chrome = 10*k + hdrH + 8*k + legH + 10*k;
-  // ուղղահայաց հեռախոսում խաղը լցնում է ամբողջ բարձրությունը (լայն էկրանում՝ ինչպես առաջ)
-  const bfH = portrait ? Math.max(H*0.55, SH - chrome) : (H - chrome - 6*k);
-  const total = chrome + bfH;
-  const oy = portrait ? Math.max(14, SH*0.016) : Math.max(0, (SH - total)/2);
+  const bfH = portrait ? Math.min(H*0.46, W*0.95) : (H - (10*k+hdrH+8*k+legH+10*k) - 6*k);
+  const total = 10*k + hdrH + 8*k + legH + 10*k + bfH;
+  const oy = Math.max(0, (SH - total)/2);
   const hdrY=10*k+oy;
   const legY=hdrY+hdrH+8*k;
   const bfY=legY+legH+10*k;
@@ -997,7 +994,7 @@ function draw(){
   g.restore();
 }
 function drawField(l){
-  const y=l.bfY, h=l.bfH, dx=DX(), ground=groundY(l);
+  const y=l.bfY, h=l.bfH, dx=DX(), ground=y+h*0.86;
   g.save(); g.beginPath(); g.rect(0,y,W,h); g.clip();
   // left wall
   const t0=cfg.left, t1=cfg.right;
@@ -1026,9 +1023,9 @@ function drawField(l){
   g.restore();
 }
 function drawPlayers(l){
-  const y=l.bfY, h=l.bfH, dx=DX(), ground=groundY(l), gh=y+h-ground;
+  const y=l.bfY, h=l.bfH, dx=DX(), ground=y+h*0.86, gh=y+h-ground;
   g.save(); rr(0,0,W,H,0); g.clip();
-  const u=Math.min(h*0.075, W*(l.portrait?0.085:0.058));
+  const u=Math.min(h*0.075, W*0.058);
   const gap=0.12*u;
   for(let t=0;t<2;t++){
     const dir=t===0?1:-1, px=dx-dir*(WALL*u+gap), gy=ground+gh*0.12, f=R[t].fly;
