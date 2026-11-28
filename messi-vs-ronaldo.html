@@ -12,6 +12,8 @@
   #mus{position:fixed;right:10px;bottom:66px;border:0;border-radius:16px;background:rgba(0,0,0,.5);color:#fff;font:12px/1.15 Arial,"Segoe UI",sans-serif;padding:8px 11px;z-index:5;opacity:.82;cursor:pointer;max-width:46vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .25s,background .25s}
   #mus:active{opacity:1;background:rgba(0,0,0,.72)}
   #mus.off{opacity:.45}
+  #fs{position:fixed;top:8px;right:8px;z-index:7;width:42px;height:42px;border:0;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;font:20px/1 Arial,sans-serif;opacity:.45;cursor:pointer;transition:opacity .25s}
+  #fs:active,#fs:hover{opacity:.95}
   #wsbadge{position:fixed;left:10px;bottom:10px;z-index:6;display:flex;align-items:center;gap:7px;max-width:min(78vw,420px);
     background:rgba(10,14,28,.88);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:7px 11px;color:#fff;
     font:12px/1.25 Arial,"Segoe UI",sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.45)}
@@ -41,6 +43,7 @@
 </style>
 </head>
 <body>
+<button id="fs" title="Ամբողջ էկրան (PRISM/OBS-ի համար)">⛶</button>
 <canvas id="c"></canvas>
 <button id="gear" title="Կարգավորումներ (S)">⚙</button>
 <button id="mus" title="Երաժշտություն (M)">🎵</button>
@@ -1306,6 +1309,21 @@ addEventListener("keydown",e=>{
   else if(kk==="r") newRound(); else if(kk==="s") togglePanel();
   else if(kk==="m"){ const b=$("mus"); if(b) b.onclick(); }
 });
+const fsb=$("fs");
+let fsOn=false;
+if(fsb) fsb.onclick=()=>{
+  try{
+    const d=document, de=d.documentElement;
+    const on = !!(d.fullscreenElement || d.webkitFullscreenElement || fsOn);
+    if(!on){
+      const req=de.requestFullscreen||de.webkitRequestFullscreen;
+      if(req){ req.call(de); fsOn=true; }
+    } else {
+      const ex=d.exitFullscreen||d.webkitExitFullscreen;
+      if(ex){ ex.call(d); fsOn=false; }
+    }
+  }catch(e){ fsOn=false; }
+};
 addEventListener("pointerdown",()=>{ audio(); loadClips(); },{once:true});
 const qs=new URLSearchParams(location.search);
 if(qs.has("demo")) setDemo(true);
