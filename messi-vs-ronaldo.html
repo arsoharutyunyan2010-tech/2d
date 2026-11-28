@@ -103,6 +103,7 @@
     <option value="manual">📱 Ձեռքով (հեռախոս)՝ ես եմ սեղմում</option>
     <option value="tikfinity">💻 TikFinity (համակարգիչ)</option>
     <option value="cloud">☁️ Ամպային ծառայություն tik.tools (API բանալի)</option>
+    <option value="generic">🔗 Այլ JSON WebSocket (Euler Stream և նմանները)</option>
   </select>
   <label class="chk"><input type="checkbox" id="tapControl"> Սեղմումով կառավարում դաշտի վրա</label>
   <div class="hint">📱 Ձեռքով ռեժիմ՝ սեղմիր դաշտի <b>ձախ</b> կեսին = ձախ թիմ +1, <b>աջ</b> կեսին = աջ թիմ +1։ Ամեն ինչ ավտոմատ է նաև հեռախոսով․ էկրանին հավելյալ կոճակներ պետք չեն։</div>
@@ -526,6 +527,7 @@ function connect(){
   if(wsPaused){ wsState="paused"; updStatus(); return; }
   if(cfg.mode==="manual"){ wsState="manual"; updStatus(); return; }
   let url=cfg.wsUrl, label=cfg.wsUrl;
+  if(cfg.mode==="generic"){ label="այլ WS · "+cfg.wsUrl; }
   if(cfg.mode==="cloud"){
     const u=(cfg.cloudUser||"").replace(/^@/,"").trim();
     if(!u||!cfg.cloudKey){ wsState="nouser"; updStatus(); logWS("⏸ Չմիացա — username կամ API բանալին դատարկ է"); return; }
@@ -550,13 +552,51 @@ function connect(){
   ws.onerror=()=>{ logWS("⚠ WebSocket սխալ (բանալի/եթեր/ցանց)"); };
   ws.onmessage=ev=>{
     let m=null;
-    try{ m=JSON.parse(ev.data); }catch(e){ if(!wsGotData){ wsGotData=true; wsState="on"; updStatus(); logWS("📡 Ստացա տվյալ (ոչ JSON) — կապը աշխատում է"); } return; }
+    try{ m=JSON.parse(ev.data); }
+    catch(e){
+      if(!seenTypes.has("__bin")){ seenTypes.add("__bin"); logWS("⛔ Տվյալը JSON չէ (հավանաբար protobuf) — այս ծառայության հետ խաղը չի աշխատի"); }
+      if(!wsGotData){ wsGotData=true; wsState="on"; updStatus(); logWS("📡 Կապը բաց է, բայց տվյալը binary է"); }
+      return;
+    }
+    if(m && Array.isArray(m.messages)){ m.messages.forEach(handleLoose); if(!wsGotData){ wsGotData=true; wsState="on"; updStatus(); } return; }
     if(!wsGotData){ wsGotData=true; wsState="on"; wsFail=0; updStatus(); logWS("📡 Առաջին տվյալը՝ "+(m.event||m.type||"?")); }
     const nm=String(m.event||m.type||"").toLowerCase();
     if(m.error || nm==="error" || nm==="handshake" || nm==="disconnected" || nm==="streamend")
       logWS("⚠ Սերվերից՝ "+JSON.stringify(m).slice(0,170));
-    handle(m.event||m.type, m.data||m);
+    if(m && (m.event||m.type)) handle(m.event||m.type, m.data||m); else handleLoose(m);
   };
+}
+const seenTypes=new Set();
+function normEvt(m){
+  const t=String((m&&(m.event||m.type||m.msgType||m.method))||"").toLowerCase();
+  if(!t) return "";
+  if(t.includes("gift")) return "gift";
+  if(t.includes("chat")||t.includes("comment")) return "chat";
+  if(t.includes("member")||t.includes("join")) return "member";
+  if(t.includes("like")||t.includes("digg")) return "like";
+  return t;
+}
+function handleLoose(m){
+  if(!m||typeof m!=="object") return;
+  const t=normEvt(m);
+  if(!t){
+    const k="raw:"+JSON.stringify(m).slice(0,40);
+    if(!seenTypes.has(k)){ seenTypes.add(k); logWS("❔ Չճանաչված տվյալ — ուղարկիր ինձ այս օրինակը՝ "+JSON.stringify(m).slice(0,220)); }
+    return;
+  }
+  if(t==="gift"){
+    const g=(m.gift&&typeof m.gift==="object")?m.gift:{};
+    const d=Object.assign({},m);
+    d.giftName = m.giftName || g.name || g.giftName || m.gift_name || "";
+    if(m.diamondCount!=null) d.diamondCount=m.diamondCount;
+    else if(g.diamondCount!=null) d.diamondCount=g.diamondCount;
+    if(m.repeatCount==null) d.repeatCount = (m.repeat_count!=null?m.repeat_count:1);
+    if(!m.user && (m.uniqueId||m.userId)) d.user={uniqueId:m.uniqueId||String(m.userId), nickname:m.nickname||m.nickName||""};
+    handle("gift", d);
+    return;
+  }
+  if(!seenTypes.has(t)){ seenTypes.add(t); logWS("ℹ Առաջին «"+t+"» իրադարձությունը ստացվեց"); }
+  handle(t, m);
 }
 function userOf(d){
   const u=d.user||d;
@@ -1137,7 +1177,7 @@ let gearT=null; function showGear(){ $("gear").classList.add("show"); clearTimeo
 addEventListener("mousemove",showGear); $("close").onclick=()=>togglePanel(false);
 let badgeT=null;
 function updStatus(){ const m={on:"🟢 միացված է, նվերները գալիս են",wait:"🟡 հասցեն բացվեց, սպասում եմ լայվի տվյալին…",connecting:"🟡 միանում է…",off:cfg.mode==="cloud"?"🔴 կապը կտրվեց (ինքնուրույն նորից կմիանա)":"🔴 կապը կտրվեց (բաց չէ՞ TikFinity-ն)","reject":"🔴 սերվերը չընդունեց — ստուգիր բանալին և որ եթերը միացած է","error":"🔴 սխալ հասցե",manual:"📱 Ձեռքով ռեժիմ",nouser:"⚪ գրիր username-ը և API բանալին"}; $("st").textContent=m[wsState]||wsState;
-  $("boxTik").style.display=cfg.mode==="tikfinity"?"":"none"; $("boxCloud").style.display=cfg.mode==="cloud"?"":"none";
+  $("boxTik").style.display=(cfg.mode==="tikfinity"||cfg.mode==="generic")?"":"none"; $("boxCloud").style.display=cfg.mode==="cloud"?"":"none";
   const badge=$("wsbadge");
   if(badge){
     const map={
