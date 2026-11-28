@@ -373,20 +373,20 @@ function mPad(t,freqs,dur,vol){
 }
 const TRACKS=[
  // 1) «Ela dance ela sobe no baile» — baile funk / tamborzão ոճով (սինթեզ)
- {name:"Ela Dance — Sobe no Baile", bpm:130, h:"x.xXx.xXx.xXx.xX",
+ {name:"Ela Dance — Sobe no Baile", file:"assets/music/ela-dance.mp3", bpm:130, h:"x.xXx.xXx.xXx.xX",
   k:[[0,.9],[3,.7],[6,.62],[8,.88],[11,.66],[14,.6]],
   s:[[4,.28],[12,.3]],
   b:[[0,33,1.2,.5],[3,40,1,.42],[6,31,1,.4],[8,33,1.2,.5],[11,38,1,.4],[14,28,1,.42]],
   m:[[2,74,.8,.1],[5,70,.8,.09],[9,77,.8,.1],[13,72,.8,.09]],
   p:[[0,[57,60,64],4,.06]] },
  // 2) «Ay toma toma toma» — dembow / reggaeton ոճով
- {name:"Ay Toma Toma", bpm:96, h:"..x...x...x...x.",
+ {name:"Ay Toma Toma", file:"assets/music/ay-toma-toma.mp3", bpm:96, h:"..x...x...x...x.",
   k:[[0,.85],[6,.7],[8,.8],[14,.62]],
   s:[[3,.3],[7,.24],[11,.3],[15,.24]],
   b:[[0,31,1.6,.5],[3,31,1.2,.4],[8,33,1.6,.48],[11,31,1.2,.4]],
   m:[[0,69,1,.12,"triangle"],[4,72,1,.1,"triangle"],[8,69,1,.12,"triangle"],[12,76,1,.1,"triangle"]] },
  // 3) «Ela poch poch» — funk ոճով
- {name:"Ela Poch Poch", bpm:132, h:"xXxXxXxXxXxXxXxX",
+ {name:"Ela Poch Poch", file:"assets/music/ela-poch-poch.mp3", bpm:132, h:"xXxXxXxXxXxXxXxX",
   k:[[0,.92],[4,.66],[7,.6],[8,.9],[12,.66],[15,.58]],
   s:[[2,.26],[6,.24],[10,.26],[14,.24]],
   b:[[0,31,1,.5],[2,31,.8,.4],[6,38,.8,.42],[8,31,1,.5],[10,29,.8,.4],[14,36,.8,.42]],
@@ -414,10 +414,44 @@ const FINAL_TRACK = { name:"Չեմպիոն", bpm:104, h:"X..xX..xX..xX..x",
   p:[[0,[57,60,64,69],4,.11],[8,[59,62,67,71],4,.10]] };
 FINAL_TRACK.seq=mkSeq(FINAL_TRACK);
 let musChampion=false;
+
+/* 🎵 Իսկական երգերը՝ /assets/music/*.mp3 (եթե ֆայլը չկա՝ օգտագործվում է սինթեզը) */
+const trackBuf=new Map();   // file -> AudioBuffer | "loading" | "err"
+let trackSrc=null;
+function curTrack(){ const i=Math.min(Math.max(0,Number(cfg.musicTrack)||0), TRACKS.length-1); return TRACKS[i]; }
+function stopTrackAudio(){ try{ if(trackSrc){ trackSrc.onended=null; trackSrc.stop(); } }catch(e){} trackSrc=null; }
+function loadTrackBuf(tr){
+  if(!tr || !tr.file || trackBuf.has(tr.file)) return;
+  trackBuf.set(tr.file,"loading");
+  try{
+    fetch(tr.file,{cache:"force-cache"}).then(r=>{ if(!r.ok) throw new Error("HTTP "+r.status); return r.arrayBuffer(); })
+      .then(b=>{ const a=audio(); if(!a) throw new Error("no audio"); return new Promise((res,rej)=>a.decodeAudioData(b,res,rej)); })
+      .then(buf=>{ trackBuf.set(tr.file,buf); if(curTrack()===tr && !musChampion && cfg.musicOn) playTrackAudio(); })
+      .catch(()=>{ trackBuf.set(tr.file,"err"); });
+  }catch(e){ trackBuf.set(tr.file,"err"); }
+}
+function playTrackAudio(){
+  stopTrackAudio();
+  if(!cfg.musicOn || musChampion || !musicGain || !ac) return false;
+  const tr=curTrack(); if(!tr || !tr.file) return false;
+  const b=trackBuf.get(tr.file);
+  if(!b || b==="loading" || b==="err"){ if(!b) loadTrackBuf(tr); return false; }
+  try{
+    const src=ac.createBufferSource(); src.buffer=b; src.loop=true; src.connect(musicGain); src.start(0,0);
+    trackSrc=src; return true;
+  }catch(e){ return false; }
+}
 function musicTick(){
   if(!musicGain||!ac) return;
   if(ac.state!=="running"){ musNext=0; return; }
-  const tr = musChampion ? FINAL_TRACK : (TRACKS[Number(cfg.musicTrack)||0]||TRACKS[0]);
+  const cur = curTrack();
+  if(!musChampion && cur && cur.file){
+    const st=trackBuf.get(cur.file);
+    if(st==null){ loadTrackBuf(cur); musNext=0; return; }
+    if(st==="loading"){ musNext=0; return; }
+    if(st!=="err"){ if(!trackSrc) playTrackAudio(); musNext=0; return; }
+  }
+  const tr = musChampion ? FINAL_TRACK : (cur||TRACKS[0]);
   const sd=(60/tr.bpm)/4, now=ac.currentTime;
   if(!musNext||musNext<now) musNext=now+0.02;
   while(musNext<now+0.3){ tr.seq(musStep,musNext,sd); musStep=(musStep+1)%16; musNext+=sd; }
@@ -432,7 +466,7 @@ function playMp3(){
 function musicStop(){
   if(musTimer){ clearInterval(musTimer); musTimer=null; }
   try{ if(mp3Src){ mp3Src.onended=null; mp3Src.stop(); } }catch(e){}
-  mp3Src=null; musStep=0; musNext=0;
+  stopTrackAudio(); mp3Src=null; musStep=0; musNext=0;
 }
 function musicStart(){
   musicStop();
@@ -440,11 +474,15 @@ function musicStart(){
   const a=audio(); if(!a) return;
   if(!musicGain){ musicGain=a.createGain(); musicGain.connect(master); }
   try{ musicGain.gain.cancelScheduledValues(a.currentTime); musicGain.gain.value=cfg.musicVol; }catch(e){}
-  if(mp3s.length && !musChampion) playMp3(); else musTimer=setInterval(musicTick,40);
+  if(musChampion){ musTimer=setInterval(musicTick,40); return; }
+  const tr=curTrack();
+  if(tr && tr.file){ playTrackAudio(); musTimer=setInterval(musicTick,40); return; }
+  if(mp3s.length) playMp3(); else musTimer=setInterval(musicTick,40);
 }
 // 🏆 Անմիջապես անջատում է հնչող 3 թրեքներից որևէ մեկը և միացնում չեմպիոնի երաժշտությունը
 function championMusic(){
   musChampion=true; musStep=0; musNext=0;
+  stopTrackAudio();
   try{ if(mp3Src){ mp3Src.onended=null; mp3Src.stop(); } }catch(e){}
   mp3Src=null;
   if(musTimer){ clearInterval(musTimer); musTimer=null; }
@@ -761,7 +799,10 @@ window.mvrDbg = {   // թեստերի համար (չի ազդում խաղի վ�
   get roundNo(){return roundNo}, get cfg(){return cfg}, get tracks(){return TRACKS.map(t=>t.name)},
   get finalSrc(){return FINAL_SRC}, get L(){return L()}, newRound:()=>newRound(), finalTeamFor,
   get musChampion(){return musChampion}, get finalTrack(){return FINAL_TRACK.name}, get trackNames(){return TRACKS.map(t=>t.name)},
-  get partsN(){return parts.length}, get pendingN(){return pending.length}, get popsN(){return pops.length}, get logN(){return wsLog.length}
+  get partsN(){return parts.length}, get pendingN(){return pending.length}, get popsN(){return pops.length}, get logN(){return wsLog.length},
+  get trackFiles(){return TRACKS.map(t=>t.file||null)},
+  get bufState(){return [...trackBuf.entries()].map(([k,v])=>k+":"+(typeof v==="string"?v:"buffer"))},
+  musicStart:()=>musicStart(), championMusic:()=>championMusic(), normalMusic:()=>normalMusic()
 };
 window.mvrClips = ()=>clipBuf.map(c=>c?+c.buf.duration.toFixed(2):null);
 
