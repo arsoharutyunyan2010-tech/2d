@@ -111,7 +111,7 @@
 
   <h3>Ինչու է կապը կարմիր (ախտորոշում)</h3>
   <div class="hint">Այստեղ գրվում է ամեն մի փորձ՝ կոդերով։ Եթե կարմիր է մնում, սեղմիր «Պատճենել» ու ուղարկիր ինձ այս տեքստը։</div>
-  <div class="row"><button class="b" id="wsRetry" style="flex:.6">🔄 Նորից միանալ</button><button class="b" id="wsCopy" style="flex:.5">📋 Պատճենել</button></div>
+  <div class="row"><button class="b" id="wsRetry" style="flex:.5">🔄 Նորից միանալ</button><button class="b" id="wsPause" style="flex:.55">⏸ Դադարեցնել կապը</button><button class="b" id="wsCopy" style="flex:.4">📋</button></div>
   <pre id="wslog" style="background:#0d1224;color:#a9e8b0;border:1px solid #2f3a63;border-radius:6px;padding:8px;font:11px/1.45 Consolas,monospace;white-space:pre-wrap;max-height:180px;overflow:auto;margin:6px 0 0">Դատարկ է — միացում դեռ չի եղել։</pre>
   <button class="b" id="fs" style="width:100%;margin-top:10px">⛶ Լիէկրան</button>
   <div class="hint" style="margin-top:8px"><b>Հեռախոսով</b>՝ բացիր այս էջը Chrome-ում → ⛶ Լիէկրան → TikTok-ում + → LIVE → <b>Mobile Gaming</b> (էկրանի ցուցադրում) → վերադարձիր Chrome։<br><b>Համակարգչով</b>՝ TikFinity + TikTok LIVE Studio (Browser/Link աղբյուր)։</div>
@@ -500,7 +500,17 @@ function spark(x,y){ const a=Math.random()*Math.PI*2, sp=(200+Math.random()*500)
 let ws=null, wsState="off", wsTimer=null;
 const streaks=new Map(), chatCd=new Map();
 const wsLog=[];
-let wsTry=0, wsGotData=false, giftLogN=0, wsCode=0, wsReason="";
+let wsTry=0, wsGotData=false, giftLogN=0, wsCode=0, wsReason="", wsFail=0, wsPaused=false;
+const WS_DELAYS=[3,6,12,25,45,60]; // աստիճանաբար ավելի հազվադեպ, որ օրական քվոտան չվառվի
+function scheduleReconnect(){
+  clearTimeout(wsTimer);
+  if(wsPaused) return;
+  if(document.visibilityState==="hidden"){ logWS("⏸ Էջը թաքնված է — վերամիացումը կսպասի"); return; }
+  const d=WS_DELAYS[Math.min(wsFail,WS_DELAYS.length-1)];
+  wsFail++;
+  logWS("↻ Նոր փորձ՝ "+d+" վրկ հետո");
+  wsTimer=setTimeout(connect,d*1000);
+}
 function logWS(msg){
   const d=new Date();
   const t=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")+":"+String(d.getSeconds()).padStart(2,"0");
@@ -513,6 +523,7 @@ function connect(){
   clearTimeout(wsTimer);
   try{ if(ws){ ws.onclose=null; ws.close(); } }catch(e){}
   ws=null; wsGotData=false;
+  if(wsPaused){ wsState="paused"; updStatus(); return; }
   if(cfg.mode==="manual"){ wsState="manual"; updStatus(); return; }
   let url=cfg.wsUrl, label=cfg.wsUrl;
   if(cfg.mode==="cloud"){
@@ -523,7 +534,7 @@ function connect(){
   }
   wsState="connecting"; updStatus(); wsTry++;
   logWS("→ Միացում #"+wsTry+" · "+label);
-  try{ ws=new WebSocket(url); }catch(e){ wsState="error"; updStatus(); logWS("✖ WebSocket չբացվեց — "+(e&&e.message||e)); wsTimer=setTimeout(connect,4000); return; }
+  try{ ws=new WebSocket(url); }catch(e){ wsState="error"; updStatus(); logWS("✖ WebSocket չբացվեց — "+(e&&e.message||e)); scheduleReconnect(); return; }
   wsCode=0; wsReason="";
   ws.onopen=()=>{ wsState="wait"; updStatus(); logWS("✔ Հասցեն բացվեց, սպասում եմ TikTok-ի տվյալին…"); };
   ws.onclose=e=>{
@@ -533,13 +544,14 @@ function connect(){
     updStatus();
     logWS("✖ Փակվեց · կոդ "+code+(reason?" · պատճառ՝ "+reason:"")+(wsGotData?"":" · ոչ մի տվյալ չեկավ"));
     if(wsState==="reject") logWS("   ⓘ Կոդ 1006/1008 առանց տվյալի = սերվերը մերժեց՝ սխալ/ժամկետանց բանալի, կամ եթերը դեռ միացած չէ");
-    wsTimer=setTimeout(connect,3000);
+    if(wsGotData) wsFail=0; // եթե տվյալ եկել էր, նորից արագ փորձում ենք
+    scheduleReconnect();
   };
   ws.onerror=()=>{ logWS("⚠ WebSocket սխալ (բանալի/եթեր/ցանց)"); };
   ws.onmessage=ev=>{
     let m=null;
     try{ m=JSON.parse(ev.data); }catch(e){ if(!wsGotData){ wsGotData=true; wsState="on"; updStatus(); logWS("📡 Ստացա տվյալ (ոչ JSON) — կապը աշխատում է"); } return; }
-    if(!wsGotData){ wsGotData=true; wsState="on"; updStatus(); logWS("📡 Առաջին տվյալը՝ "+(m.event||m.type||"?")); }
+    if(!wsGotData){ wsGotData=true; wsState="on"; wsFail=0; updStatus(); logWS("📡 Առաջին տվյալը՝ "+(m.event||m.type||"?")); }
     const nm=String(m.event||m.type||"").toLowerCase();
     if(m.error || nm==="error" || nm==="handshake" || nm==="disconnected" || nm==="streamend")
       logWS("⚠ Սերվերից՝ "+JSON.stringify(m).slice(0,170));
@@ -1136,7 +1148,8 @@ function updStatus(){ const m={on:"🟢 միացված է, նվերները գա
       off:["","Կապը կտրվեց — նորից միանում եմ…"],
       error:["","Սխալ հասցե — սեղմիր"],
       nouser:["idle","Լրացրու username և API բանալի"],
-      manual:["idle","📱 Ձեռքով ռեժիմ"]
+      manual:["idle","📱 Ձեռքով ռեժիմ"],
+      paused:["idle","⏸ Կապը դադարեցված է"]
     };
     const v=map[wsState]||["idle","—"];
     badge.className=v[0];
@@ -1166,7 +1179,9 @@ for(const [id,p] of binds){
 }
 ["wsUrl","mode","cloudUser","cloudKey"].forEach(id=>$(id).addEventListener("change",connect));
 let wake=null; async function keepAwake(){ try{ if(navigator.wakeLock && !wake){ wake=await navigator.wakeLock.request("screen"); wake.addEventListener("release",()=>wake=null); } }catch(e){} }
-document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") keepAwake(); });
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible"){ keepAwake(); if(!wsPaused && wsState!=="on" && wsState!=="manual"){ wsFail=0; connect(); } }
+});
 function sndUI(){ for(const [t,id] of [[0,"l"],[1,"r"]]) $(id+"_sndst").textContent = SND[t] ? "✅ քո ֆայլն է միացված" : "Հիմա՝ սկզբնական ձայնը (Ankara Messi / Siuuu)"; }
 for(const [t,id] of [[0,"l"],[1,"r"]]){
   $(id+"_snd").onchange=e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ SND[t]=rd.result; try{ localStorage.setItem("mvr_snd"+t, rd.result); }catch(err){ $(id+"_sndst").textContent="⚠️ ֆայլը մեծ է պահելու համար, կաշխատի միայն մինչև էջը փակելը"; } sndUI(); loadClips(); setTimeout(()=>playClip(t),300); }; rd.readAsDataURL(f); };
@@ -1207,7 +1222,14 @@ $("musicFiles").onchange=async e=>{
 $("musicClr").onclick=()=>{ mp3s.length=0; $("musicFiles").value=""; mp3Idx=0; musUI(); musicStart(); };
 musUI();
 $("wsbadge").onclick=()=>{ togglePanel(true); try{ const p=$("wslog"); if(p&&p.scrollIntoView) p.scrollIntoView({block:"center"}); }catch(e){} };
-$("wsRetry").onclick=()=>{ wsTry=0; logWS("— Սեղմվեց «Նորից միանալ» —"); connect(); };
+$("wsRetry").onclick=()=>{ wsTry=0; wsFail=0; wsPaused=false; $("wsPause").textContent="⏸ Դադարեցնել կապը"; logWS("— Սեղմվեց «Նորից միանալ» —"); connect(); };
+$("wsPause").onclick=()=>{
+  wsPaused=!wsPaused;
+  $("wsPause").textContent=wsPaused?"▶️ Միացնել կապը":"⏸ Դադարեցնել կապը";
+  logWS(wsPaused?"⏸ Կապը դադարեցվեց (քվոտան չի ծախսվի)":"▶️ Կապը միացվեց ձեռքով");
+  if(wsPaused){ clearTimeout(wsTimer); try{ if(ws){ ws.onclose=null; ws.close(); } }catch(e){} ws=null; wsState="paused"; updStatus(); }
+  else { wsFail=0; connect(); }
+};
 $("wsCopy").onclick=async()=>{
   const text=wsLog.join("\n")||"(դատարկ)";
   try{ await navigator.clipboard.writeText(text); $("wsCopy").textContent="✅ Պատճենվեց"; }
