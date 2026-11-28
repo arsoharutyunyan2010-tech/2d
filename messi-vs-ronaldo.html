@@ -17,6 +17,11 @@
   #wsbadge{position:fixed;left:10px;bottom:10px;z-index:6;display:flex;align-items:center;gap:7px;max-width:min(78vw,420px);
     background:rgba(10,14,28,.88);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:7px 11px;color:#fff;
     font:12px/1.25 Arial,"Segoe UI",sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.45)}
+  #finHint{position:fixed;left:50%;transform:translateX(-50%);z-index:5;pointer-events:none;
+    display:inline-block;white-space:nowrap;max-width:96vw;overflow:hidden;text-overflow:ellipsis;
+    padding:3px 10px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(255,213,74,.55);
+    color:#ffd54a;font-weight:800;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.45)}
+  #finHint[hidden]{display:none}
   #wsbadge[hidden]{display:none}
   #wsbadge .d{width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:#ff3b3b}
   #wsbadge.ok .d{background:#2ee66b} #wsbadge.wait .d{background:#ffc23a} #wsbadge.idle .d{background:#a8b0cc}
@@ -47,6 +52,7 @@
 <canvas id="c"></canvas>
 <button id="gear" title="Կարգավորումներ (S)">⚙</button>
 <button id="mus" title="Երաժշտություն (M)">🎵</button>
+<div id="finHint" hidden></div>
 <div id="wsbadge" hidden title="Սեղմիր՝ պատճառը տեսնելու համար"><span class="d"></span><span class="t"></span></div>
 <div id="panel" hidden>
   <button id="close" title="Փակել">✕</button>
@@ -88,8 +94,14 @@
   <div class="hint">Ժամանակ չկա․ ռաունդը վերջանում է միայն այն ժամանակ, երբ մի թիմը մյուսին հրում-դուրս է հանում դաշտից։</div>
   <div class="row"><div><label>Սուպեր հարված՝ սկսած (միավոր)</label><input type="number" id="superAt" min="1"></div><div><label>Էկրանի լեզու</label><select id="lang"><option value="en">English</option><option value="hy">Հայերեն</option><option value="ru">Русский</option></select></div></div>
   <div class="hint">Հաղթանակից հետո խաղը միանգամից սկսում է նոր ռաունդ (առանց սպասելու)։</div>
-  <label class="chk"><input type="checkbox" id="chatVotes"> Չատի ձայներ (մեկնաբանություն = +1, 10 վրկ-ը մեկ)</label>
-  <div class="row"><div><label>Չատ՝ ձախ թիմ</label><input type="text" id="chatL"></div><div><label>Չատ՝ աջ թիմ</label><input type="text" id="chatR"></div></div>
+  <label class="chk"><input type="checkbox" id="chatVotes"> Չատի ձայներ (ամեն մի քանի մեկնաբանությանը՝ 1 հարված)</label>
+  <div class="row"><div><label>Չատ՝ Մեսսիի թիվը</label><input type="text" id="chatL"></div><div><label>Չատ՝ Ռոնալդոյի թիվը</label><input type="text" id="chatR"></div></div>
+  <div class="row"><div><label>Քանի՞ մեկնաբանությանը = 1 հարված</label><input type="number" id="chatEvery" min="1" max="50"></div></div>
+  <div class="hint">Օրինակ՝ 5 → ամեն 5 հատ «<span id="chatEx">10</span>» մեկնաբանությունը 1 հարված Մեսսիին, ամեն 5 հատ «7»-ը՝ 1 հարված Ռոնալդոյին։ Առաջընթացը էկրանին երևում է որպես «10 · 3/5»։</div>
+
+  <h3>🏁 Ստուգել չեմպիոնի անիմացիան</h3>
+  <div class="row"><button class="b" id="testFinalL" style="flex:1">Մեսսի չեմպիոն</button><button class="b" id="testFinalR" style="flex:1">Ռոնալդո չեմպիոն</button></div>
+  <div class="hint">Սեղմիր, պանելը կփակվի ու կտեսնես ավարտի անիմացիան։ Վերադառնալու համար՝ «R» կամ վերևի «Նոր ռաունդ» կոճակը։</div>
   <label class="chk"><input type="checkbox" id="sound"> Ձայներ</label>
   <label>Ձայնի ուժգնություն</label><input type="range" id="volume" min="0" max="1" step="0.05" style="width:100%">
 
@@ -141,12 +153,15 @@ const DEFAULTS = {
   left:  { name:"MESSI",   num:"10", c1:"#75AADB", c2:"#1d2b53", stripes:true,  gifts:"TikTok = 1\nFriendship Necklace = 8", final:"Private Jet" },
   right: { name:"RONALDO", num:"7",  c1:"#D0202E", c2:"#0b6b3a", stripes:false, gifts:"Rose = 1\nRosa = 8", final:"Leon the Kitten" },
   ko:24, superAt:8, lang:"en", autoRestart:true, endPause:0.35,
-  chatVotes:false, chatL:"1", chatR:"2", chatCooldown:10,
+  chatVotes:true, chatL:"10", chatR:"7", chatEvery:5, chatCooldown:0,
   fill:false, sound:true, volume:0.6, musicOn:true, musicTrack:0, musicVol:0.45, wsUrl:"ws://localhost:21213/", mode:"cloud", tapControl:true, cloudUser:PRE_USER, cloudKey:PRE_KEY
 };
 const KEY = "mvr_cfg_v3";
 let cfg = JSON.parse(JSON.stringify(DEFAULTS));
-try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s) cfg = deepMerge(cfg, s); } catch(e) {}
+let legacyCfg = false;
+try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s){ legacyCfg = (s.chatEvery==null); cfg = deepMerge(cfg, s); } } catch(e) {}
+// 💬 Նոր չատ-կանոնը՝ ամեն 5 մեկնաբանությունը = 1 հարված (հին պահված կարգավորումները թարմացվում են մեկ անգամ)
+if(legacyCfg){ cfg.chatVotes = true; cfg.chatL = "10"; cfg.chatR = "7"; cfg.chatEvery = 5; cfg.chatCooldown = 0; }
 // Հաղթանակից հետո նոր ռաունդը միշտ սկսվում է անմիջապես՝ անկախ հին պահված կարգավորումներից։
 cfg.autoRestart = true;
 cfg.endPause = 0.35;
@@ -231,7 +246,8 @@ function L(){
   const hdrH=150*k;
   const legH=Math.max(46, 84*k);
   // 🏁 ազատ տեղ գավաթներից վերև՝ վերջնական նվերների պատկերների համար
-  const finH = portrait ? Math.max(64*k, W*0.235) : Math.max(38*k, W*0.08);
+  const finHintH = Math.max(18, Math.min(26, W*0.052));
+  const finH = (portrait ? Math.max(64*k, W*0.235) : Math.max(38*k, W*0.08)) + finHintH;
   const chrome = finH + 12*k + hdrH + 8*k + legH + 10*k;
   const bfH = portrait
     ? (cfg.fill ? Math.max(H*0.55, SH - chrome) : Math.min(H*0.46, W*0.95))
@@ -242,7 +258,7 @@ function L(){
   const hdrY=finY+finH+12*k;
   const legY=hdrY+hdrH+8*k;
   const bfY=legY+legH+10*k;
-  return {hdrY,hdrH,portrait,legY,legH,bfY,bfH,fansY:0,fansH:0,finY,finH};
+  return {hdrY,hdrH,portrait,legY,legH,bfY,bfH,fansY:0,fansH:0,finY,finH,finHintH};
 }
 
 /* ============ AUDIO ============ */
@@ -443,7 +459,7 @@ const DX=()=>{ const l=L(), u=Math.min(l.bfH*0.075, W*0.058), A=Math.max(0.22, M
 function img(url){ if(!url) return null; let e=imgCache.get(url); if(!e){ const im=new Image(); e={im,ok:false}; im.onload=()=>e.ok=true; im.referrerPolicy="no-referrer"; im.src=url; imgCache.set(url,e); if(imgCache.size>400) imgCache.delete(imgCache.keys().next().value); } return e.ok?e.im:null; }
 
 function newRound(){
-  R=[mkRun(),mkRun()]; phase="play"; winner=-1; roundNo++; koT=-1; pos=0; finalDone=false; finalT=-1; finalAt=0;
+  R=[mkRun(),mkRun()]; phase="play"; winner=-1; roundNo++; koT=-1; pos=0; finalDone=false; finalT=-1; finalAt=0; chatCnt=[0,0];
   banner={text:S().go, color:"#fff", t:0, life:1.6};
   sfx.whistle();
   const p=pending; pending=[]; p.forEach(a=>score(...a));
@@ -542,6 +558,7 @@ function spark(x,y){ const a=Math.random()*Math.PI*2, sp=(200+Math.random()*500)
 /* ============ TIKTOK (TikFinity WebSocket) ============ */
 let ws=null, wsState="off", wsTimer=null;
 const streaks=new Map(), chatCd=new Map();
+let chatCnt=[0,0];   // 💬 քանի մեկնաբանություն է հավաքվել յուրաքանչյուր թվի համար
 const wsLog=[];
 let wsTry=0, wsGotData=false, giftLogN=0, wsCode=0, wsReason="", wsFail=0, wsPaused=false;
 const WS_DELAYS=[3,6,12,25,45,60]; // աստիճանաբար ավելի հազվադեպ, որ օրական քվոտան չվառվի
@@ -695,9 +712,18 @@ function handle(type, d){
     const t = c===cfg.chatL.toLowerCase() ? 0 : c===cfg.chatR.toLowerCase() ? 1 : -1;
     if(t<0) return;
     const now=performance.now(), last=chatCd.get(u.user)||0;
-    if(now-last < cfg.chatCooldown*1000) return;
+    if(cfg.chatCooldown>0 && now-last < cfg.chatCooldown*1000) return;
     chatCd.set(u.user,now);
-    score(t,1,Object.assign(u,{gift:"💬"}));
+    // ամեն N մեկնաբանությունը = 1 հարված
+    const need=Math.max(1, Math.round(cfg.chatEvery||5));
+    chatCnt[t]=chatCnt[t]%need + 1;
+    if(chatCnt[t]>=need){
+      chatCnt[t]=0;
+      if(giftLogN++<20) logWS("💬 «"+c+"» ×"+need+" → "+(t?"RONALDO":"MESSI")+" +1");
+      score(t,1,Object.assign(u,{gift:"💬 "+c}));
+    } else if(giftLogN++<20){
+      logWS("💬 «"+c+"» — "+chatCnt[t]+"/"+need);
+    }
   }
 }
 setInterval(()=>{ const now=performance.now(); for(const [kk,v] of streaks) if(now-v.t>60000) streaks.delete(kk); },15000);
@@ -1050,6 +1076,7 @@ function draw(){
   if(flash>0){ g.fillStyle=`rgba(255,255,255,${flash*0.6})`; g.fillRect(0,0,W,H); }
   if(banner && !finalDone) drawBanner(l);
   if(phase!=="play") drawEnd(l);
+  try{ updFinHint(); }catch(e){}
   drawStatusDot();
   g.restore();
   g.restore();
@@ -1155,6 +1182,7 @@ function drawHeader(l){
     txt(tm.name, nx, y+bh*0.5, bh*0.3, "#fff","center",OUT,Math.max(3,5*k),Math.max(10,nw));
   }
   drawFinalRow(l);
+  drawChatTally(l);
   // նվերների պատկերները՝ վերևում (երկու թիմերը կողք-կողքի)
   const sy=l.legY, sh=l.legH, gap=W*0.008;
   const n=Math.max(1, Math.min(8, rules[0].length+rules[1].length));
@@ -1183,11 +1211,32 @@ function drawHeader(l){
   }
 }
 
+// 💬 Չատի հաշվիչը՝ դաշտի վերևի անկյուններում (10 · 3/5)
+function drawChatTally(l){
+  if(!cfg.chatVotes) return;
+  const need=Math.max(1, Math.round(cfg.chatEvery||5));
+  const fs=Math.max(10, Math.min(15, W*0.032));
+  g.save();
+  g.font=font(fs); g.textBaseline="middle"; g.textAlign="left";
+  for(let t=0;t<2;t++){
+    const label=(t?cfg.chatR:cfg.chatL)+" · "+chatCnt[t]+"/"+need;
+    const w=g.measureText(label).width+fs*2.35, h=fs*1.85;
+    const x = t===0 ? W*0.022 : W*0.978-w;
+    const y = l.bfY + Math.max(4, 6*k);
+    rr(x,y,w,h,h/2);
+    g.fillStyle="rgba(0,0,0,.42)"; g.fill();
+    g.strokeStyle=(t?cfg.right.c1:cfg.left.c1); g.lineWidth=Math.max(1.5,2*k); g.stroke();
+    g.fillStyle="#fff"; g.fillText("💬", x+fs*0.55, y+h/2);
+    g.fillStyle="#ffd54a"; g.fillText(label, x+fs*1.6, y+h/2);
+  }
+  g.restore();
+}
+
 // 🏁 Վերջնական նվերների պատկերները՝ գավաթներից վերևի ազատ տարածքում
 function drawFinalRow(l){
-  const h=l.finH, y=l.finY;
-  const r=Math.min(h*0.40, W*0.125);
-  const cy=y+h*0.5;
+  const h=l.finH, y=l.finY, hintH=l.finHintH||0;
+  const r=Math.min((h-hintH)*0.40, W*0.125);
+  const cy=y+hintH+(h-hintH)*0.5;
   for(let t=0;t<2;t++){
     const tm=team(t);
     const cx = t===0 ? W*0.21 : W*0.79;
@@ -1210,6 +1259,20 @@ function drawFinalRow(l){
   }
   // մեջտեղում՝ FINAL պիտակ
   txt("FINAL", W/2, cy, r*0.62, "#ffd54a", "center", OUT, Math.max(2.5,3.6*k), W*0.24);
+}
+// 🏁 Հայերեն բացատրությունը՝ նվերներից վերև (DOM, որ հեռախոսում տառերը չմշուշվեն)
+const FIN_HINT_TEXT = "🏁 Ուղարկիր՝ խաղն ավարտվում է · հաղթում է ուղարկողի թիմը";
+let finHintKey="";
+function updFinHint(){
+  const el=$("finHint"); if(!el) return;
+  const l=L();
+  const key=Math.round(l.finY)+"|"+Math.round(W)+"|"+(finalDone?1:0)+"|"+(panel.hidden?1:0);
+  if(key===finHintKey) return; finHintKey=key;
+  el.textContent=FIN_HINT_TEXT;
+  el.hidden = !!finalDone || !panel.hidden;
+  el.style.top = Math.round(Math.max(0,l.finY+1))+"px";
+  el.style.maxWidth = Math.round(W*0.96)+"px";
+  el.style.fontSize = Math.round(Math.max(9.5, Math.min(13, W*0.028)))+"px";
 }
 function superRule(t){ return rules[t].filter(r=>(r.pts??0)>=cfg.superAt).sort((a,b)=>a.pts-b.pts)[0]; }
 function superTap(t){ const sr=superRule(t); score(t, sr?sr.pts:cfg.superAt, {gift:sr?sr.label:"", combo:1}); }
@@ -1323,7 +1386,7 @@ function updStatus(){ const m={on:"🟢 միացված է, նվերները գա
 }
 const binds=[["l_name","left.name"],["l_num","left.num"],["l_c1","left.c1"],["l_c2","left.c2"],["l_stripes","left.stripes"],["l_gifts","left.gifts"],
   ["r_name","right.name"],["r_num","right.num"],["r_c1","right.c1"],["r_c2","right.c2"],["r_stripes","right.stripes"],["r_gifts","right.gifts"],
-  ["ko","ko"],["superAt","superAt"],["lang","lang"],["chatVotes","chatVotes"],["chatL","chatL"],["chatR","chatR"],["fill","fill"],["l_final","left.final"],["r_final","right.final"],["sound","sound"],["volume","volume"],["musicOn","musicOn"],["musicTrack","musicTrack"],["musicVol","musicVol"],["wsUrl","wsUrl"],["mode","mode"],["tapControl","tapControl"],["cloudUser","cloudUser"],["cloudKey","cloudKey"]];
+  ["ko","ko"],["superAt","superAt"],["lang","lang"],["chatVotes","chatVotes"],["chatL","chatL"],["chatR","chatR"],["chatEvery","chatEvery"],["fill","fill"],["l_final","left.final"],["r_final","right.final"],["sound","sound"],["volume","volume"],["musicOn","musicOn"],["musicTrack","musicTrack"],["musicVol","musicVol"],["wsUrl","wsUrl"],["mode","mode"],["tapControl","tapControl"],["cloudUser","cloudUser"],["cloudKey","cloudKey"]];
 const getP=(p)=>p.split(".").reduce((o,kk)=>o[kk],cfg);
 const setP=(p,v)=>{ const ks=p.split("."), last2=ks.pop(); ks.reduce((o,kk)=>o[kk],cfg)[last2]=v; };
 function fillForm(){ sndUI(); for(const [id,p] of binds){ const el=$(id), v=getP(p); if(el.type==="checkbox") el.checked=!!v; else el.value=v; } $("demo").checked=demoOn; updStatus(); }
@@ -1348,6 +1411,7 @@ for(const [t,id] of [[0,"l"],[1,"r"]]){
   $(id+"_clr").onclick=()=>{ SND[t]=null; try{ localStorage.removeItem("mvr_snd"+t); }catch(e){} $(id+"_snd").value=""; sndUI(); loadClips(); };
 }
 /* ---- music UI ---- */
+if($("chatL")) $("chatL").addEventListener("input",()=>{ const e=$("chatEx"); if(e) e.textContent=$("chatL").value||"10"; });
 $("musicTrack").innerHTML = TRACKS.map((t,i)=>`<option value="${i}">${i+1}. ${t.name}</option>`).join("");
 function musUI(){
   const b=$("mus");
@@ -1453,6 +1517,7 @@ cv.addEventListener("pointercancel",()=>tap=null);
 $("demo").onchange=e=>setDemo(e.target.checked);
 $("newRound").onclick=()=>newRound();
 $("resetSeries").onclick=()=>{ series=[0,0]; roundNo=0; newRound(); };
+for(const [id,t] of [["testFinalL",0],["testFinalR",1]]) (()=>{ const b=$(id); if(b) b.onclick=()=>{ audio(); loadClips(); togglePanel(false); newRound(); finalWin(t); }; })();
 $("resetCfg").onclick=()=>{ cfg=JSON.parse(JSON.stringify(DEFAULTS)); saveCfg(); rebuildRules(); fillForm(); };
 function testGift(t,big){ if(big){ superTap(t); return; } const rs=rules[t]; const nick=FAKE[(Math.random()*FAKE.length)|0]; score(t, big ? Math.max(cfg.superAt, rs.length&&rs[rs.length-1].pts||cfg.superAt) : 1, {user:nick,nick,gift:big?(rs[rs.length-1]||{}).label:(rs[0]||{}).label,combo:1}); }
 document.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{ audio(); testGift(+b.dataset.t, b.dataset.k==="super"); });
