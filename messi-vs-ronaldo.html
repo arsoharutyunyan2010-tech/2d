@@ -117,6 +117,7 @@
   <h3>Ինչու է կապը կարմիր (ախտորոշում)</h3>
   <div class="hint">Այստեղ գրվում է ամեն մի փորձ՝ կոդերով։ Եթե կարմիր է մնում, սեղմիր «Պատճենել» ու ուղարկիր ինձ այս տեքստը։</div>
   <div class="row"><button class="b" id="wsRetry" style="flex:.5">🔄 Նորից միանալ</button><button class="b" id="wsPause" style="flex:.55">⏸ Դադարեցնել կապը</button><button class="b" id="wsCopy" style="flex:.4">📋</button></div>
+  <button class="b" id="wsDiag" style="width:100%;margin-top:6px">🔍 Ստուգել և պատճենել (ուղարկիր ինձ)</button>
   <pre id="wslog" style="background:#0d1224;color:#a9e8b0;border:1px solid #2f3a63;border-radius:6px;padding:8px;font:11px/1.45 Consolas,monospace;white-space:pre-wrap;max-height:180px;overflow:auto;margin:6px 0 0">Դատարկ է — միացում դեռ չի եղել։</pre>
   <button class="b" id="fs" style="width:100%;margin-top:10px">⛶ Լիէկրան</button>
   <div class="hint" style="margin-top:8px"><b>Հեռախոսով</b>՝ բացիր այս էջը Chrome-ում → ⛶ Լիէկրան → TikTok-ում + → LIVE → <b>Mobile Gaming</b> (էկրանի ցուցադրում) → վերադարձիր Chrome։<br><b>Համակարգչով</b>՝ TikFinity + TikTok LIVE Studio (Browser/Link աղբյուր)։</div>
@@ -617,6 +618,10 @@ function userOf(d){
 }
 function handle(type, d){
   if(!d) return;
+  if(!seenTypes.has("evt:"+type)){
+    seenTypes.add("evt:"+type);
+    try{ logWS("📥 «"+type+"» օրինակ՝ "+JSON.stringify(d).slice(0,260)); }catch(e){}
+  }
   if(type==="gift"){
     const u=userOf(d);
     const gd=d.giftDetails||d.gift||{};
@@ -1272,6 +1277,42 @@ $("musicFiles").onchange=async e=>{
 $("musicClr").onclick=()=>{ mp3s.length=0; $("musicFiles").value=""; mp3Idx=0; musUI(); musicStart(); };
 musUI();
 $("wsbadge").onclick=()=>{ togglePanel(true); try{ const p=$("wslog"); if(p&&p.scrollIntoView) p.scrollIntoView({block:"center"}); }catch(e){} };
+function diagReport(){
+  const L=[];
+  const m={manual:"📱 Ձեռքով",tikfinity:"🖥 TikFinity (PC)",cloud:"☁️ tik.tools",generic:"🔗 Այլ JSON WS"}[cfg.mode]||cfg.mode;
+  L.push("— ՍՏՈՒԳՈՒՄ —");
+  L.push("Ռեժիմ՝ "+m);
+  L.push("Username՝ "+(cfg.cloudUser||"(դատարկ)"));
+  L.push("Բանալի՝ "+maskKey(cfg.cloudKey));
+  L.push("Պիտակ՝ "+($("st").textContent||wsState));
+  L.push("Կոդ՝ "+(wsCode||"—")+(wsReason?" · "+wsReason:""));
+  if(cfg.mode==="generic") L.push("Հասցե՝ "+(cfg.wsUrl||"(դատարկ)"));
+  L.push("Նվերներ ստացված՝ "+giftLogN);
+  const why=[];
+  if(cfg.mode==="manual") why.push("Ձեռքով ռեժիմում նվերներ չեն գալիս՝ +1 տալիս ես դաշտին սեղմելով։");
+  if(cfg.mode==="cloud" && !cfg.cloudKey) why.push("Բանալին դատարկ է — կապ չի լինի։");
+  if(cfg.mode==="cloud" && cfg.cloudKey && wsCode===4401) why.push("4401 = tik.tools-ը բլոկավորել է այս բանալին (սուսպենդ)։");
+  if(cfg.mode==="generic" && !/apiKey=|jwtKey=/.test(cfg.wsUrl||"")) why.push("Հասցեում apiKey/jwtKey չկա։");
+  if(cfg.mode==="generic" && wsCode===4401) why.push("4401 = սխալ/ժամկետանց բանալի (Euler)։");
+  if(wsCode===4404) why.push("4404 = այս հաշիվը հիմա LIVE չէ։");
+  if(wsCode===4429) why.push("4429 = շատ միացումներ (փակիր ավելորդները)։");
+  if(wsState==="on" && giftLogN===0) why.push("Կապը կա, բայց ոչ մի նվեր չի հասել — հավանաբար սխալ հաշիվ կամ նվեր չեն ուղարկել։");
+  if(why.length) L.push("→ "+why.join(" "));
+  L.push("Լոգ՝");
+  L.push(wsLog.slice(-10).join("\n")||"(դատարկ)");
+  return L.join("\n");
+}
+$("wsDiag").onclick=async()=>{
+  const txt=diagReport();
+  logWS("🔍 Ստուգումը պատրաստ է — սեղմիր «📋» և ուղարկիր ինձ։");
+  try{ await navigator.clipboard.writeText(txt); }catch(e){}
+  try{
+    const ta=document.createElement("textarea");
+    ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+  }catch(e){}
+  $("wsDiag").textContent="✅ Պատճենվեց — կպցրու չատում";
+  setTimeout(()=>{ $("wsDiag").textContent="🔍 Ստուգել և պատճենել (ուղարկիր ինձ)"; },4000);
+};
 $("wsRetry").onclick=()=>{ wsTry=0; wsFail=0; wsPaused=false; $("wsPause").textContent="⏸ Դադարեցնել կապը"; logWS("— Սեղմվեց «Նորից միանալ» —"); connect(); };
 $("wsPause").onclick=()=>{
   wsPaused=!wsPaused;
