@@ -58,6 +58,7 @@
     <button class="b" id="resetSeries">Զրոյացնել հաշիվը</button>
   </div>
   <label class="chk"><input type="checkbox" id="demo"> Դեմո ռեժիմ (կեղծ նվերներ՝ փորձարկելու համար)</label>
+  <label class="chk"><input type="checkbox" id="fill"> Խաղը լցնի ամբողջ էկրանը (միացրու, եթե LIVE-ում էկրանը մեծ է երևում և վերևից/ներքևից դատարկ տեղ կա)</label>
   <div class="hint">Ստեղներ՝ 1 / 2 = +1, 3 / 4 = սուպեր (փորձարկման համար), R = նոր ռաունդ, S = այս պանելը։</div>
 
   <h3>Ձախ թիմ</h3>
@@ -134,7 +135,7 @@ const DEFAULTS = {
   right: { name:"RONALDO", num:"7",  c1:"#D0202E", c2:"#0b6b3a", stripes:false, gifts:"Rose = 1\nRosa = 8" },
   ko:24, superAt:8, lang:"en", autoRestart:true, endPause:0.35,
   chatVotes:false, chatL:"1", chatR:"2", chatCooldown:10,
-  sound:true, volume:0.6, musicOn:true, musicTrack:0, musicVol:0.45, wsUrl:"ws://localhost:21213/", mode:"cloud", tapControl:true, cloudUser:PRE_USER, cloudKey:PRE_KEY
+  fill:false, sound:true, volume:0.6, musicOn:true, musicTrack:0, musicVol:0.45, wsUrl:"ws://localhost:21213/", mode:"cloud", tapControl:true, cloudUser:PRE_USER, cloudKey:PRE_KEY
 };
 const KEY = "mvr_cfg_v3";
 let cfg = JSON.parse(JSON.stringify(DEFAULTS));
@@ -208,14 +209,18 @@ addEventListener("resize", resize); resize();
 const FONT = '"Arial Black","Segoe UI Black",Impact,Arial,sans-serif';
 const font = (px, w="900") => `${w} ${Math.max(6,px)}px ${FONT}`;
 
+function groundY(l){ return l.bfY + l.bfH - Math.min(l.bfH*0.14, Math.max(46, W*0.16)); }
 function L(){
   // նույն չափը, ինչ ամենասկզբում, բայց ամբողջ բլոկը՝ էկրանի մեջտեղում
   const portrait = SH >= SW*1.05;
   const hdrH=150*k;
   const legH=Math.max(46, 84*k);
-  const bfH = portrait ? Math.min(H*0.46, W*0.95) : (H - (10*k+hdrH+8*k+legH+10*k) - 6*k);
-  const total = 10*k + hdrH + 8*k + legH + 10*k + bfH;
-  const oy = Math.max(0, (SH - total)/2);
+  const chrome = 10*k + hdrH + 8*k + legH + 10*k;
+  const bfH = portrait
+    ? (cfg.fill ? Math.max(H*0.55, SH - chrome) : Math.min(H*0.46, W*0.95))
+    : (H - chrome - 6*k);
+  const total = chrome + bfH;
+  const oy = (portrait && cfg.fill) ? Math.max(14, SH*0.016) : Math.max(0, (SH - total)/2);
   const hdrY=10*k+oy;
   const legY=hdrY+hdrH+8*k;
   const bfY=legY+legH+10*k;
@@ -994,7 +999,7 @@ function draw(){
   g.restore();
 }
 function drawField(l){
-  const y=l.bfY, h=l.bfH, dx=DX(), ground=y+h*0.86;
+  const y=l.bfY, h=l.bfH, dx=DX(), ground=groundY(l);
   g.save(); g.beginPath(); g.rect(0,y,W,h); g.clip();
   // left wall
   const t0=cfg.left, t1=cfg.right;
@@ -1023,9 +1028,9 @@ function drawField(l){
   g.restore();
 }
 function drawPlayers(l){
-  const y=l.bfY, h=l.bfH, dx=DX(), ground=y+h*0.86, gh=y+h-ground;
+  const y=l.bfY, h=l.bfH, dx=DX(), ground=groundY(l), gh=y+h-ground;
   g.save(); rr(0,0,W,H,0); g.clip();
-  const u=Math.min(h*0.075, W*0.058);
+  const u=Math.min(h*0.075, W*(cfg.fill&&l.portrait?0.085:0.058));
   const gap=0.12*u;
   for(let t=0;t<2;t++){
     const dir=t===0?1:-1, px=dx-dir*(WALL*u+gap), gy=ground+gh*0.12, f=R[t].fly;
@@ -1203,7 +1208,7 @@ function updStatus(){ const m={on:"🟢 միացված է, նվերները գա
 }
 const binds=[["l_name","left.name"],["l_num","left.num"],["l_c1","left.c1"],["l_c2","left.c2"],["l_stripes","left.stripes"],["l_gifts","left.gifts"],
   ["r_name","right.name"],["r_num","right.num"],["r_c1","right.c1"],["r_c2","right.c2"],["r_stripes","right.stripes"],["r_gifts","right.gifts"],
-  ["ko","ko"],["superAt","superAt"],["lang","lang"],["chatVotes","chatVotes"],["chatL","chatL"],["chatR","chatR"],["sound","sound"],["volume","volume"],["musicOn","musicOn"],["musicTrack","musicTrack"],["musicVol","musicVol"],["wsUrl","wsUrl"],["mode","mode"],["tapControl","tapControl"],["cloudUser","cloudUser"],["cloudKey","cloudKey"]];
+  ["ko","ko"],["superAt","superAt"],["lang","lang"],["chatVotes","chatVotes"],["chatL","chatL"],["chatR","chatR"],["fill","fill"],["sound","sound"],["volume","volume"],["musicOn","musicOn"],["musicTrack","musicTrack"],["musicVol","musicVol"],["wsUrl","wsUrl"],["mode","mode"],["tapControl","tapControl"],["cloudUser","cloudUser"],["cloudKey","cloudKey"]];
 const getP=(p)=>p.split(".").reduce((o,kk)=>o[kk],cfg);
 const setP=(p,v)=>{ const ks=p.split("."), last2=ks.pop(); ks.reduce((o,kk)=>o[kk],cfg)[last2]=v; };
 function fillForm(){ sndUI(); for(const [id,p] of binds){ const el=$(id), v=getP(p); if(el.type==="checkbox") el.checked=!!v; else el.value=v; } $("demo").checked=demoOn; updStatus(); }
@@ -1305,6 +1310,7 @@ addEventListener("pointerdown",()=>{ audio(); loadClips(); },{once:true});
 const qs=new URLSearchParams(location.search);
 if(qs.has("demo")) setDemo(true);
 if(qs.has("lang")) cfg.lang=qs.get("lang");
+if(qs.has("fill")) cfg.fill=qs.get("fill")!=="0";
 if(qs.has("user")) cfg.cloudUser=String(qs.get("user")).replace(/^@/,"").trim();
 if(qs.has("key"))  cfg.cloudKey=String(qs.get("key")).trim();
 
