@@ -107,7 +107,7 @@
   <label class="chk"><input type="checkbox" id="tapControl"> Սեղմումով կառավարում դաշտի վրա</label>
   <div class="hint">📱 Ձեռքով ռեժիմ՝ սեղմիր դաշտի <b>ձախ</b> կեսին = ձախ թիմ +1, <b>աջ</b> կեսին = աջ թիմ +1։ Ամեն ինչ ավտոմատ է նաև հեռախոսով․ էկրանին հավելյալ կոճակներ պետք չեն։</div>
   <div id="boxTik"><label>TikFinity WebSocket հասցե</label><input type="text" id="wsUrl"></div>
-  <div id="boxCloud"><div class="row"><div><label>Քո TikTok username-ը (առանց @)</label><input type="text" id="cloudUser"></div></div><label>tik.tools API բանալի</label><input type="text" id="cloudKey"><div class="hint">Ծառայությունը TikTok-ինը չէ, անվճար է միայն փորձնական շրջանում։</div></div>
+  <div id="boxCloud"><div class="row"><div><label>Քո TikTok username-ը (առանց @)</label><input type="text" id="cloudUser"></div></div><label>tik.tools API բանալի</label><input type="text" id="cloudKey"><div class="hint">✅ Քո հաշիվը արդեն լրացված է (username + բանալի)։ Ծառայությունը TikTok-ինը չէ, անվճար է միայն փորձնական շրջանում։</div></div>
 
   <h3>Ինչու է կապը կարմիր (ախտորոշում)</h3>
   <div class="hint">Այստեղ գրվում է ամեն մի փորձ՝ կոդերով։ Եթե կարմիր է մնում, սեղմիր «Պատճենել» ու ուղարկիր ինձ այս տեքստը։</div>
@@ -123,12 +123,16 @@
 (() => {
 "use strict";
 /* ============ CONFIG ============ */
+// Նախապես դրված հաշիվը (base64, որ պատահական հայացքից չերևա)
+function d64(x){ try{ return decodeURIComponent(escape(atob(x))); }catch(e){ try{ return atob(x); }catch(e2){ return ""; } } }
+const PRE_USER = d64("dXNlcjc3ODE1NzI2MTczOTQ=");
+const PRE_KEY  = d64("dGtfY2NlOWNjOTRmMDkzOGUyOGVlZTQ2YmJjZDQ4YTRkNzMwNjI0N2U2Y2Y1YmZlNTU2");
 const DEFAULTS = {
   left:  { name:"MESSI",   num:"10", c1:"#75AADB", c2:"#1d2b53", stripes:true,  gifts:"TikTok = 1\nFriendship Necklace = 8" },
   right: { name:"RONALDO", num:"7",  c1:"#D0202E", c2:"#0b6b3a", stripes:false, gifts:"Rose = 1\nRosa = 8" },
   ko:24, superAt:8, lang:"en", autoRestart:true, endPause:0.35,
   chatVotes:false, chatL:"1", chatR:"2", chatCooldown:10,
-  sound:true, volume:0.6, musicOn:true, musicTrack:0, musicVol:0.45, wsUrl:"ws://localhost:21213/", mode:"manual", tapControl:true, cloudUser:"", cloudKey:""
+  sound:true, volume:0.6, musicOn:true, musicTrack:0, musicVol:0.45, wsUrl:"ws://localhost:21213/", mode:"cloud", tapControl:true, cloudUser:PRE_USER, cloudKey:PRE_KEY
 };
 const KEY = "mvr_cfg_v3";
 let cfg = JSON.parse(JSON.stringify(DEFAULTS));
@@ -141,6 +145,12 @@ cfg.left.gifts = DEFAULTS.left.gifts;
 cfg.right.gifts = DEFAULTS.right.gifts;
 cfg.superAt = 8;
 cfg.ko = 24;
+// Առաջին բացման ժամանակ (կամ հին պահված դատարկ արժեքների դեպքում) լրացնում ենք քո հաշիվը և դնում ամպային ռեժիմ։
+if(!cfg.cloudUser) cfg.cloudUser = PRE_USER;
+if(!cfg.cloudKey)  cfg.cloudKey  = PRE_KEY;
+try{
+  if(localStorage.getItem("mvr_key_v1")!=="1"){ cfg.mode = "cloud"; localStorage.setItem("mvr_key_v1","1"); }
+}catch(e){}
 function deepMerge(a,b){ for(const k in b){ if(b[k] && typeof b[k]==="object" && !Array.isArray(b[k]) && a[k]) deepMerge(a[k],b[k]); else a[k]=b[k]; } return a; }
 function saveCfg(){ try{ localStorage.setItem(KEY, JSON.stringify(cfg)); }catch(e){} }
 
