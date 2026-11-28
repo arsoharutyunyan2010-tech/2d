@@ -130,7 +130,8 @@
 /* ============ CONFIG ============ */
 // Նախապես դրված հաշիվը (base64, որ պատահական հայացքից չերևա)
 function d64(x){ try{ return decodeURIComponent(escape(atob(x))); }catch(e){ try{ return atob(x); }catch(e2){ return ""; } } }
-const PRE_USER = d64("dXNlcjc3ODE1NzI2MTczOTQ=");
+const PRE_USER = d64("ZmlnaHQxMDEwNw==");            // @fight10107 — իրական հաշիվը
+const OLD_USER = d64("dXNlcjc3ODE1NzI2MTczOTQ=");     // նախկին (սխալ) անունը
 const PRE_KEY  = ""; // բանալին միտումնավոր չի պահվում էջի մեջ (հանրային է)։
 const DEAD_KEY = d64("dGtfY2NlOWNjOTRmMDkzOGUyOGVlZTQ2YmJjZDQ4YTRkNzMwNjI0N2U2Y2Y1YmZlNTU2"); // սուսպենդված 4401
 const DEFAULTS = {
@@ -152,7 +153,8 @@ cfg.right.gifts = DEFAULTS.right.gifts;
 cfg.superAt = 8;
 cfg.ko = 24;
 // Առաջին բացման ժամանակ (կամ հին պահված դատարկ արժեքների դեպքում) լրացնում ենք քո հաշիվը և դնում ամպային ռեժիմ։
-if(!cfg.cloudUser) cfg.cloudUser = PRE_USER;
+if(!cfg.cloudUser || cfg.cloudUser === OLD_USER) cfg.cloudUser = PRE_USER;
+if(typeof cfg.wsUrl === "string" && cfg.wsUrl.indexOf(OLD_USER) >= 0) cfg.wsUrl = cfg.wsUrl.split(OLD_USER).join(PRE_USER);
 if(!cfg.cloudKey)  cfg.cloudKey  = PRE_KEY;
 if(DEAD_KEY && cfg.cloudKey === DEAD_KEY){ cfg.cloudKey = ""; } // սուսպենդված բանալին ինքնաբերաբար ջնջվում է
 try{
@@ -1284,7 +1286,15 @@ $("wsCopy").onclick=async()=>{
   catch(e){ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); $("wsCopy").textContent="✅ Պատճենվեց"; }catch(err){ $("wsCopy").textContent="⚠ Չստացվեց"; } ta.remove(); }
   setTimeout(()=>{ $("wsCopy").textContent="📋 Պատճենել"; },2000);
 };
-$("fs").onclick=()=>{ keepAwake(); const el=document.documentElement; try{ const r=(el.requestFullscreen||el.webkitRequestFullscreen).call(el); if(r&&r.catch) r.catch(()=>{}); }catch(e){} togglePanel(false); };
+let fsOn=false;
+$("fs").onclick=()=>{ keepAwake(); togglePanel(false);
+  try{
+    const d=document, de=d.documentElement;
+    const on=!!(d.fullscreenElement||d.webkitFullscreenElement||fsOn);
+    if(!on){ const req=de.requestFullscreen||de.webkitRequestFullscreen; if(req){ const r=req.call(de); if(r&&r.catch) r.catch(()=>{}); fsOn=true; } }
+    else { const ex=d.exitFullscreen||d.webkitExitFullscreen; if(ex){ ex.call(d); fsOn=false; } }
+  }catch(e){ fsOn=false; }
+};
 // tap control on the battlefield
 let tap=null;
 cv.addEventListener("contextmenu",e=>e.preventDefault());
@@ -1309,21 +1319,6 @@ addEventListener("keydown",e=>{
   else if(kk==="r") newRound(); else if(kk==="s") togglePanel();
   else if(kk==="m"){ const b=$("mus"); if(b) b.onclick(); }
 });
-const fsb=$("fs");
-let fsOn=false;
-if(fsb) fsb.onclick=()=>{
-  try{
-    const d=document, de=d.documentElement;
-    const on = !!(d.fullscreenElement || d.webkitFullscreenElement || fsOn);
-    if(!on){
-      const req=de.requestFullscreen||de.webkitRequestFullscreen;
-      if(req){ req.call(de); fsOn=true; }
-    } else {
-      const ex=d.exitFullscreen||d.webkitExitFullscreen;
-      if(ex){ ex.call(d); fsOn=false; }
-    }
-  }catch(e){ fsOn=false; }
-};
 addEventListener("pointerdown",()=>{ audio(); loadClips(); },{once:true});
 const qs=new URLSearchParams(location.search);
 if(qs.has("demo")) setDemo(true);
