@@ -574,7 +574,7 @@ function connect(){
     const nm=String(m.event||m.type||"").toLowerCase();
     if(m.error || nm==="error" || nm==="handshake" || nm==="disconnected" || nm==="streamend")
       logWS("⚠ Սերվերից՝ "+JSON.stringify(m).slice(0,170));
-    if(m && (m.event||m.type)) handle(m.event||m.type, m.data||m); else handleLoose(m);
+    handleLoose(m);
   };
 }
 const seenTypes=new Set();
@@ -596,18 +596,25 @@ function handleLoose(m){
     return;
   }
   if(t==="gift"){
-    const g=(m.gift&&typeof m.gift==="object")?m.gift:{};
-    const d=Object.assign({},m);
-    d.giftName = m.giftName || g.name || g.giftName || m.gift_name || "";
-    if(m.diamondCount!=null) d.diamondCount=m.diamondCount;
+    // Euler/tik.tools-ը տվալը փաթաթում են {type, data} կամ {event, data} ձևով
+    const src=(m.data&&typeof m.data==="object")?m.data:m;
+    const g=(src.gift&&typeof src.gift==="object")?src.gift
+          :(src.giftInfo&&typeof src.giftInfo==="object")?src.giftInfo
+          :(src.extendedGiftInfo&&typeof src.extendedGiftInfo==="object")?src.extendedGiftInfo:{};
+    const d=Object.assign({},src);
+    d.giftName = src.giftName || g.name || g.giftName || g.describe || src.gift_name || "";
+    d.giftName = String(d.giftName||"").replace(/^\[|\]$/g,"").trim();
+    const rc = (src.repeatCount!=null?src.repeatCount:(src.repeat_count!=null?src.repeat_count:1));
+    d.repeatCount = Number(rc)||1;
+    if(src.diamondCount!=null) d.diamondCount=src.diamondCount;
     else if(g.diamondCount!=null) d.diamondCount=g.diamondCount;
-    if(m.repeatCount==null) d.repeatCount = (m.repeat_count!=null?m.repeat_count:1);
-    if(!m.user && (m.uniqueId||m.userId)) d.user={uniqueId:m.uniqueId||String(m.userId), nickname:m.nickname||m.nickName||""};
+    if(!src.user && (src.uniqueId||src.userId)) d.user={uniqueId:src.uniqueId||String(src.userId), nickname:src.nickname||src.nickName||""};
+    if(!d.giftName && !seenTypes.has("__gn")){ seenTypes.add("__gn"); logWS("🎁 նվերի անունը չգտա — տվյալը՝ "+JSON.stringify(src).slice(0,400)); }
     handle("gift", d);
     return;
   }
   if(!seenTypes.has(t)){ seenTypes.add(t); logWS("ℹ Առաջին «"+t+"» իրադարձությունը ստացվեց"); }
-  handle(t, m);
+  handle(t, (m.data&&typeof m.data==="object")?m.data:m);
 }
 function userOf(d){
   const u=d.user||d;
