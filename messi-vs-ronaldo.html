@@ -126,7 +126,8 @@
 // Նախապես դրված հաշիվը (base64, որ պատահական հայացքից չերևա)
 function d64(x){ try{ return decodeURIComponent(escape(atob(x))); }catch(e){ try{ return atob(x); }catch(e2){ return ""; } } }
 const PRE_USER = d64("dXNlcjc3ODE1NzI2MTczOTQ=");
-const PRE_KEY  = d64("dGtfY2NlOWNjOTRmMDkzOGUyOGVlZTQ2YmJjZDQ4YTRkNzMwNjI0N2U2Y2Y1YmZlNTU2");
+const PRE_KEY  = ""; // բանալին միտումնավոր չի պահվում էջի մեջ (հանրային է)։
+const DEAD_KEY = d64("dGtfY2NlOWNjOTRmMDkzOGUyOGVlZTQ2YmJjZDQ4YTRkNzMwNjI0N2U2Y2Y1YmZlNTU2"); // սուսպենդված 4401
 const DEFAULTS = {
   left:  { name:"MESSI",   num:"10", c1:"#75AADB", c2:"#1d2b53", stripes:true,  gifts:"TikTok = 1\nFriendship Necklace = 8" },
   right: { name:"RONALDO", num:"7",  c1:"#D0202E", c2:"#0b6b3a", stripes:false, gifts:"Rose = 1\nRosa = 8" },
@@ -148,6 +149,7 @@ cfg.ko = 24;
 // Առաջին բացման ժամանակ (կամ հին պահված դատարկ արժեքների դեպքում) լրացնում ենք քո հաշիվը և դնում ամպային ռեժիմ։
 if(!cfg.cloudUser) cfg.cloudUser = PRE_USER;
 if(!cfg.cloudKey)  cfg.cloudKey  = PRE_KEY;
+if(DEAD_KEY && cfg.cloudKey === DEAD_KEY){ cfg.cloudKey = ""; } // սուսպենդված բանալին ինքնաբերաբար ջնջվում է
 try{
   if(localStorage.getItem("mvr_key_v1")!=="1"){ cfg.mode = "cloud"; localStorage.setItem("mvr_key_v1","1"); }
 }catch(e){}
@@ -498,7 +500,7 @@ function spark(x,y){ const a=Math.random()*Math.PI*2, sp=(200+Math.random()*500)
 let ws=null, wsState="off", wsTimer=null;
 const streaks=new Map(), chatCd=new Map();
 const wsLog=[];
-let wsTry=0, wsGotData=false, giftLogN=0;
+let wsTry=0, wsGotData=false, giftLogN=0, wsCode=0, wsReason="";
 function logWS(msg){
   const d=new Date();
   const t=String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")+":"+String(d.getSeconds()).padStart(2,"0");
@@ -522,9 +524,11 @@ function connect(){
   wsState="connecting"; updStatus(); wsTry++;
   logWS("→ Միացում #"+wsTry+" · "+label);
   try{ ws=new WebSocket(url); }catch(e){ wsState="error"; updStatus(); logWS("✖ WebSocket չբացվեց — "+(e&&e.message||e)); wsTimer=setTimeout(connect,4000); return; }
+  wsCode=0; wsReason="";
   ws.onopen=()=>{ wsState="wait"; updStatus(); logWS("✔ Հասցեն բացվեց, սպասում եմ TikTok-ի տվյալին…"); };
   ws.onclose=e=>{
     const code=(e&&e.code)||0, reason=(e&&e.reason)||"";
+    wsCode=code; wsReason=reason;
     wsState = wsGotData ? "off" : "reject";
     updStatus();
     logWS("✖ Փակվեց · կոդ "+code+(reason?" · պատճառ՝ "+reason:"")+(wsGotData?"":" · ոչ մի տվյալ չեկավ"));
@@ -1128,7 +1132,7 @@ function updStatus(){ const m={on:"🟢 միացված է, նվերները գա
       on:["ok","Նվերները գալիս են"],
       wait:["wait","Սպասում եմ լայվի տվյալին…"],
       connecting:["wait","Միանում եմ…"],
-      reject:["","Կապը մերժվեց — սեղմիր պատճառի համար"],
+      reject:["","Կապը մերժվեց"+(wsCode?" · կոդ "+wsCode:"")+" — սեղմիր"],
       off:["","Կապը կտրվեց — նորից միանում եմ…"],
       error:["","Սխալ հասցե — սեղմիր"],
       nouser:["idle","Լրացրու username և API բանալի"],
@@ -1139,6 +1143,7 @@ function updStatus(){ const m={on:"🟢 միացված է, նվերները գա
     badge.hidden=false;
     const tEl=badge.querySelector?badge.querySelector(".t"):null;
     if(tEl) tEl.textContent=v[1];
+    badge.title = wsReason ? wsReason : "Սեղմիր՝ ախտորոշումը տեսնելու համար";
     clearTimeout(badgeT);
     if(wsState==="on"||wsState==="manual") badgeT=setTimeout(()=>{ badge.hidden=true; },5000);
   }
@@ -1238,6 +1243,8 @@ addEventListener("pointerdown",()=>{ audio(); loadClips(); },{once:true});
 const qs=new URLSearchParams(location.search);
 if(qs.has("demo")) setDemo(true);
 if(qs.has("lang")) cfg.lang=qs.get("lang");
+if(qs.has("user")) cfg.cloudUser=String(qs.get("user")).replace(/^@/,"").trim();
+if(qs.has("key"))  cfg.cloudKey=String(qs.get("key")).trim();
 
 roundNo=0; newRound();
 connect();
